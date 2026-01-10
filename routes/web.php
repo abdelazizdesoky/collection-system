@@ -19,6 +19,18 @@ Route::get('/', function () {
 // Language Switching (No auth required, accessible to all users)
 Route::get('/set-language/{lang}', [LanguageController::class, 'setLanguage'])->name('set-language');
 
+// Debug route: show locale sources (session, cookie, app)
+Route::get('/debug-locale', function () {
+    $cookie = request()->cookie('locale');
+    return response()->json([
+        'app_locale' => app()->getLocale(),
+        'session_locale' => session()->get('locale'),
+        'cookie_locale' => $cookie,
+        'supported_locales' => ['en', 'ar'],
+        'messages_ar_exists' => file_exists(resource_path('lang/ar/messages.php')),
+    ]);
+});
+
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
