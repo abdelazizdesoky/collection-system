@@ -25,7 +25,7 @@
         </button>
 
         <a href="{{ route('collector.dashboard') }}" 
-           class="w-full bg-white hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-xl shadow-sm border border-gray-200 transition-colors text-center font-medium flex items-center justify-center gap-2 mt-2">
+           class="w-full bg-white dark:bg-dark-card hover:bg-gray-50 dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border transition-colors text-center font-medium flex items-center justify-center gap-2 mt-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
@@ -34,7 +34,7 @@
     </div>
 
     <!-- Receipt Card -->
-    <div class="bg-white rounded-2xl shadow-lg overflow-hidden" id="receipt">
+    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-dark-border" id="receipt">
         <!-- Header -->
         <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-8 text-white text-center">
             <h1 class="text-2xl font-bold mb-2">Alarabia Group</h1>
@@ -42,35 +42,35 @@
         </div>
 
         <!-- Receipt Number -->
-        <div class="bg-emerald-50 px-6 py-4 text-center border-b">
-            <div class="text-sm text-emerald-600 mb-1">رقم الإيصال</div>
-            <div class="text-2xl font-bold text-emerald-700">{{ $collection->receipt_no }}</div>
+        <div class="bg-emerald-50 dark:bg-emerald-900/20 px-6 py-4 text-center border-b border-emerald-100 dark:border-emerald-500/20">
+            <div class="text-sm text-emerald-600 dark:text-emerald-400 mb-1 font-bold">رقم الإيصال</div>
+            <div class="text-3xl font-black text-emerald-700 dark:text-emerald-300">{{ $collection->receipt_no }}</div>
         </div>
 
         <!-- Receipt Details -->
         <div class="p-6 space-y-4">
             <!-- Date -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                <span class="text-gray-500">التاريخ</span>
-                <span class="font-medium text-gray-800">{{ $collection->collection_date->format('Y/m/d') }}</span>
+            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
+                <span class="text-gray-500 dark:text-slate-400">التاريخ</span>
+                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $collection->collection_date->format('Y/m/d') }}</span>
             </div>
 
             <!-- Customer -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                <span class="text-gray-500">اسم العميل</span>
-                <span class="font-medium text-gray-800">{{ $collection->customer->name }}</span>
+            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
+                <span class="text-gray-500 dark:text-slate-400">اسم العميل</span>
+                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $collection->customer->name }}</span>
             </div>
 
             <!-- Collector -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                <span class="text-gray-500">المحصل</span>
-                <span class="font-medium text-gray-800">{{ $collection->collector->name }}</span>
+            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
+                <span class="text-gray-500 dark:text-slate-400">المحصل</span>
+                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $collection->collector->name }}</span>
             </div>
 
             <!-- Payment Type -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                <span class="text-gray-500">طريقة الدفع</span>
-                <span class="font-bold text-gray-800">
+            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
+                <span class="text-gray-500 dark:text-slate-400">طريقة الدفع</span>
+                <span class="font-bold text-gray-800 dark:text-gray-200">
                     @if($collection->payment_type === 'cash')
                         نقدي
                     @elseif($collection->payment_type === 'cheque')
@@ -112,9 +112,9 @@
             @endif
 
             <!-- Amount -->
-            <div class="flex justify-between items-center py-4 bg-emerald-50 -mx-6 px-6 rounded-lg">
-                <span class="text-emerald-600 font-bold text-lg">المبلغ المحصل</span>
-                <span class="text-3xl font-black text-emerald-600">{{ number_format($collection->amount, 2) }} ج.م</span>
+            <div class="flex justify-between items-center py-4 bg-emerald-50 dark:bg-emerald-900/20 -mx-6 px-6 rounded-lg">
+                <span class="text-emerald-600 dark:text-emerald-400 font-bold text-lg">المبلغ المحصل</span>
+                <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($collection->amount, 2) }} ج.م</span>
             </div>
 
             @if($collection->attachment)
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="bg-gray-50 px-6 py-4 text-center text-sm text-gray-500 border-t">
+        <div class="bg-gray-50 dark:bg-slate-800/50 px-6 py-4 text-center text-sm text-gray-500 dark:text-slate-400 border-t border-gray-100 dark:border-slate-700">
             <p>شكراً لتعاملكم معنا</p>
             <p class="mt-1">© 2026 Alarabia Group</p>
         </div>

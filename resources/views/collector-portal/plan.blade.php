@@ -1,45 +1,45 @@
 @extends('layouts.collector')
 
-@section('title', $plan->name . ' - بوابة المحصل')
+@section('title', $plan->name . ' - بوابة التحصيل')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
     <!-- Back Button & Header -->
     <div class="flex items-center gap-4 mb-6">
         <a href="{{ route('collector.dashboard') }}" 
-           class="bg-white hover:bg-gray-50 p-3 rounded-xl shadow-md transition-colors">
-            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           class="bg-white dark:bg-dark-card hover:bg-gray-50 dark:hover:bg-slate-700/50 p-3 rounded-xl shadow-md transition-colors border border-gray-100 dark:border-dark-border">
+            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
             </svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">{{ $plan->name }}</h1>
-            <p class="text-gray-500">{{ $plan->items->count() }} عميل في هذه الخطة</p>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $plan->name }}</h1>
+            <p class="text-gray-500 dark:text-gray-400">{{ $plan->items->count() }} عميل في هذه الخطة</p>
         </div>
     </div>
 
     <!-- Customer List -->
     <div class="space-y-4">
         @foreach($plan->items as $item)
-            <div class="rounded-2xl shadow-lg overflow-hidden transition-all duration-200 {{ $item->status === 'collected' ? 'bg-emerald-50 border-2 border-emerald-400 opacity-90' : 'bg-white hover:shadow-xl' }}">
+            <div class="rounded-2xl shadow-lg overflow-hidden transition-all duration-200 {{ $item->status === 'collected' ? 'bg-emerald-50 dark:bg-emerald-900/10 border-2 border-emerald-400 dark:border-emerald-500/50 opacity-90' : 'bg-white dark:bg-dark-card hover:shadow-xl border border-gray-100 dark:border-dark-border' }}">
                 <div class="flex items-center p-4 gap-4">
                     <!-- Status Icon -->
                     <div class="flex-shrink-0">
                         @if($item->status === 'collected')
-                            <div class="bg-gray-100 p-3 rounded-full">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="bg-gray-100 dark:bg-slate-700/50 p-3 rounded-full">
+                                <svg class="w-8 h-8 text-gray-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                             </div>
                         @elseif($item->status === 'skipped')
-                            <div class="bg-gray-100 p-3 rounded-full">
-                                <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="bg-gray-100 dark:bg-slate-700/50 p-3 rounded-full">
+                                <svg class="w-8 h-8 text-gray-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                                 </svg>
                             </div>
                         @else
-                            <div class="bg-amber-100 p-3 rounded-full">
-                                <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="bg-amber-100 dark:bg-amber-900/30 p-3 rounded-full">
+                                <svg class="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                             </div>
@@ -48,8 +48,8 @@
 
                     <!-- Customer Info -->
                     <div class="flex-grow">
-                        <h3 class="text-lg font-bold text-gray-800 {{ $item->status === 'collected' ? 'text-gray-500 line-through' : '' }}">{{ $item->customer->name }}</h3>
-                        <div class="flex flex-wrap gap-4 text-sm text-gray-500 mt-1">
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white {{ $item->status === 'collected' ? 'text-gray-500 dark:text-slate-500 line-through' : '' }}">{{ $item->customer->name }}</h3>
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-slate-400 mt-1">
                             @if($item->customer->phone)
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,14 +104,15 @@
                 </div>
 
                 @if($item->status === 'collected' && $item->collection)
-                    <div class="bg-emerald-100 px-4 py-2 border-t border-emerald-200 text-sm text-gray-700 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-slate-800 px-4 py-2 border-t border-gray-100 dark:border-slate-700 text-sm text-gray-600 dark:text-slate-400 flex justify-between items-center">
                         <span>
-                            <span class="font-medium">التفاصيل:</span> 
-                            إيصال رقم {{ $item->collection->receipt_no }}
+                            <span class="font-medium text-gray-900 dark:text-slate-200"></span> 
+                            إيصال رقم :{{ $item->collection->receipt_no }}
                         </span>
-                        <a href="{{ route('collector.receipt', $item->collection) }}" class="text-blue-600 hover:text-blue-800 underline">عرض الإيصال</a>
+                        <a href="{{ route('collector.receipt', $item->collection) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-bold">عرض الإيصال</a>
                     </div>
                 @endif
+        
             </div>
         @endforeach
     </div>

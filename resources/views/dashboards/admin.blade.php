@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('collections.create') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-xl font-bold transition-all transform hover:scale-105 shadow-lg flex items-center gap-2">
+                <a href="{{ route('collections.create') }}" class="bg-white dark:bg-blue-600 text-blue-600 dark:text-white hover:bg-blue-50 dark:hover:bg-blue-700 px-6 py-3 rounded-xl font-bold transition-all transform hover:scale-105 shadow-lg flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                     تحصيل جديد
                 </a>
@@ -37,49 +37,49 @@
     <!-- Main Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Customers -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6 hover:shadow-md transition-shadow">
             <div class="flex flex-col items-center text-center">
-                <div class="bg-blue-50 p-3 rounded-xl text-blue-600 mb-4">
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl text-blue-600 dark:text-blue-400 mb-4">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20a9 9 0 0118 0"/></svg>
                 </div>
-                <div class="text-4xl font-black text-gray-800 mb-1">{{ $totalCustomers }}</div>
-                <div class="text-gray-500 font-medium">إجمالي العملاء</div>
+                <div class="text-4xl font-black text-gray-800 dark:text-white mb-1">{{ $totalCustomers }}</div>
+                <div class="text-gray-500 dark:text-gray-400 font-medium">إجمالي العملاء</div>
                 <a href="{{ route('customers.index') }}" class="mt-4 text-blue-600 font-bold text-sm hover:underline">عرض الكل ←</a>
             </div>
         </div>
 
         <!-- Total Collectors -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6 hover:shadow-md transition-shadow">
             <div class="flex flex-col items-center text-center">
-                <div class="bg-emerald-50 p-3 rounded-xl text-emerald-600 mb-4">
+                <div class="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-xl text-emerald-600 dark:text-emerald-400 mb-4">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <div class="text-4xl font-black text-gray-800 mb-1">{{ $totalCollectors }}</div>
-                <div class="text-gray-500 font-medium">إجمالي المحصلون</div>
+                <div class="text-4xl font-black text-gray-800 dark:text-white mb-1">{{ $totalCollectors }}</div>
+                <div class="text-gray-500 dark:text-gray-400 font-medium">إجمالي المحصلون</div>
                 <a href="{{ route('collectors.index') }}" class="mt-4 text-emerald-600 font-bold text-sm hover:underline">إدارة المحصلين ←</a>
             </div>
         </div>
 
         <!-- Total Collections -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6 hover:shadow-md transition-shadow">
             <div class="flex flex-col items-center text-center">
-                <div class="bg-amber-50 p-3 rounded-xl text-amber-600 mb-4">
+                <div class="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl text-amber-600 dark:text-amber-400 mb-4">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div class="text-2xl lg:text-3xl font-black text-gray-800 mb-1">ج.م {{ number_format($totalCollections, 0) }}</div>
-                <div class="text-gray-500 font-medium">إجمالي التحصيلات</div>
+                <div class="text-2xl lg:text-3xl font-black text-gray-800 dark:text-white mb-1">ج.م {{ number_format($totalCollections, 0) }}</div>
+                <div class="text-gray-500 dark:text-gray-400 font-medium">إجمالي التحصيلات</div>
                 <a href="{{ route('collections.index') }}" class="mt-4 text-amber-600 font-bold text-sm hover:underline">السجل المالي ←</a>
             </div>
         </div>
 
         <!-- Pending Cheques -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6 hover:shadow-md transition-shadow">
             <div class="flex flex-col items-center text-center">
-                <div class="bg-rose-50 p-3 rounded-xl text-rose-600 mb-4">
+                <div class="bg-rose-50 dark:bg-rose-900/20 p-3 rounded-xl text-rose-600 dark:text-rose-400 mb-4">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
-                <div class="text-4xl font-black text-gray-800 mb-1">{{ $pendingCheques }}</div>
-                <div class="text-gray-500 font-medium">شيكات معلقة</div>
+                <div class="text-4xl font-black text-gray-800 dark:text-white mb-1">{{ $pendingCheques }}</div>
+                <div class="text-gray-500 dark:text-gray-400 font-medium">شيكات معلقة</div>
                 <a href="{{ route('cheques.index') }}" class="mt-4 text-rose-600 font-bold text-sm hover:underline">مراجعة الشيكات ←</a>
             </div>
         </div>
@@ -87,9 +87,9 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         <!-- Recent Collections Table Card -->
-        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                <h2 class="text-xl font-bold text-gray-800">آخر التحصيلات</h2>
+        <div class="lg:col-span-2 bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-100 dark:border-dark-border flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/20">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">آخر التحصيلات</h2>
                 <a href="{{ route('collections.index') }}" class="text-blue-600 text-sm font-bold hover:underline">المزيد</a>
             </div>
             <div class="overflow-x-auto">
@@ -103,17 +103,17 @@
                             <th class="px-6 py-4 font-bold">التاريخ</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50 dark:divide-dark-border">
                         @forelse($recentCollections as $collection)
-                            <tr class="hover:bg-blue-50/30 transition-colors group">
+                            <tr class="hover:bg-blue-50/30 dark:hover:bg-blue-900/20 transition-colors group">
                                 <td class="px-6 py-4">
                                     <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-xs group-hover:bg-blue-600 group-hover:text-white transition-colors">
                                         {{ $collection->receipt_no }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm font-bold text-gray-800">{{ $collection->customer->name }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">{{ $collection->collector->name }}</td>
-                                <td class="px-6 py-4 text-sm font-black text-emerald-600">
+                                <td class="px-6 py-4 text-sm font-bold text-gray-800 dark:text-gray-200">{{ $collection->customer->name }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ $collection->collector->name }}</td>
+                                <td class="px-6 py-4 text-sm font-black text-emerald-600 dark:text-emerald-400">
                                     <div class="flex items-center justify-between">
                                         <span>ج.م {{ number_format($collection->amount, 0) }}</span>
                                         @if($collection->attachment)
@@ -136,14 +136,14 @@
         </div>
 
         <!-- Top Collectors Card -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
+        <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-gray-800/20 flex items-center gap-2">
                 <svg class="w-6 h-6 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                <h2 class="text-xl font-bold text-gray-800">أداء المحصلين</h2>
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">أداء المحصلين</h2>
             </div>
-            <div class="divide-y divide-gray-50 py-2">
+            <div class="divide-y divide-gray-50 dark:divide-dark-border py-2">
                 @forelse($topCollectors as $collector)
-                    <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                    <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors">
                         <div class="flex items-center gap-4">
                             <div class="bg-blue-100 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm">
                                 {{ mb_substr($collector->name, 0, 1) }}
@@ -165,15 +165,15 @@
     </div>
 
     <!-- Active Plans Section -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-gray-50 to-white">
+    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden mb-8">
+        <div class="px-6 py-5 border-b border-gray-100 dark:border-dark-border flex justify-between items-center bg-gradient-to-r from-gray-50 to-white dark:from-gray-800/20 dark:to-dark-card">
             <div class="flex items-center gap-3">
                 <div class="bg-blue-600 p-2 rounded-lg text-white">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-800">خطط التحصيل النشطة</h2>
+                <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">خطط التحصيل النشطة</h2>
             </div>
-            <div class="text-sm font-bold text-gray-500 bg-gray-100 px-4 py-1 rounded-full">
+            <div class="text-sm font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-4 py-1 rounded-full">
                 إجمالي الملفات: {{ $totalCollectionPlanItems ?? 0 }}
             </div>
         </div>
@@ -182,7 +182,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-right border-collapse">
                     <thead>
-                        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                        <tr class="bg-gray-50 dark:bg-gray-800/40 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider">
                             <th class="px-6 py-4 font-black">الخطة</th>
                             <th class="px-6 py-4 font-black">المحصل</th>
                             <th class="px-6 py-4 font-black">التاريخ</th>
@@ -190,12 +190,12 @@
                             <th class="px-6 py-4 font-black text-left">المتوقع / المحصل</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50 dark:divide-dark-border">
                         @foreach($activePlans as $plan)
-                            <tr class="hover:bg-gray-50 transition-colors">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors">
                                 <td class="px-6 py-5">
-                                    <div class="font-black text-gray-900">{{ $plan->name }}</div>
-                                    <div class="text-xs text-gray-400 mt-1 uppercase">{{ $plan->collection_type === 'special' ? 'خطة خاصة' : 'تحصيل عادي' }}</div>
+                                    <div class="font-black text-gray-900 dark:text-gray-100">{{ $plan->name }}</div>
+                                    <div class="text-xs text-gray-400 dark:text-gray-500 mt-1 uppercase">{{ $plan->collection_type === 'special' ? 'خطة خاصة' : 'تحصيل عادي' }}</div>
                                 </td>
                                 <td class="px-6 py-5 font-bold text-blue-600">{{ $plan->collector->name }}</td>
                                 <td class="px-6 py-5 text-sm text-gray-500">{{ $plan->date->format('Y-m-d') }}</td>
@@ -206,15 +206,15 @@
                                             <span class="font-black {{ $progress >= 100 ? 'text-emerald-600' : 'text-blue-600' }}">{{ $progress }}% مكتمل</span>
                                             <span class="text-gray-400">{{ $plan->items->whereNotNull('collection_id')->count() }} من {{ $plan->items->count() }} عميل</span>
                                         </div>
-                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                                             <div class="h-full rounded-full transition-all duration-500 bg-gradient-to-r {{ $progress >= 100 ? 'from-emerald-500 to-teal-400' : 'from-blue-600 to-indigo-500' }}" 
                                                  style="width: {{ $progress }}%"></div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-5 text-left">
-                                    <div class="font-black text-gray-800">ج.م {{ number_format($plan->getTotalCollectedAmount(), 0) }}</div>
-                                    <div class="text-xs text-gray-400">من ج.م {{ number_format($plan->getTotalExpectedAmount(), 0) }} متوقع</div>
+                                    <div class="font-black text-gray-800 dark:text-gray-200">ج.م {{ number_format($plan->getTotalCollectedAmount(), 0) }}</div>
+                                    <div class="text-xs text-gray-400 dark:text-gray-500">من ج.م {{ number_format($plan->getTotalExpectedAmount(), 0) }} متوقع</div>
                                 </td>
                             </tr>
                         @endforeach
@@ -231,13 +231,13 @@
 
     <!-- Users Management Grid -->
     @role('admin')
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-            <h2 class="text-xl font-bold text-gray-800">إدارة مستخدمي النظام</h2>
+    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 dark:border-dark-border flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/20">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white">إدارة مستخدمي النظام</h2>
             <div class="flex items-center gap-3">
-                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">{{ $totalUsers }} مستخدم</span>
-                <a href="{{ route('users.index') }}" class="text-blue-600 text-sm font-bold hover:underline">إدارة الكل</a>
-                <a href="{{ route('admin.audit-logs.index') }}" class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold hover:bg-amber-200 transition-colors">مراقبة النظام</a>
+                <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-bold">{{ $totalUsers }} مستخدم</span>
+                <a href="{{ route('users.index') }}" class="text-blue-600 dark:text-blue-400 text-sm font-bold hover:underline">إدارة الكل</a>
+                <a href="{{ route('admin.audit-logs.index') }}" class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-xs font-bold hover:bg-amber-200 transition-colors">مراقبة النظام</a>
             </div>
         </div>
 
@@ -252,12 +252,12 @@
                             <th class="px-6 py-4 font-black">الإجراءات</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
+                    <tbody class="divide-y divide-gray-50 dark:divide-dark-border">
                         @foreach($users as $user)
-                            <tr class="hover:bg-gray-50 transition-colors">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
                                 <td class="px-6 py-5">
-                                    <div class="font-bold text-gray-900">{{ $user->name }}</div>
-                                    <div class="text-xs text-gray-400">{{ $user->email }}</div>
+                                    <div class="font-bold text-gray-900 dark:text-gray-100">{{ $user->name }}</div>
+                                    <div class="text-xs text-gray-400 dark:text-gray-500">{{ $user->email }}</div>
                                 </td>
                                 <td class="px-6 py-5">
                                     <div class="flex flex-wrap gap-1">
@@ -282,7 +282,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-5">
-                                    <button onclick="openRoleModal({{ $user->id }}, '{{ $user->name }}')" class="bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">
+                                    <button onclick="openRoleModal({{ $user->id }}, '{{ $user->name }}')" class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">
                                         تعديل الأدوار
                                     </button>
                                 </td>
