@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'بوابة تحصيل')</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect x='5' y='2' width='14' height='20' rx='3' stroke='%23059669' stroke-width='2'/%3E%3Crect x='8' y='5' width='8' height='6' rx='1' fill='%23059669' fill-opacity='0.2' stroke='%23059669' stroke-width='1.5'/%3E%3Cpath d='M8 14H16' stroke='%23059669' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M8 17H10' stroke='%23059669' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M15 17L15 20' stroke='%23059669' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
@@ -21,8 +23,12 @@
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-4">
                     <a href="{{ route('collector.dashboard') }}" class="text-2xl font-bold hover:text-emerald-200 flex items-center gap-2">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+                            <rect x="8" y="5" width="8" height="6" rx="1" fill="white" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                         بوابة تحصيل
                     </a>

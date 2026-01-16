@@ -8,8 +8,12 @@
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
         <div class="flex items-center gap-4">
             <div class="bg-emerald-100 p-4 rounded-full">
-                <svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                <svg class="w-12 h-12 text-emerald-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+                    <rect x="8" y="5" width="8" height="6" rx="1" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
             </div>
             <div>

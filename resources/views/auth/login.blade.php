@@ -4,12 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Collection System</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect x='5' y='2' width='14' height='20' rx='3' stroke='%232563eb' stroke-width='2'/%3E%3Crect x='8' y='5' width='8' height='6' rx='1' fill='%232563eb' fill-opacity='0.2' stroke='%232563eb' stroke-width='1.5'/%3E%3Cpath d='M8 14H16' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M8 17H10' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M15 17L15 20' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
     <div class="flex items-center justify-center min-h-screen">
         <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-            <h1 class="text-3xl font-bold text-center text-gray-800 mb-8"> Alarabia Group</h1>
+            <div class="flex flex-col items-center mb-8">
+                <svg class="w-16 h-16 text-blue-600 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+                    <rect x="8" y="5" width="8" height="6" rx="1" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <h1 class="text-3xl font-bold text-gray-800">Alarabia Group</h1>
+            </div>
             
             <form action="{{ route('login') }}" method="POST" class="space-y-6">
                 @csrf

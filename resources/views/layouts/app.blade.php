@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Collection System')</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect x='5' y='2' width='14' height='20' rx='3' stroke='%232563eb' stroke-width='2'/%3E%3Crect x='8' y='5' width='8' height='6' rx='1' fill='%232563eb' fill-opacity='0.2' stroke='%232563eb' stroke-width='1.5'/%3E%3Cpath d='M8 14H16' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M8 17H10' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M15 17L15 20' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 antialiased overflow-hidden">
@@ -13,7 +15,14 @@
         <aside id="sidebar" class="fixed inset-y-0 right-0 z-50 w-64 bg-white border-l border-gray-200 transition-transform duration-300 transform lg:translate-x-0 lg:static lg:inset-0" :class="{'translate-x-0': sidebarOpen, 'translate-x-full': !sidebarOpen}">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header (Optional Logo/Title) -->
-                <div class="flex items-center justify-center h-16 border-b border-gray-200">
+                <div class="flex items-center justify-center h-16 border-b border-gray-200 gap-2">
+                    <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+                        <rect x="8" y="5" width="8" height="6" rx="1" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
                     <span class="text-xl font-bold text-blue-600">القائمة</span>
                 </div>
 
@@ -85,7 +94,16 @@
                         <button id="toggle-sidebar" class="p-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
-                        <a href="{{ route('dashboard') }}" class="text-xl md:text-2xl font-bold">Alarabia Group</a>
+                        <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                            <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+                                <rect x="8" y="5" width="8" height="6" rx="1" fill="white" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span class="text-xl md:text-2xl font-bold">Alarabia Group</span>
+                        </a>
                     </div>
                     
                     <div class="flex items-center gap-3">
