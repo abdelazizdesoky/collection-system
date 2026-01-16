@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Collection;
-use App\Models\Customer;
 use App\Models\Collector;
+use App\Models\Customer;
+use App\Models\CustomerAccount;
+use App\Exports\CollectionsExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class CollectionController extends Controller
@@ -16,7 +20,9 @@ class CollectionController extends Controller
     public function index(): View
     {
         $collections = Collection::with('customer', 'collector')
+            ->latest()
             ->paginate(15);
+
         return view('collections.index', compact('collections'));
     }
 
@@ -25,12 +31,13 @@ class CollectionController extends Controller
      */
     public function create(): View
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'collector'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'collector'])) {
             abort(403);
         }
 
         $customers = Customer::all();
         $collectors = Collector::all();
+
         return view('collections.create', compact('customers', 'collectors'));
     }
 
@@ -39,7 +46,7 @@ class CollectionController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'collector'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'collector'])) {
             abort(403);
         }
 
@@ -53,10 +60,38 @@ class CollectionController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        Collection::create($validated);
+        return DB::transaction(function () use ($validated) {
+            $collection = Collection::create($validated);
 
-        return redirect()->route('collections.index')
-            ->with('success', 'Collection recorded successfully.');
+            // Update Customer Account (Ledger) Logic
+            $lastAccount = CustomerAccount::where('customer_id', $validated['customer_id'])
+                ->orderBy('id', 'desc')
+                ->first();
+
+            $previousBalance = 0;
+            if ($lastAccount) {
+                $previousBalance = $lastAccount->balance;
+            } else {
+                $customer = Customer::find($validated['customer_id']);
+                $previousBalance = $customer->opening_balance ?? 0;
+            }
+
+            $newBalance = $previousBalance - $validated['amount'];
+
+            CustomerAccount::create([
+                'customer_id' => $validated['customer_id'],
+                'date' => $validated['collection_date'],
+                'description' => "Payment received - Receipt #{$validated['receipt_no']}",
+                'debit' => 0,
+                'credit' => $validated['amount'],
+                'balance' => $newBalance,
+                'reference_type' => 'Collection',
+                'reference_id' => $collection->id,
+            ]);
+
+            return redirect()->route('collections.index')
+                ->with('success', 'Collection recorded and balance updated successfully.');
+        });
     }
 
     /**
@@ -65,6 +100,7 @@ class CollectionController extends Controller
     public function show(Collection $collection): View
     {
         $collection->load('customer', 'collector', 'accountEntry');
+
         return view('collections.show', compact('collection'));
     }
 
@@ -73,13 +109,14 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection): View
     {
-        // Only admins can edit existing collections
-        if (!auth()->user()->hasRole('admin')) {
+        // Admins and Supervisor can edit existing collections
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
             abort(403);
         }
 
         $customers = Customer::all();
         $collectors = Collector::all();
+
         return view('collections.edit', compact('collection', 'customers', 'collectors'));
     }
 
@@ -88,8 +125,8 @@ class CollectionController extends Controller
      */
     public function update(Request $request, Collection $collection)
     {
-        // Only admins can update collections
-        if (!auth()->user()->hasRole('admin')) {
+        // Admins and Supervisor can update collections
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
             abort(403);
         }
 
@@ -99,7 +136,7 @@ class CollectionController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'payment_type' => 'required|in:cash,cheque',
             'collection_date' => 'required|date',
-            'receipt_no' => 'required|string|unique:collections,receipt_no,' . $collection->id,
+            'receipt_no' => 'required|string|unique:collections,receipt_no,'.$collection->id,
             'notes' => 'nullable|string',
         ]);
 
@@ -114,8 +151,8 @@ class CollectionController extends Controller
      */
     public function destroy(Collection $collection)
     {
-        // Only admins can delete collections
-        if (!auth()->user()->hasRole('admin')) {
+        // Admins and Supervisor can delete collections
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
             abort(403);
         }
 
@@ -123,5 +160,17 @@ class CollectionController extends Controller
 
         return redirect()->route('collections.index')
             ->with('success', 'Collection deleted successfully.');
+    }
+
+    /**
+     * Export collections to Excel.
+     */
+    public function export()
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        return Excel::download(new CollectionsExport, 'collections_'.now()->format('Y-m-d_His').'.xlsx');
     }
 }

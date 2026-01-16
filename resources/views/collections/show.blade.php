@@ -56,10 +56,23 @@
         </div>
     </div>
 
-    @if ($collection->notes)
-        <div class="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 class="text-lg font-bold mb-4">Notes</h2>
-            <p>{{ $collection->notes }}</p>
+    @if ($collection->notes || $collection->attachment)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            @if ($collection->notes)
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-bold mb-4 text-right" dir="rtl">الملاحظات</h2>
+                    <p class="text-right" dir="rtl">{{ $collection->notes }}</p>
+                </div>
+            @endif
+
+            @if ($collection->attachment)
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-bold mb-4 text-right" dir="rtl">صورة المرفق (إثبات الدفع)</h2>
+                    <div class="rounded-xl overflow-hidden border-2 border-gray-100">
+                        <img src="{{ asset('storage/' . $collection->attachment) }}" alt="إثبات الدفع" class="w-full h-auto max-h-96 object-contain cursor-pointer" onclick="window.open(this.src)">
+                    </div>
+                </div>
+            @endif
         </div>
     @endif
 

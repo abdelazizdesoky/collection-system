@@ -9,7 +9,7 @@
 <body class="bg-gray-100">
     <div class="flex items-center justify-center min-h-screen">
         <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-            <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Collection System</h1>
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-8"> Alarabia Group</h1>
             
             <form action="{{ route('login') }}" method="POST" class="space-y-6">
                 @csrf
@@ -52,9 +52,13 @@
                 </button>
             </form>
             
-            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-                <p class="text-sm text-blue-800"><strong>Alarabia Group </strong></p>
-            </div>
+            <!-- <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                <p class="text-sm text-blue-800"><strong>collection system   </strong>
+                <br>
+                <span>Alarabia Group</span>
+            
+                </p>
+            </div> -->
         </div>
     </div>
 </body>

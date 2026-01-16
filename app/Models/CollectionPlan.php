@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CollectionPlan extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'collector_id',
@@ -17,6 +18,7 @@ class CollectionPlan extends Model
         'date',
         'collection_type',
         'type',
+        'status',
     ];
 
     protected $casts = [
@@ -43,8 +45,38 @@ class CollectionPlan extends Model
     /**
      * Get total expected amount from this plan.
      */
-    public function getTotalExpectedAmount(): string
+    public function getTotalExpectedAmount(): float
     {
-        return $this->items()->sum('expected_amount');
+        return $this->items->sum('expected_amount');
+    }
+
+    /**
+     * Get total actual collected amount.
+     */
+    public function getTotalCollectedAmount(): float
+    {
+        return $this->items
+            ->filter(fn($item) => $item->collection_id !== null)
+            ->sum(function ($item) {
+                return $item->collection?->amount ?? 0;
+            });
+    }
+
+    /**
+     * Calculate completion percentage based on amounts.
+     */
+    public function getProgressPercentage(): float
+    {
+        $expected = $this->getTotalExpectedAmount();
+
+        if ($expected <= 0) {
+            return 0;
+        }
+
+        $collected = $this->getTotalCollectedAmount();
+
+        $percentage = ($collected / $expected) * 100;
+
+        return round(min($percentage, 100), 1);
     }
 }

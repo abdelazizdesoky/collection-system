@@ -11,7 +11,7 @@ return [
     'plans' => 'Plans',
     'users' => 'Users',
     'all_tables' => 'All Tables',
-    
+
     // Common Actions
     'welcome' => 'Welcome',
     'logout' => 'Logout',
@@ -34,7 +34,7 @@ return [
     'close' => 'Close',
     'submit' => 'Submit',
     'update' => 'Update',
-    
+
     // Status Messages
     'deleted_successfully' => 'Deleted successfully',
     'created_successfully' => 'Created successfully',
@@ -43,7 +43,7 @@ return [
     'success' => 'Success',
     'warning' => 'Warning',
     'info' => 'Info',
-    
+
     // Dashboard Stats
     'total_customers' => 'Total Customers',
     'total_collections' => 'Total Collections',
@@ -58,7 +58,7 @@ return [
     'top_collectors' => 'Top Collectors',
     'recent_cheques' => 'Recent Cheques',
     'collection_status' => 'Collection Status',
-    
+
     // Fields
     'name' => 'Name',
     'address' => 'Address',
@@ -78,7 +78,7 @@ return [
     'created_at' => 'Created At',
     'updated_at' => 'Updated At',
     'egp' => 'EGP',
-    
+
     // Specific Resources
     'new_customer' => 'New Customer',
     'customer_details' => 'Customer Details',
@@ -102,7 +102,7 @@ return [
     'admin' => 'Admin',
     'collector' => 'Collector',
     'user' => 'User',
-    
+
     // Additional Dashboard
     'system_overview' => 'System overview and key metrics',
     'active_collectors' => 'Active Collectors',
@@ -122,6 +122,10 @@ return [
     'no_active_plans' => 'No active collection plans',
     'create_new_plan' => 'Create a new plan',
     'users_management' => 'Users Management',
+    'progress' => 'Progress (Updated)',
+    'collected_amount' => 'Collected Amount',
+    'collected' => 'Collected',
+    'expected' => 'Expected',
     'total_users' => 'Total Users',
     'no_users_found' => 'No users found',
     'assign_roles' => 'Assign Roles',
@@ -136,4 +140,12 @@ return [
     'collection_type' => 'Collection Type',
     'view_details' => 'View Details',
     'no_data_available' => 'No data available',
+    'collector_portal' => 'Collector Portal',
+    'plans_today' => 'Plans Today',
+    'your_plans_today' => 'Your collection plans today',
+    'general_collection' => 'General Collection',
+    'enter_plan' => 'Enter Plan',
+    'no_plans_today' => 'No plans for today',
+    'contact_admin' => 'No collection plans assigned to you today. Please contact administration.',
+    'egp_short' => 'EGP',
 ];

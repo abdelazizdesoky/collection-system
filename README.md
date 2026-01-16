@@ -1,59 +1,189 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <h1 align="center">🏦 نظام إدارة التحصيلات</h1>
+  <p align="center">نظام متكامل لإدارة عمليات التحصيل المالي وتتبع مديونيات العملاء</p>
 </p>
 
-## About Laravel
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12">
+  <img src="https://img.shields.io/badge/PHP-8.4-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.4">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 نظرة عامة
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+نظام إدارة التحصيلات هو تطبيق ويب متكامل مبني على إطار عمل **Laravel 12** لإدارة عمليات تحصيل الأموال من العملاء. يوفر النظام أدوات شاملة للمحصلين والمديرين لتتبع المديونيات وتسجيل المدفوعات وإدارة خطط التحصيل.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## ✨ المميزات الرئيسية
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 👥 إدارة العملاء
+- إضافة وتعديل بيانات العملاء (الاسم، الهاتف، العنوان)
+- تحديد الرصيد الافتتاحي ونوعه (مدين/دائن)
+- عرض كشف حساب تفصيلي لكل عميل
+- تتبع الرصيد الحالي تلقائياً
 
-## Laravel Sponsors
+### 💰 إدارة التحصيلات
+- تسجيل عمليات التحصيل النقدية
+- إصدار أرقام إيصالات تلقائية
+- ربط التحصيلات بالمحصل المسؤول
+- إضافة ملاحظات على كل عملية تحصيل
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 📝 إدارة الشيكات
+- تسجيل الشيكات المستلمة من العملاء
+- تتبع حالة الشيكات (قيد الانتظار، محصل، مرتجع)
+- تسجيل بيانات البنك وتاريخ الاستحقاق
 
-### Premium Partners
+### 👨‍💼 إدارة المحصلين
+- إضافة وتعديل بيانات المحصلين
+- تحديد منطقة عمل كل محصل
+- ربط حساب مستخدم بكل محصل
+- تتبع أداء المحصلين
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 📅 خطط التحصيل
+- إنشاء خطط تحصيل دورية
+- تحديد العملاء المستهدفين
+- جدولة مواعيد التحصيل
+- متابعة تنفيذ الخطط
 
-## Contributing
+### 📊 كشف حساب العميل
+- سجل تفصيلي لجميع المعاملات
+- حساب الرصيد تلقائياً بعد كل معاملة
+- عرض المدين والدائن لكل حركة
+- ربط الحركات بمصدرها (تحصيل/شيك)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🗄️ هيكل قاعدة البيانات
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+├── customers          # بيانات العملاء
+├── collectors         # بيانات المحصلين  
+├── collections        # عمليات التحصيل
+├── cheques           # الشيكات المستلمة
+├── customer_accounts # كشف حساب العميل
+├── collection_plans  # خطط التحصيل
+├── collection_plan_items # عناصر خطط التحصيل
+└── users             # حسابات المستخدمين مع الصلاحيات
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🔧 متطلبات التشغيل
 
-## License
+- **PHP** >= 8.4
+- **Composer** >= 2.0
+- **MySQL** أو **SQLite**
+- **Node.js** >= 18 (لتجميع الـ Assets)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🚀 طريقة التثبيت
+
+### 1. استنساخ المشروع
+```bash
+git clone https://github.com/your-repo/collection-system.git
+cd collection-system
+```
+
+### 2. تثبيت الاعتماديات
+```bash
+composer install
+npm install
+```
+
+### 3. إعداد ملف البيئة
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+### 4. إعداد قاعدة البيانات
+قم بتعديل ملف `.env` وضبط إعدادات قاعدة البيانات:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=collection_system
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 5. تنفيذ الترحيلات
+```bash
+php artisan migrate
+```
+
+### 6. تجميع الـ Assets
+```bash
+npm run build
+```
+
+### 7. تشغيل الخادم
+```bash
+php artisan serve
+```
+
+الآن يمكنك الوصول للتطبيق عبر: `http://localhost:8000`
+
+---
+
+## 📁 هيكل المشروع
+
+```
+collection-system/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/     # المتحكمات
+│   └── Models/              # النماذج
+│       ├── Customer.php     # نموذج العميل
+│       ├── Collector.php    # نموذج المحصل
+│       ├── Collection.php   # نموذج التحصيل
+│       ├── Cheque.php       # نموذج الشيك
+│       └── ...
+├── database/
+│   ├── migrations/          # ملفات الترحيل
+│   └── seeders/             # بيانات البذر
+├── resources/
+│   ├── views/               # واجهات العرض
+│   └── lang/                # ملفات الترجمة
+└── routes/
+    └── web.php              # مسارات الويب
+```
+
+---
+
+## 🔐 الصلاحيات والأدوار
+
+يستخدم النظام نظام صلاحيات متقدم مع الأدوار التالية:
+- **مدير النظام**: صلاحيات كاملة
+- **محصل**: تسجيل التحصيلات ومتابعة خطط التحصيل
+
+---
+
+## 🧪 تشغيل الاختبارات
+
+```bash
+php artisan test
+```
+
+---
+
+## 📝 ملاحظات للمطورين
+
+- يتبع المشروع معايير **Laravel 12** الجديدة
+- استخدام **Laravel Pint** لتنسيق الكود
+- الالتزام بنمط **Eloquent ORM** للتعامل مع قاعدة البيانات
+- استخدام **Form Requests** للتحقق من المدخلات
+
+---
+
+## 📄 الرخصة
+
+هذا المشروع مرخص تحت رخصة [MIT](https://opensource.org/licenses/MIT).
+
+---
+
+<p align="center">تم التطوير بـ ❤️ باستخدام Laravel</p>

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Collection extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'customer_id',
@@ -18,6 +19,9 @@ class Collection extends Model
         'collection_date',
         'receipt_no',
         'notes',
+        'attachment',
+        'bank_name',
+        'reference_no',
     ];
 
     protected $casts = [
@@ -54,6 +58,22 @@ class Collection extends Model
     }
 
     /**
+     * Get the plan item associated with this collection.
+     */
+    public function planItem(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CollectionPlanItem::class);
+    }
+
+    /**
+     * Get the cheque associated with this collection.
+     */
+    public function cheque(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Cheque::class);
+    }
+
+    /**
      * Boot the model.
      */
     protected static function boot(): void
@@ -61,22 +81,8 @@ class Collection extends Model
         parent::boot();
 
         static::created(function (Collection $collection): void {
-            // Create customer account ledger entry
-            $previousBalance = $collection->customer->accounts()->latest()->first()?->balance 
-                ?? $collection->customer->opening_balance;
-
-            $newBalance = (float)$previousBalance - (float)$collection->amount;
-
-            CustomerAccount::create([
-                'customer_id' => $collection->customer_id,
-                'date' => $collection->collection_date,
-                'description' => "Payment received - Receipt #{$collection->receipt_no}",
-                'debit' => 0,
-                'credit' => $collection->amount,
-                'balance' => $newBalance,
-                'reference_type' => 'Collection',
-                'reference_id' => $collection->id,
-            ]);
+            // Observer logic moved to Controller for better transaction control
+            // and to solve the issue of balance not updating reliably.
         });
     }
 }

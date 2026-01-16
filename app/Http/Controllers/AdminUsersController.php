@@ -6,13 +6,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class AdminUsersController extends Controller
 {
     public function index(): View
     {
-        $users = User::with('roles', 'collector')->paginate(15);
+        $users = User::with('roles', 'collector')->latest()->paginate(15);
 
         return view('admin.users.index', compact('users'));
     }
@@ -20,6 +22,7 @@ class AdminUsersController extends Controller
     public function create(): View
     {
         $roles = Role::all();
+
         return view('admin.users.create', compact('roles'));
     }
 
@@ -30,7 +33,7 @@ class AdminUsersController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'roles' => 'nullable|array',
-            'roles.*' => 'string'
+            'roles.*' => 'string',
         ]);
 
         $user = User::create([
@@ -39,7 +42,7 @@ class AdminUsersController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        if (!empty($validated['roles'])) {
+        if (! empty($validated['roles'])) {
             $user->syncRoles($validated['roles']);
         }
 
@@ -49,6 +52,7 @@ class AdminUsersController extends Controller
     public function show(User $user): View
     {
         $user->load('roles', 'collector');
+
         return view('admin.users.show', compact('user'));
     }
 
@@ -56,6 +60,7 @@ class AdminUsersController extends Controller
     {
         $roles = Role::all();
         $user->load('roles');
+
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
@@ -63,15 +68,15 @@ class AdminUsersController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'roles' => 'nullable|array',
-            'roles.*' => 'string'
+            'roles.*' => 'string',
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
         $user->save();
@@ -86,6 +91,19 @@ class AdminUsersController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    /**
+     * Export users to Excel.
+     */
+    public function export()
+    {
+        if (! auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        return Excel::download(new UsersExport, 'users_'.now()->format('Y-m-d_His').'.xlsx');
     }
 }

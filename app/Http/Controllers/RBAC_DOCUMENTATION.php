@@ -2,27 +2,27 @@
 
 /**
  * Role-Based Access Control Documentation
- * 
+ *
  * This document outlines the role hierarchy and permissions in the Collection System.
  */
 
 /**
  * ROLES DEFINED:
- * 
+ *
  * 1. Admin (Full System Access)
  *    - Create, read, update, delete all resources
  *    - Manage customers, collectors, collections, cheques
  *    - Create and manage collection plans
  *    - View all ledger entries and reports
  *    - Access to admin dashboard with system-wide metrics
- * 
+ *
  * 2. Collector (Limited Operational Access)
  *    - View customers assigned to their collection plans
  *    - Create and view collections for assigned customers
  *    - View and manage cheques for their collections
  *    - Access collector dashboard with personal metrics
  *    - Cannot: Create/delete customers, create collection plans, delete records
- * 
+ *
  * 3. User (View-Only Access)
  *    - View system data (read-only)
  *    - Access user dashboard with limited information
@@ -45,7 +45,7 @@ return [
         ],
         'dashboard' => 'admin',
     ],
-    
+
     'collector' => [
         'description' => 'Collection agent with operational access',
         'permissions' => [
@@ -64,7 +64,7 @@ return [
             'Cannot delete or modify collection plans',
         ],
     ],
-    
+
     'user' => [
         'description' => 'Regular user with view-only access',
         'permissions' => [

@@ -56,5 +56,17 @@
             </div>
         </div>
     </div>
+
+    @if($cheque->collection && $cheque->collection->attachment)
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-lg font-bold mb-4 text-right" dir="rtl">صورة المرفق (إثبات الدفع من التحصيل)</h2>
+            <div class="rounded-xl overflow-hidden border-2 border-gray-100 flex justify-center bg-gray-50">
+                <img src="{{ asset('storage/' . $cheque->collection->attachment) }}" alt="إثبات الدفع" class="max-w-full h-auto max-h-[500px] object-contain cursor-pointer" onclick="window.open(this.src)">
+            </div>
+            <div class="mt-4 text-center">
+                <a href="{{ route('collections.show', $cheque->collection) }}" class="text-blue-600 hover:underline font-bold">عرض تفاصيل التحصيل المرتبط ←</a>
+            </div>
+        </div>
+    @endif
 </div>
 @endsection

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Exports\CustomersExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -13,7 +15,8 @@ class CustomerController extends Controller
      */
     public function index(): View
     {
-        $customers = Customer::paginate(15);
+        $customers = Customer::latest()->paginate(15);
+
         return view('customers.index', compact('customers'));
     }
 
@@ -22,9 +25,10 @@ class CustomerController extends Controller
      */
     public function create(): View
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
+
         return view('customers.create');
     }
 
@@ -33,7 +37,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
         $validated = $request->validate([
@@ -56,6 +60,7 @@ class CustomerController extends Controller
     public function show(Customer $customer): View
     {
         $customer->load('collections', 'cheques', 'accounts');
+
         return view('customers.show', compact('customer'));
     }
 
@@ -64,7 +69,7 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer): View
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
 
@@ -76,7 +81,7 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
         $validated = $request->validate([
@@ -98,7 +103,7 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        if (!auth()->user()->hasRole('admin')) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
             abort(403);
         }
 
@@ -106,5 +111,17 @@ class CustomerController extends Controller
 
         return redirect()->route('customers.index')
             ->with('success', 'Customer deleted successfully.');
+    }
+
+    /**
+     * Export customers to Excel.
+     */
+    public function export()
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        return Excel::download(new CustomersExport, 'customers_'.now()->format('Y-m-d_His').'.xlsx');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CollectionPlanItem;
 use App\Models\CollectionPlan;
+use App\Models\CollectionPlanItem;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,6 +17,7 @@ class CollectionPlanItemController extends Controller
     {
         $items = CollectionPlanItem::with('collectionPlan', 'customer')
             ->paginate(15);
+
         return view('collection-plan-items.index', compact('items'));
     }
 
@@ -27,6 +28,7 @@ class CollectionPlanItemController extends Controller
     {
         $plans = CollectionPlan::all();
         $customers = Customer::all();
+
         return view('collection-plan-items.create', compact('plans', 'customers'));
     }
 
@@ -54,6 +56,7 @@ class CollectionPlanItemController extends Controller
     public function show(CollectionPlanItem $collectionPlanItem): View
     {
         $collectionPlanItem->load('collectionPlan', 'customer');
+
         return view('collection-plan-items.show', compact('collectionPlanItem'));
     }
 
@@ -64,6 +67,7 @@ class CollectionPlanItemController extends Controller
     {
         $plans = CollectionPlan::all();
         $customers = Customer::all();
+
         return view(
             'collection-plan-items.edit',
             compact('collectionPlanItem', 'plans', 'customers')

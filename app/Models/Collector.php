@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,13 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Collector extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
-        'name',
         'phone',
         'area',
     ];
+
+    /**
+     * Get the collector's name from the associated user.
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->user->name ?? 'Unknown Collector';
+    }
 
     /**
      * Get the user account for this collector.

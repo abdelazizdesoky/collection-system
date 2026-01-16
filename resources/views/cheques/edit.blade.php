@@ -51,9 +51,9 @@
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Status *</label>
                 <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="pending" {{ old('status', $cheque->status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="cleared" {{ old('status', $cheque->status) == 'cleared' ? 'selected' : '' }}>Cleared</option>
-                    <option value="bounced" {{ old('status', $cheque->status) == 'bounced' ? 'selected' : '' }}>Bounced</option>
+                    <option value="pending" {{ old('status', $cheque->status) == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
+                    <option value="cleared" {{ old('status', $cheque->status) == 'cleared' ? 'selected' : '' }}>تم التحصيل</option>
+                    <option value="bounced" {{ old('status', $cheque->status) == 'bounced' ? 'selected' : '' }}>تم الرفض</option>
                 </select>
             </div>
 

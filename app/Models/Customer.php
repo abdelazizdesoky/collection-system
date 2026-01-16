@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'name',
@@ -60,6 +61,7 @@ class Customer extends Model
     public function getCurrentBalance(): string
     {
         $lastAccount = $this->accounts()->latest()->first();
+
         return $lastAccount?->balance ?? $this->opening_balance;
     }
 }

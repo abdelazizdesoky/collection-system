@@ -1,22 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto py-8">
+<div class="container mx-auto py-8 text-right" dir="rtl">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold">Customer Accounts Ledger</h1>
+        <h1 class="text-3xl font-bold">كشف الحساب</h1>
     </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="w-full">
-            <thead class="bg-gray-100">
+            <thead class="bg-gray-100 text-right">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Debit</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">العملاء</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التاريخ</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الوصف</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">مدين</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">دائن</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الرصيد</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النوع</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -27,7 +27,7 @@
                                 {{ $account->customer->name }}
                             </a>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $account->date->format('M d, Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $account->date->format('Y-m-d') }}</td>
                         <td class="px-6 py-4">{{ $account->description }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-red-600 font-semibold">
                             {{ $account->debit > 0 ? number_format($account->debit, 2) : '-' }}

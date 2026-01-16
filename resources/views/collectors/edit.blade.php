@@ -20,8 +20,13 @@
             @method('PUT')
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Name *</label>
-                <input type="text" name="name" value="{{ old('name', $collector->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <label class="block text-gray-700 text-sm font-bold mb-2">User *</label>
+                <select name="user_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">Select a User</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}" {{ (old('user_id', $collector->user->id ?? '') == $user->id) ? 'selected' : '' }}>{{ $user->name }} ({{ $user->email }})</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="mb-4">

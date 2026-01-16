@@ -50,7 +50,9 @@ class AdminTableController extends Controller
             $first = $rows->first()->toArray();
             // remove nested arrays that are relationships for display simplicity
             foreach ($first as $key => $value) {
-                if (in_array($key, ['password', 'remember_token'])) continue;
+                if (in_array($key, ['password', 'remember_token'])) {
+                    continue;
+                }
                 $columns[] = $key;
             }
         }

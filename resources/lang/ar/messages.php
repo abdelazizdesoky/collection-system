@@ -11,7 +11,7 @@ return [
     'plans' => 'الخطط',
     'users' => 'المستخدمون',
     'all_tables' => 'جميع الجداول',
-    
+
     // Common Actions
     'welcome' => 'مرحبا',
     'logout' => 'تسجيل الخروج',
@@ -23,6 +23,7 @@ return [
     'create' => 'إنشاء',
     'edit' => 'تعديل',
     'delete' => 'حذف',
+    'record' => 'تسجيل',
     'save' => 'حفظ',
     'cancel' => 'إلغاء',
     'back' => 'رجوع',
@@ -34,7 +35,7 @@ return [
     'close' => 'إغلاق',
     'submit' => 'إرسال',
     'update' => 'تحديث',
-    
+
     // Status Messages
     'deleted_successfully' => 'تم الحذف بنجاح',
     'created_successfully' => 'تم الإنشاء بنجاح',
@@ -43,7 +44,7 @@ return [
     'success' => 'نجاح',
     'warning' => 'تحذير',
     'info' => 'معلومات',
-    
+
     // Dashboard Stats
     'total_customers' => 'إجمالي العملاء',
     'total_collections' => 'إجمالي التحصيلات',
@@ -58,7 +59,7 @@ return [
     'top_collectors' => 'أفضل المحصلون',
     'recent_cheques' => 'آخر الشيكات',
     'collection_status' => 'حالة التحصيل',
-    
+
     // Fields
     'name' => 'الاسم',
     'address' => 'العنوان',
@@ -78,7 +79,17 @@ return [
     'created_at' => 'تم الإنشاء في',
     'updated_at' => 'تم التحديث في',
     'egp' => 'جنيه مصري',
-    
+    'area' => 'المنطقة',
+    'balance_type' => 'نوع الرصيد',
+    'confirm_are_you_sure' => 'هل أنت متأكد؟',
+    'select_user' => 'اختر المستخدم',
+    'select_customer' => 'اختر العميل',
+    'select_collector' => 'اختر المحصل',
+    'select_status' => 'اختر الحالة',
+    'select_type' => 'اختر النوع',
+    'additional_notes' => 'ملاحظات إضافية',
+    'optional' => 'اختياري',
+
     // Specific Resources
     'new_customer' => 'عميل جديد',
     'customer_details' => 'تفاصيل العميل',
@@ -87,6 +98,7 @@ return [
     'collector_details' => 'تفاصيل المحصل',
     'collectors_list' => 'قائمة المحصلون',
     'new_collection' => 'تحصيل جديد',
+    'record_collection' => 'تسجيل تحصيل',
     'collection_details' => 'تفاصيل التحصيل',
     'collections_list' => 'قائمة التحصيلات',
     'new_cheque' => 'شيك جديد',
@@ -99,10 +111,11 @@ return [
     'user_details' => 'تفاصيل المستخدم',
     'users_list' => 'قائمة المستخدمون',
     'roles' => 'الأدوار',
-    'admin' => 'مسئول',
+    'admin' => 'مدير النظام',
+    'supervisor' => 'مشرف',
     'collector' => 'محصل',
     'user' => 'مستخدم',
-    
+
     // Additional Dashboard
     'system_overview' => 'نظرة عامة على النظام والمقاييس الرئيسية',
     'active_collectors' => 'المحصلون النشطاء',
@@ -122,5 +135,38 @@ return [
     'no_active_plans' => 'لا توجد خطط تحصيل نشطة',
     'create_new_plan' => 'إنشاء خطة جديدة',
     'users_management' => 'إدارة المستخدمين',
-
-];  
+    'progress' => 'نسبة الإنجاز (تم التحديث)',
+    'collected_amount' => 'المبلغ المحصل',
+    'collected' => 'المحصل',
+    'expected' => 'المتوقع',
+    'require_attention' => 'تتطلب انتباهاً',
+    'new_plan' => 'خطة جديدة',
+    'active' => 'نشط',
+    'edit_roles' => 'تعديل الأدوار',
+    'no_data_available' => 'لا توجد بيانات متاحة',
+    'assign_roles_to' => 'تعيين الأدوار لـ',
+    'assign_roles' => 'تعيين الأدوار',
+    'no_users_found' => 'لم يتم العثور على مستخدمين',
+    'no_roles_assigned' => 'لم يتم تعيين أدوار',
+    'all_rights_reserved' => 'جميع الحقوق محفوظة',
+    'role_admin' => 'مسئول نظام',
+    'role_collector' => 'محصل ميداني',
+    'role_user' => 'مستخدم عادي',
+    'bank' => 'بنك',
+    'bank_name' => 'اسم البنك',
+    'cash' => 'نقدي',
+    'cheque' => 'شيك',
+    'regular' => 'عادي',
+    'special' => 'خاص',
+    'pending' => 'معلق',
+    'cleared' => 'تم التحصيل',
+    'bounced' => 'مرفوض',
+    'collector_portal' => 'بوابة المحصل',
+    'plans_today' => 'خطط اليوم',
+    'your_plans_today' => 'خطط التحصيل الخاصة بك اليوم',
+    'general_collection' => 'تحصيل عام',
+    'enter_plan' => 'دخول الخطة',
+    'no_plans_today' => 'لا توجد خطط لليوم',
+    'contact_admin' => 'لم يتم تعيين أي خطط تحصيل لك اليوم. يرجى التواصل مع الإدارة.',
+    'egp_short' => 'ج.م',
+];

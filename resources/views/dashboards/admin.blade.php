@@ -1,355 +1,392 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Dashboard')
+@section('title', 'لوحة التحكم - الإدارة')
 
 @section('content')
-<div class="py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">{{ __('messages.dashboard') }}</h1>
-            <p class="text-gray-600 mt-2">{{ __('messages.system_overview') }}</p>
+<div class="max-w-7xl mx-auto text-right" dir="rtl">
+    <!-- Welcome Header Card -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl p-8 mb-8 text-white relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-6">
+                <div class="bg-white/20 p-4 rounded-2xl backdrop-blur-sm">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold mb-1">مرحباً، {{ auth()->user()->name }}</h1>
+                    <p class="text-blue-100 text-lg opacity-90">لوحة تحكم النظام - نظرة عامة شاملة على جميع العمليات</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ route('collections.create') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-xl font-bold transition-all transform hover:scale-105 shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                    تحصيل جديد
+                </a>
+                <a href="{{ route('collection-plans.create') }}" class="bg-blue-800 text-white hover:bg-blue-900 px-6 py-3 rounded-xl font-bold border border-blue-400/30 transition-all transform hover:scale-105 shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    إنشاء خطة
+                </a>
+            </div>
         </div>
+        <!-- Decorative subtle background arcs -->
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+        <div class="absolute -left-10 -top-10 w-48 h-48 bg-blue-400/10 rounded-full blur-2xl"></div>
+    </div>
 
-
-        <!-- Key Metrics -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Total Customers -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20a9 9 0 0118 0"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <a href="{{ route('customers.index') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md">
-                            <p class="text-gray-600 text-sm font-medium">{{ __('messages.total_customers') }}</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $totalCustomers }}</p>
-                        </a>
-                    </div>
+    <!-- Main Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Customers -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-blue-50 p-3 rounded-xl text-blue-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20a9 9 0 0118 0"/></svg>
                 </div>
-            </div>
-
-            <!-- Total Collectors -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <a href="{{ route('collectors.index') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md">
-                            <p class="text-gray-600 text-sm font-medium">{{ __('messages.total_collectors') }}</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $totalCollectors }}</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Collections -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-500 text-white">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <a href="{{ route('collections.index') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md">
-                            <p class="text-gray-600 text-sm font-medium">{{ __('messages.total_collections') }}</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ __('messages.egp') }} {{ number_format($totalCollections, 2) }}</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pending Cheques -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-red-500 text-white">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <a href="{{ route('cheques.index') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md">
-                            <p class="text-gray-600 text-sm font-medium">{{ __('messages.pending_cheques') }}</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $pendingCheques }}</p>
-                        </a>
-                    </div>
-                </div>
+                <div class="text-4xl font-black text-gray-800 mb-1">{{ $totalCustomers }}</div>
+                <div class="text-gray-500 font-medium">إجمالي العملاء</div>
+                <a href="{{ route('customers.index') }}" class="mt-4 text-blue-600 font-bold text-sm hover:underline">عرض الكل ←</a>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Recent Collections -->
-            <div class="lg:col-span-2 bg-white rounded-lg shadow">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-semibold text-gray-900">{{ __('messages.recent_collections') }}</h2>
+        <!-- Total Collectors -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-emerald-50 p-3 rounded-xl text-emerald-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('messages.receipt_no') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('messages.customers') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('messages.collector_name') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('messages.amount') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('messages.date') }}</th>
+                <div class="text-4xl font-black text-gray-800 mb-1">{{ $totalCollectors }}</div>
+                <div class="text-gray-500 font-medium">إجمالي المحصلون</div>
+                <a href="{{ route('collectors.index') }}" class="mt-4 text-emerald-600 font-bold text-sm hover:underline">إدارة المحصلين ←</a>
+            </div>
+        </div>
+
+        <!-- Total Collections -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-amber-50 p-3 rounded-xl text-amber-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="text-2xl lg:text-3xl font-black text-gray-800 mb-1">ج.م {{ number_format($totalCollections, 0) }}</div>
+                <div class="text-gray-500 font-medium">إجمالي التحصيلات</div>
+                <a href="{{ route('collections.index') }}" class="mt-4 text-amber-600 font-bold text-sm hover:underline">السجل المالي ←</a>
+            </div>
+        </div>
+
+        <!-- Pending Cheques -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-rose-50 p-3 rounded-xl text-rose-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div class="text-4xl font-black text-gray-800 mb-1">{{ $pendingCheques }}</div>
+                <div class="text-gray-500 font-medium">شيكات معلقة</div>
+                <a href="{{ route('cheques.index') }}" class="mt-4 text-rose-600 font-bold text-sm hover:underline">مراجعة الشيكات ←</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <!-- Recent Collections Table Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <h2 class="text-xl font-bold text-gray-800">آخر التحصيلات</h2>
+                <a href="{{ route('collections.index') }}" class="text-blue-600 text-sm font-bold hover:underline">المزيد</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right">
+                    <thead>
+                        <tr class="bg-gray-50/80 text-gray-500 text-sm">
+                            <th class="px-6 py-4 font-bold">رقم الإيصال</th>
+                            <th class="px-6 py-4 font-bold">العميل</th>
+                            <th class="px-6 py-4 font-bold">المحصل</th>
+                            <th class="px-6 py-4 font-bold">المبلغ</th>
+                            <th class="px-6 py-4 font-bold">التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        @forelse($recentCollections as $collection)
+                            <tr class="hover:bg-blue-50/30 transition-colors group">
+                                <td class="px-6 py-4">
+                                    <span class="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-lg text-xs group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                        {{ $collection->receipt_no }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm font-bold text-gray-800">{{ $collection->customer->name }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-600">{{ $collection->collector->name }}</td>
+                                <td class="px-6 py-4 text-sm font-black text-emerald-600">
+                                    <div class="flex items-center justify-between">
+                                        <span>ج.م {{ number_format($collection->amount, 0) }}</span>
+                                        @if($collection->attachment)
+                                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="توجد صورة مرفقة">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-xs text-gray-400 text-left">{{ $collection->created_at->format('Y-m-d') }}</td>
                             </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @forelse($recentCollections as $collection)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 text-sm font-medium text-blue-600">
-                                        <a href="{{ route('collections.show', $collection) }}">
-                                            {{ $collection->receipt_no }}
-                                        </a>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">{{ $collection->customer->name }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $collection->collector->name }}</td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-green-600">{{ __('messages.egp') }} {{ number_format($collection->amount, 2) }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $collection->created_at->format('M d, Y') }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-600">{{ __('messages.no_collections_found') }}</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Top Collectors -->
-            <div class="bg-white rounded-lg shadow">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-semibold text-gray-900">{{ __('messages.top_collectors') }}</h2>
-                </div>
-                <div class="divide-y divide-gray-200">
-                    @forelse($topCollectors as $collector)
-                        <div class="px-6 py-4 flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">{{ $collector->name }}</p>
-                                <p class="text-xs text-gray-600">{{ $collector->phone }}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-gray-900">{{ __('messages.egp') }} {{ number_format($collector->collections_sum_amount ?? 0, 2) }}</p>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="px-6 py-4 text-center text-gray-600">{{ __('messages.no_data_available') }}</div>
-                    @endforelse
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-400 font-medium">لا توجد عمليات تحصيل مسجلة مؤخراً</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Overdue Cheques Alert -->
-        @if($overdueCheques->count() > 0)
-            <div class="mt-8 bg-red-50 border border-red-200 rounded-lg p-6">
-                <div class="flex items-start">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M6 20h12a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <h3 class="text-lg font-medium text-red-800">{{ __('messages.overdue_cheques') }}</h3>
-                        <div class="mt-2 text-sm text-red-700">
-                            <p class="mb-3">{{ $overdueCheques->count() }} {{ __('messages.overdue_cheques') }} {{ __('messages.require_attention') ?? '' }}</p>
-                            <ul class="space-y-1">
-                                @foreach($overdueCheques as $cheque)
-                                    <li>
-                                        <a href="{{ route('cheques.show', $cheque) }}" class="underline hover:text-red-900">
-                                            {{ $cheque->customer->name }} - {{ __('messages.egp') }} {{ number_format($cheque->amount, 2) }} ({{ __('messages.due_date') }}: {{ $cheque->due_date->format('M d, Y') }})
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
+        <!-- Top Collectors Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
+                <svg class="w-6 h-6 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <h2 class="text-xl font-bold text-gray-800">أداء المحصلين</h2>
+            </div>
+            <div class="divide-y divide-gray-50 py-2">
+                @forelse($topCollectors as $collector)
+                    <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-blue-100 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm">
+                                {{ mb_substr($collector->name, 0, 1) }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-800">{{ $collector->name }}</p>
+                                <p class="text-xs text-gray-400">{{ $collector->phone }}</p>
+                            </div>
+                        </div>
+                        <div class="text-left font-black text-blue-600 text-sm">
+                            ج.م {{ number_format($collector->collections_sum_amount ?? 0, 0) }}
                         </div>
                     </div>
+                @empty
+                    <div class="px-6 py-12 text-center text-gray-400 font-medium">لا توجد بيانات متاحة</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Plans Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-gray-50 to-white">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
+                <h2 class="text-xl font-bold text-gray-800">خطط التحصيل النشطة</h2>
+            </div>
+            <div class="text-sm font-bold text-gray-500 bg-gray-100 px-4 py-1 rounded-full">
+                إجمالي الملفات: {{ $totalCollectionPlanItems ?? 0 }}
+            </div>
+        </div>
+
+        @if($activePlans->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                            <th class="px-6 py-4 font-black">الخطة</th>
+                            <th class="px-6 py-4 font-black">المحصل</th>
+                            <th class="px-6 py-4 font-black">التاريخ</th>
+                            <th class="px-6 py-4 font-black">الإنجاز</th>
+                            <th class="px-6 py-4 font-black text-left">المتوقع / المحصل</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        @foreach($activePlans as $plan)
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-5">
+                                    <div class="font-black text-gray-900">{{ $plan->name }}</div>
+                                    <div class="text-xs text-gray-400 mt-1 uppercase">{{ $plan->collection_type === 'special' ? 'خطة خاصة' : 'تحصيل عادي' }}</div>
+                                </td>
+                                <td class="px-6 py-5 font-bold text-blue-600">{{ $plan->collector->name }}</td>
+                                <td class="px-6 py-5 text-sm text-gray-500">{{ $plan->date->format('Y-m-d') }}</td>
+                                <td class="px-6 py-5 min-w-[200px]">
+                                    @php $progress = $plan->getProgressPercentage(); @endphp
+                                    <div class="flex flex-col gap-2">
+                                        <div class="flex justify-between items-center text-xs">
+                                            <span class="font-black {{ $progress >= 100 ? 'text-emerald-600' : 'text-blue-600' }}">{{ $progress }}% مكتمل</span>
+                                            <span class="text-gray-400">{{ $plan->items->whereNotNull('collection_id')->count() }} من {{ $plan->items->count() }} عميل</span>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full rounded-full transition-all duration-500 bg-gradient-to-r {{ $progress >= 100 ? 'from-emerald-500 to-teal-400' : 'from-blue-600 to-indigo-500' }}" 
+                                                 style="width: {{ $progress }}%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-5 text-left">
+                                    <div class="font-black text-gray-800">ج.م {{ number_format($plan->getTotalCollectedAmount(), 0) }}</div>
+                                    <div class="text-xs text-gray-400">من ج.م {{ number_format($plan->getTotalExpectedAmount(), 0) }} متوقع</div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="px-6 py-16 text-center text-gray-400 font-medium">
+                <p class="text-lg">لا توجد خطط نشطة في الوقت الحالي</p>
+                <a href="{{ route('collection-plans.create') }}" class="text-blue-600 hover:underline mt-4 inline-block font-bold">ابدأ بإنشاء أول خطة الآن ←</a>
             </div>
         @endif
+    </div>
 
-        <!-- Collection Plans Section -->
-        <div class="mt-8 bg-white rounded-lg shadow">
-            <a href="{{ route('collection-plan-items.index') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md">
-                <p class="text-sm text-gray-500">{{ __('messages.items') }}</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $totalCollectionPlanItems ?? 0 }}</p>
-            </a>
-            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-gray-900">{{ __('messages.active_collection_plans') }}</h2>
-                <a href="{{ route('collection-plans.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded">
-                    ➕ {{ __('messages.new_plan') }}
-                </a>
+    <!-- Users Management Grid -->
+    @role('admin')
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h2 class="text-xl font-bold text-gray-800">إدارة مستخدمي النظام</h2>
+            <div class="flex items-center gap-3">
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">{{ $totalUsers }} مستخدم</span>
+                <a href="{{ route('users.index') }}" class="text-blue-600 text-sm font-bold hover:underline">إدارة الكل</a>
+                <a href="{{ route('admin.audit-logs.index') }}" class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold hover:bg-amber-200 transition-colors">مراقبة النظام</a>
             </div>
-
-            @if($activePlans->count() > 0)
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{{ __('messages.plan_name') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{{ __('messages.collector_name') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{{ __('messages.plan_date') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{{ __('messages.type') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{{ __('messages.items') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{{ __('messages.expected_amount') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{{ __('messages.action') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @foreach($activePlans as $plan)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $plan->name ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $plan->collector->name }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $plan->date->format('M d, Y') }}</td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $plan->collection_type === 'regular' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800' }}">
-                                            {{ ucfirst($plan->collection_type ?? 'regular') }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                            {{ $plan->items->count() }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-blue-600">{{ __('messages.egp') }} {{ number_format($plan->getTotalExpectedAmount(), 2) }}</td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <a href="{{ route('collection-plans.show', $plan) }}" class="text-blue-600 hover:text-blue-800 font-medium">{{ __('messages.view') }}</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="px-6 py-8 text-center text-gray-600">
-                    <p>{{ __('messages.no_active_plans') }}</p>
-                    <a href="{{ route('collection-plans.create') }}" class="text-blue-600 hover:underline mt-2 inline-block">{{ __('messages.create_new_plan') }} →</a>
-                </div>
-            @endif
         </div>
 
-        <!-- Users Management Grid -->
-        <div class="mt-12">
-            <div class="flex items-center justify-between mb-6">
-                <a href="{{ route('admin.tables.show', 'users') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md">
-                    <h2 class="text-2xl font-bold text-gray-900">{{ __('messages.users_management') }}</h2>
-                    <span class="text-sm text-gray-600">{{ __('messages.total_users') }}: {{ $totalUsers }}</span>
-                </a>
-            </div>
-
-            @if ($users->count() > 0)
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">{{ __('messages.name') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">{{ __('messages.email') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">{{ __('messages.roles') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">{{ __('messages.status') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">{{ __('messages.actions') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($users as $user)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $user->name }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $user->email }}</td>
-                                    <td class="px-6 py-4 text-sm">
-                                        @if ($user->roles->count() > 0)
-                                            <div class="flex flex-wrap gap-1">
-                                                @foreach($user->roles as $role)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                                        @if($role->name === 'admin') bg-red-100 text-red-800
-                                                        @elseif($role->name === 'collector') bg-blue-100 text-blue-800
-                                                        @else bg-gray-100 text-gray-800
-                                                        @endif">
-                                                        {{ ucfirst($role->name) }}
-                                                    </span>
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <span class="text-gray-500 text-xs">{{ __('messages.no_roles_assigned') }}</span>
+        @if ($users->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="w-full text-right">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-500 text-xs">
+                            <th class="px-6 py-4 font-black">المستخدم</th>
+                            <th class="px-6 py-4 font-black">الصلاحيات</th>
+                            <th class="px-6 py-4 font-black">الحالة</th>
+                            <th class="px-6 py-4 font-black">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        @foreach($users as $user)
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-5">
+                                    <div class="font-bold text-gray-900">{{ $user->name }}</div>
+                                    <div class="text-xs text-gray-400">{{ $user->email }}</div>
+                                </td>
+                                <td class="px-6 py-5">
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($user->roles as $role)
+                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase
+                                                @if($role->name === 'admin') bg-rose-100 text-rose-700
+                                                @elseif($role->name === 'supervisor') bg-indigo-100 text-indigo-700
+                                                @else bg-blue-100 text-blue-700
+                                                @endif">
+                                                {{ $role->name === 'admin' ? 'مدير' : ($role->name === 'supervisor' ? 'مشرف' : 'محصل') }}
+                                            </span>
+                                        @endforeach
+                                        @if($user->roles->isEmpty())
+                                            <span class="text-xs text-gray-400 italic">بدون صلاحيات</span>
                                         @endif
-                                    </td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            {{ __('messages.active') }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm space-x-2">
-                                        <button onclick="openRoleModal({{ $user->id }}, '{{ $user->name }}')" class="text-blue-600 hover:text-blue-800 font-medium">{{ __('messages.edit_roles') }}</button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="bg-white rounded-lg shadow px-6 py-8 text-center text-gray-600">
-                    <p>{{ __('messages.no_users_found') }}</p>
-                </div>
-            @endif
-        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-5">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full ml-1.5 underline-offset-4 animate-pulse"></span>
+                                        نشط حالياً
+                                    </span>
+                                </td>
+                                <td class="px-6 py-5">
+                                    <button onclick="openRoleModal({{ $user->id }}, '{{ $user->name }}')" class="bg-gray-100 text-gray-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">
+                                        تعديل الأدوار
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="px-6 py-12 text-center text-gray-400 font-medium italic">
+                لا يوجد مستخدمين متاحين حالياً
+            </div>
+        @endif
+    </div>
+    @endrole
 
-        <!-- Role Management Modal -->
-        <div id="roleModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">{{ __('messages.assign_roles_to') }} <span id="userName"></span></h3>
+    <!-- Overdue Cheques Floating Alert -->
+    @role('admin|supervisor')
+    @if($overdueCheques->count() > 0)
+        <div class="mt-8 bg-rose-50 border border-rose-200 rounded-2xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+                <div class="bg-rose-500 p-3 rounded-2xl text-white shadow-lg">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <form id="roleForm" method="POST" action="">
-                    @csrf
-                    @method('PUT')
-                    <div class="px-6 py-4 space-y-3">
-                        <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" name="roles[]" value="admin" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <span class="ml-2 text-sm text-gray-700">{{ __('messages.admin') }}</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="roles[]" value="collector" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <span class="ml-2 text-sm text-gray-700">{{ __('messages.collector') }}</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="roles[]" value="user" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <span class="ml-2 text-sm text-gray-700">{{ __('messages.user') }}</span>
-                            </label>
-                        </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-black text-rose-900 mb-2">تنبيه: شيكات متأخرة!</h3>
+                    <p class="text-rose-700 mb-4 font-medium">يوجد عدد {{ $overdueCheques->count() }} شيكات تجاوزت تاريخ الاستحقاق وتطلب اتخاذ إجراء فوري.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        @foreach($overdueCheques->take(6) as $cheque)
+                            <a href="{{ route('cheques.show', $cheque) }}" class="bg-white border border-rose-100 p-3 rounded-xl hover:shadow-md transition-shadow flex justify-between items-center group">
+                                <div class="font-bold text-gray-800 text-sm group-hover:text-rose-600">{{ $cheque->customer->name }}</div>
+                                <div class="text-rose-600 font-black text-xs">ج.م {{ number_format($cheque->amount, 0) }}</div>
+                            </a>
+                        @endforeach
                     </div>
-                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-2 rounded-b-lg">
-                        <button type="button" onclick="closeRoleModal()" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">{{ __('messages.cancel') }}</button>
-                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded">{{ __('messages.assign_roles') }}</button>
-                    </div>
-                </form>
+                    @if($overdueCheques->count() > 6)
+                        <a href="{{ route('cheques.index') }}?status=overdue" class="mt-4 inline-block text-rose-600 font-bold text-sm hover:underline">عرض جميع الشيكات المتأخرة ←</a>
+                    @endif
+                </div>
             </div>
         </div>
+    @endif
+    @endrole
+</div>
 
-        <script>
-            function openRoleModal(userId, userName) {
-                document.getElementById('userName').textContent = userName;
-                const form = document.getElementById('roleForm');
-                form.action = `/users/${userId}/roles`;
-                document.getElementById('roleModal').classList.remove('hidden');
-            }
-
-            function closeRoleModal() {
-                document.getElementById('roleModal').classList.add('hidden');
-            }
-        </script>
+<!-- Role Management Modal -->
+@role('admin')
+<div id="roleModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all scale-100">
+        <div class="bg-gradient-to-r from-blue-700 to-indigo-800 px-8 py-6 text-white text-right">
+            <h3 class="text-2xl font-black">تحديث الصلاحيات</h3>
+            <p class="text-blue-100 opacity-80 mt-1" id="userName"></p>
+        </div>
+        <form id="roleForm" method="POST" action="" class="p-8">
+            @csrf
+            @method('PUT')
+            <div class="space-y-4 mb-8">
+                <label class="flex items-center p-4 rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-blue-500 transition-all group has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                    <input type="checkbox" name="roles[]" value="admin" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <div class="mr-4">
+                        <span class="block font-black text-gray-800 group-hover:text-blue-700">مدير نظام</span>
+                        <span class="text-xs text-gray-400">صلاحيات كاملة لجميع أقسام النظام</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-4 rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-blue-500 transition-all group has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                    <input type="checkbox" name="roles[]" value="supervisor" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <div class="mr-4">
+                        <span class="block font-black text-gray-800 group-hover:text-blue-700">مشرف عمليات</span>
+                        <span class="text-xs text-gray-400">إدارة الخطط والتحصيلات والمراجعة</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-4 rounded-2xl border-2 border-gray-100 cursor-pointer hover:border-blue-500 transition-all group has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                    <input type="checkbox" name="roles[]" value="collector" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <div class="mr-4">
+                        <span class="block font-black text-gray-800 group-hover:text-blue-700">محصل ميداني</span>
+                        <span class="text-xs text-gray-400">صلاحيات مقتصرة على تسجيل التحصيلات</span>
+                    </div>
+                </label>
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02]">
+                    حفظ التغييرات
+                </button>
+                <button type="button" onclick="closeRoleModal()" class="px-8 bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 py-4 rounded-2xl transition-all">
+                    إلغاء
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+    function openRoleModal(userId, userName) {
+        document.getElementById('userName').textContent = 'المستخدم: ' + userName;
+        const form = document.getElementById('roleForm');
+        form.action = `/users/${userId}/roles`;
+        document.getElementById('roleModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRoleModal() {
+        document.getElementById('roleModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+</script>
+@endrole
 @endsection

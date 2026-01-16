@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cheque;
 use App\Models\Customer;
+use App\Exports\ChequesExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -14,7 +16,8 @@ class ChequeController extends Controller
      */
     public function index(): View
     {
-        $cheques = Cheque::with('customer')->paginate(15);
+        $cheques = Cheque::with('customer')->latest()->paginate(15);
+
         return view('cheques.index', compact('cheques'));
     }
 
@@ -24,6 +27,7 @@ class ChequeController extends Controller
     public function create(): View
     {
         $customers = Customer::all();
+
         return view('cheques.create', compact('customers'));
     }
 
@@ -53,6 +57,7 @@ class ChequeController extends Controller
     public function show(Cheque $cheque): View
     {
         $cheque->load('customer');
+
         return view('cheques.show', compact('cheque'));
     }
 
@@ -62,6 +67,7 @@ class ChequeController extends Controller
     public function edit(Cheque $cheque): View
     {
         $customers = Customer::all();
+
         return view('cheques.edit', compact('cheque', 'customers'));
     }
 
@@ -94,5 +100,17 @@ class ChequeController extends Controller
 
         return redirect()->route('cheques.index')
             ->with('success', 'Cheque deleted successfully.');
+    }
+
+    /**
+     * Export cheques to Excel.
+     */
+    public function export()
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        return Excel::download(new ChequesExport, 'cheques_'.now()->format('Y-m-d_His').'.xlsx');
     }
 }

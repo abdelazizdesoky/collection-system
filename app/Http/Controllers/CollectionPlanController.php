@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CollectionPlan;
 use App\Models\Collector;
+use App\Exports\CollectionPlansExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -15,7 +17,9 @@ class CollectionPlanController extends Controller
     public function index(): View
     {
         $plans = CollectionPlan::with('collector', 'items')
+            ->latest()
             ->paginate(15);
+
         return view('collection-plans.index', compact('plans'));
     }
 
@@ -24,11 +28,12 @@ class CollectionPlanController extends Controller
      */
     public function create(): View
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
 
         $collectors = Collector::all();
+
         return view('collection-plans.create', compact('collectors'));
     }
 
@@ -37,7 +42,7 @@ class CollectionPlanController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
 
@@ -45,7 +50,7 @@ class CollectionPlanController extends Controller
             'collector_id' => 'required|exists:collectors,id',
             'name' => 'required|string|max:255',
             'plan_date' => 'required|date',
-            'collection_type' => 'required|in:regular,special',
+            'collection_type' => 'required|in:regular,special,bank,cash,cheque',
             'type' => 'nullable|string|max:255',
         ]);
 
@@ -65,6 +70,7 @@ class CollectionPlanController extends Controller
     public function show(CollectionPlan $collectionPlan): View
     {
         $collectionPlan->load('collector', 'items.customer');
+
         return view('collection-plans.show', compact('collectionPlan'));
     }
 
@@ -73,11 +79,12 @@ class CollectionPlanController extends Controller
      */
     public function edit(CollectionPlan $collectionPlan): View
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
 
         $collectors = Collector::all();
+
         return view('collection-plans.edit', compact('collectionPlan', 'collectors'));
     }
 
@@ -86,7 +93,7 @@ class CollectionPlanController extends Controller
      */
     public function update(Request $request, CollectionPlan $collectionPlan)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
 
@@ -94,7 +101,7 @@ class CollectionPlanController extends Controller
             'collector_id' => 'required|exists:collectors,id',
             'name' => 'required|string|max:255',
             'plan_date' => 'required|date',
-            'collection_type' => 'required|in:regular,special',
+            'collection_type' => 'required|in:regular,special,bank,cash,cheque',
             'type' => 'nullable|string|max:255',
         ]);
 
@@ -113,7 +120,7 @@ class CollectionPlanController extends Controller
      */
     public function destroy(CollectionPlan $collectionPlan)
     {
-        if (!auth()->user()->hasAnyRole(['admin', 'user'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
 
@@ -121,5 +128,17 @@ class CollectionPlanController extends Controller
 
         return redirect()->route('collection-plans.index')
             ->with('success', 'Collection plan deleted successfully.');
+    }
+
+    /**
+     * Export collection plans to Excel.
+     */
+    public function export()
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        return Excel::download(new CollectionPlansExport, 'collection_plans_'.now()->format('Y-m-d_His').'.xlsx');
     }
 }

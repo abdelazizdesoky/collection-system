@@ -2,29 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Collector;
-use App\Models\Collection;
 use App\Models\Cheque;
+use App\Models\Collection;
 use App\Models\CollectionPlan;
 use App\Models\CollectionPlanItem;
+use App\Models\Collector;
+use App\Models\Customer;
 use App\Models\CustomerAccount;
 use App\Models\User;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(): View|\Illuminate\Http\RedirectResponse
     {
         $user = auth()->user();
 
-        if ($user->hasRole('admin')) {
+        // Admin & Supervisor see the admin dashboard
+        if ($user->hasRole('admin') || $user->hasRole('supervisor')) {
             return $this->adminDashboard();
-        } elseif ($user->hasRole('collector')) {
-            return $this->collectorDashboard();
-        } else {
-            return $this->userDashboard();
         }
+
+        // Collectors are redirected to their dedicated portal
+        if ($user->hasRole('collector')) {
+            return redirect()->route('collector.dashboard');
+        }
+
+        // Default user dashboard
+        return $this->userDashboard();
     }
 
     private function adminDashboard(): View
@@ -59,7 +64,7 @@ class DashboardController extends Controller
             ->get();
 
         // Active collection plans
-        $activePlans = CollectionPlan::with(['collector', 'items.customer'])
+        $activePlans = CollectionPlan::with(['collector', 'items.customer', 'items.collection'])
             ->latest()
             ->take(10)
             ->get();
@@ -91,7 +96,7 @@ class DashboardController extends Controller
     {
         $collector = auth()->user()->collector;
 
-        if (!$collector) {
+        if (! $collector) {
             return view('dashboards.user');
         }
 

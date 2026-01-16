@@ -2,19 +2,22 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CollectionPlanItem extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'collection_plan_id',
         'customer_id',
         'expected_amount',
         'priority',
+        'status',
+        'collection_id',
     ];
 
     protected $casts = [
@@ -35,5 +38,13 @@ class CollectionPlanItem extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * Get the collection for this plan item (if collected).
+     */
+    public function collection(): BelongsTo
+    {
+        return $this->belongsTo(Collection::class);
     }
 }

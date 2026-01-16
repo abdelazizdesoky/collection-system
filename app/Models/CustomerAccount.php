@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CustomerAccount extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'customer_id',
@@ -53,7 +54,7 @@ class CustomerAccount extends Model
      */
     public function isDebit(): bool
     {
-        return (float)$this->debit > 0;
+        return (float) $this->debit > 0;
     }
 
     /**
@@ -61,6 +62,6 @@ class CustomerAccount extends Model
      */
     public function isCredit(): bool
     {
-        return (float)$this->credit > 0;
+        return (float) $this->credit > 0;
     }
 }

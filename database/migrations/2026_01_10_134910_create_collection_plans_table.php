@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-     Schema::create('collection_plans', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('collector_id')->constrained();
-    $table->date('date');
-    $table->enum('type', ['daily', 'weekly']);
-    $table->timestamps();
-});
+        Schema::create('collection_plans', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('collector_id')->constrained();
+            $table->date('date');
+            $table->enum('type', ['daily', 'weekly']);
+            $table->timestamps();
+        });
 
     }
 

@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('cheques', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('customer_id')->constrained();
-    $table->string('cheque_no');
-    $table->string('bank_name');
-    $table->decimal('amount', 12, 2);
-    $table->date('due_date');
-    $table->enum('status', ['pending', 'cleared', 'bounced'])->default('pending');
-    $table->timestamps();
-});
+        Schema::create('cheques', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('customer_id')->constrained();
+            $table->string('cheque_no');
+            $table->string('bank_name');
+            $table->decimal('amount', 12, 2);
+            $table->date('due_date');
+            $table->enum('status', ['pending', 'cleared', 'bounced'])->default('pending');
+            $table->timestamps();
+        });
 
     }
 
