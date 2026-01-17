@@ -126,9 +126,11 @@ Route::middleware('auth')->group(function () {
         // Cheques management
         Route::get('/cheques/export', [ChequeController::class, 'export'])->name('cheques.export');
         Route::resource('cheques', ChequeController::class);
-        // Customer Accounts (Ledger) - read routes
+        // Customer Accounts (Ledger)
         Route::get('/customer-accounts', [CustomerAccountController::class, 'index'])->name('customer-accounts.index');
-        Route::get('/customers/{customer}/ledger', [CustomerAccountController::class, 'customerLedger'])->name('customer-accounts.ledger');
+        Route::get('/customers/{customer}/ledger', [CustomerAccountController::class, 'customerLedger'])->name('customer.ledger');
+        Route::get('/customers/{customer}/ledger/create', [CustomerAccountController::class, 'create'])->name('customer.ledger.create');
+        Route::post('/customers/{customer}/ledger', [CustomerAccountController::class, 'store'])->name('customer.ledger.store');
         Route::get('/customer-accounts/{customerAccount}', [CustomerAccountController::class, 'show'])->name('customer-accounts.show');
     });
 });

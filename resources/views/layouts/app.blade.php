@@ -264,15 +264,15 @@
                 <div class="max-w-7xl mx-auto">
                     @yield('content')
                 </div>
-
-                <!-- Footer (Inside main to scroll with content) -->
+            </main>  
+               
+        </div>
+        
+    </div>
+    <!-- Footer (Inside main to scroll with content) -->
                 <footer class="mt-auto py-8 text-center text-gray-500 text-sm border-t border-gray-200">
                     <p>&copy; 2026 Alarabia Group جميع الحقوق محفوظة.</p>
                 </footer>
-            </main>
-        </div>
-    </div>
-
     <!-- Toggle Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -336,5 +336,6 @@
             });
         });
     </script>
+     
 </body>
 </html>

@@ -18,10 +18,33 @@
         </div>
     </div>
 
+    <!-- Search Bar -->
+    <div class="mb-6 sticky top-4 z-20">
+        <div class="relative">
+            <input type="text" 
+                   id="customerSearch" 
+                   placeholder="بحث باسم العميل أو رقم الهاتف..." 
+                   class="w-full pl-10 pr-12 py-4 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white text-lg transition-all"
+            >
+            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+            <div id="searchClear" class="absolute inset-y-0 left-4 hidden items-center cursor-pointer">
+                <svg onclick="clearSearch()" class="w-6 h-6 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
     <!-- Customer List -->
-    <div class="space-y-4">
+    <div class="space-y-4" id="customerList">
         @foreach($plan->items as $item)
-            <div class="rounded-2xl shadow-lg overflow-hidden transition-all duration-200 {{ $item->status === 'collected' ? 'bg-emerald-50 dark:bg-emerald-900/10 border-2 border-emerald-400 dark:border-emerald-500/50 opacity-90' : 'bg-white dark:bg-dark-card hover:shadow-xl border border-gray-100 dark:border-dark-border' }}">
+            <div class="customer-card rounded-2xl shadow-lg overflow-hidden transition-all duration-200 {{ $item->status === 'collected' ? 'bg-emerald-50 dark:bg-emerald-900/10 border-2 border-emerald-400 dark:border-emerald-500/50 opacity-90' : 'bg-white dark:bg-dark-card hover:shadow-xl border border-gray-100 dark:border-dark-border' }}"
+                 data-name="{{ $item->customer->name }}"
+                 data-phone="{{ $item->customer->phone ?? '' }}">
                 <div class="flex items-center p-4 gap-4">
                     <!-- Status Icon -->
                     <div class="flex-shrink-0">
@@ -116,5 +139,42 @@
             </div>
         @endforeach
     </div>
+
+    <script>
+        const searchInput = document.getElementById('customerSearch');
+        const clearBtn = document.getElementById('searchClear');
+        const cards = document.querySelectorAll('.customer-card');
+
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase().trim();
+            
+            if (term.length > 0) {
+                clearBtn.classList.remove('hidden');
+                clearBtn.classList.add('flex');
+            } else {
+                clearBtn.classList.add('hidden');
+                clearBtn.classList.remove('flex');
+            }
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const phone = card.getAttribute('data-phone').toLowerCase();
+                
+                if (name.includes(term) || phone.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        function clearSearch() {
+            searchInput.value = '';
+            clearBtn.classList.add('hidden');
+            clearBtn.classList.remove('flex');
+            cards.forEach(card => card.style.display = 'block');
+            searchInput.focus();
+        }
+    </script>
 </div>
 @endsection

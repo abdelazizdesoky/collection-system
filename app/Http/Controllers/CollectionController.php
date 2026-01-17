@@ -17,11 +17,25 @@ class CollectionController extends Controller
     /**
      * Display a listing of collections.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = $request->input('search');
+
         $collections = Collection::with('customer', 'collector')
+            ->when($search, function($query, $search) {
+                return $query->where('receipt_no', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('collector', function($q) use ($search) {
+                        $q->whereHas('user', function($qu) use ($search) {
+                            $qu->where('name', 'like', "%{$search}%");
+                        });
+                    });
+            })
             ->latest()
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         return view('collections.index', compact('collections'));
     }
