@@ -19,13 +19,15 @@ class TestDataSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ensure roles exist
+        // ========================================
+        // 0. Ensure roles exist
+        // ========================================
         Role::firstOrCreate(['name' => 'admin']);
         Role::firstOrCreate(['name' => 'supervisor']);
         Role::firstOrCreate(['name' => 'collector']);
 
         // ========================================
-        // 1. Create Admin User (if not exists)
+        // 1. Create Admin User
         // ========================================
         $admin = User::firstOrCreate(
             ['email' => 'admin@admin.com'],
@@ -55,12 +57,11 @@ class TestDataSeeder extends Seeder
         $this->command->info('✓ Supervisor: supervisor@test.com / password');
 
         // ========================================
-        // 3. Create Collectors
+        // 3. Create Collectors (without 'name')
         // ========================================
         $collector1 = Collector::firstOrCreate(
             ['phone' => '01000000001'],
             [
-                'name' => 'محمد المحصل',
                 'area' => 'القاهرة',
             ]
         );
@@ -68,13 +69,12 @@ class TestDataSeeder extends Seeder
         $collector2 = Collector::firstOrCreate(
             ['phone' => '01000000002'],
             [
-                'name' => 'علي المحصل',
                 'area' => 'الجيزة',
             ]
         );
 
         // ========================================
-        // 4. Create Collector Users (linked to collectors)
+        // 4. Create Collector Users
         // ========================================
         $collectorUser1 = User::firstOrCreate(
             ['email' => 'collector1@test.com'],
@@ -126,7 +126,7 @@ class TestDataSeeder extends Seeder
         $this->command->info('✓ Created 8 test customers');
 
         // ========================================
-        // 6. Create Collection Plan for Today (Collector 1)
+        // 6. Create Collection Plans
         // ========================================
         $plan1 = CollectionPlan::firstOrCreate(
             [
@@ -140,7 +140,6 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        // Add customers to plan 1
         $plan1Customers = array_slice($createdCustomers, 0, 4);
         foreach ($plan1Customers as $index => $customer) {
             CollectionPlanItem::firstOrCreate(
@@ -149,7 +148,7 @@ class TestDataSeeder extends Seeder
                     'customer_id' => $customer->id,
                 ],
                 [
-                    'expected_amount' => $customer->opening_balance * 0.3, // 30% of balance
+                    'expected_amount' => $customer->opening_balance * 0.3,
                     'priority' => $index + 1,
                     'status' => 'pending',
                 ]
@@ -157,9 +156,6 @@ class TestDataSeeder extends Seeder
         }
         $this->command->info('✓ Created collection plan for Collector 1 with 4 customers');
 
-        // ========================================
-        // 7. Create Collection Plan for Today (Collector 2)
-        // ========================================
         $plan2 = CollectionPlan::firstOrCreate(
             [
                 'collector_id' => $collector2->id,
@@ -172,7 +168,6 @@ class TestDataSeeder extends Seeder
             ]
         );
 
-        // Add customers to plan 2
         $plan2Customers = array_slice($createdCustomers, 4, 4);
         foreach ($plan2Customers as $index => $customer) {
             CollectionPlanItem::firstOrCreate(
@@ -190,7 +185,7 @@ class TestDataSeeder extends Seeder
         $this->command->info('✓ Created collection plan for Collector 2 with 4 customers');
 
         // ========================================
-        // Summary
+        // 7. Summary
         // ========================================
         $this->command->newLine();
         $this->command->info('═══════════════════════════════════════════');
