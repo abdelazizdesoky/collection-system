@@ -14,9 +14,21 @@ class ChequeController extends Controller
     /**
      * Display a listing of cheques.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $cheques = Cheque::with('customer')->latest()->paginate(15);
+        $search = $request->input('search');
+
+        $cheques = Cheque::with('customer')
+            ->when($search, function($query, $search) {
+                return $query->where('cheque_no', 'like', "%{$search}%")
+                    ->orWhere('bank_name', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
 
         return view('cheques.index', compact('cheques'));
     }

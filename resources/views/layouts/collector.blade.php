@@ -122,9 +122,9 @@
                         </svg>
                         بوابة تحصيل
                     </a>
-                    <span class="bg-emerald-800 px-3 py-1 rounded-full text-sm">
-                        {{ $collector->name ?? 'Collector' }}
-                    </span>
+           <!-- <span class="bg-emerald-800 px-3 py-1 rounded-full text-sm"> -->
+                        <!-- {{ $collector->name ?? 'Collector' }} -->
+                    <!-- </span> -->
                 </div>
                 
                 <div class="flex items-center gap-4">
@@ -134,7 +134,7 @@
                         <svg id="moon-icon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     </button>
 
-                    <span class="text-sm opacity-80">{{ today()->format('Y/m/d') }}</span>
+                    <!-- <span class="text-sm opacity-80">{{ today()->format('Y/m/d') }}</span> -->
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
