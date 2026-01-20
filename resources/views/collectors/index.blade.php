@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'المحصلون')
+@section('title', 'مندوبين')
 
 @section('content')
 <div class="container mx-auto py-8 px-4" dir="rtl">
@@ -14,8 +14,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black dark:text-white tracking-tight">المحصلون</h1>
-                    <p class="text-gray-500 dark:text-gray-400 font-medium">إدارة فريق التحصيل الميداني وصلاحياتهم</p>
+                    <h1 class="text-3xl font-black dark:text-white tracking-tight"> المندوبين</h1>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium">إدارة فريق مندوبين الميداني وصلاحياتهم</p>
                 </div>
             </div>
 
@@ -90,7 +90,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-20 text-center text-gray-400 font-medium italic">لم يتم إضافة أي محصلين في النظام حتى الآن.</td>
+                            <td colspan="4" class="px-6 py-20 text-center text-gray-400 font-medium italic">لم يتم إضافة أي مندوبين في النظام حتى الآن.</td>
                         </tr>
                     @endforelse
                 </tbody>

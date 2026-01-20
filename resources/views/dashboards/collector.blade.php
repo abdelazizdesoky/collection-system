@@ -7,8 +7,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Collector Dashboard</h1>
-            <p class="text-gray-600 mt-2">Welcome back, {{ $collector->name }}! Record and track your collections here.</p>
+            <h1 class="text-3xl font-bold text-gray-900">لوحة التحكم</h1>
+            <p class="text-gray-600 mt-2">مرحباً {{ $collector->name }}! قم بتسجيل جميع المبيعات هنا.</p>
         </div>
 
         <!-- Key Metrics -->
@@ -17,7 +17,7 @@
             <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow p-6 text-white">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-blue-100 text-sm font-medium">Today's Collections</p>
+                        <p class="text-blue-100 text-sm font-medium">المبيعات اليومية</p>
                         <p class="text-3xl font-bold mt-2">₹{{ number_format($collectionsToday, 2) }}</p>
                     </div>
                     <svg class="h-12 w-12 text-blue-300 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
             <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow p-6 text-white">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-green-100 text-sm font-medium">This Month</p>
+                        <p class="text-green-100 text-sm font-medium">المبيعات هذا الشهر</p>
                         <p class="text-3xl font-bold mt-2">₹{{ number_format($collectionsThisMonth, 2) }}</p>
                     </div>
                     <svg class="h-12 w-12 text-green-300 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
             <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg shadow p-6 text-white">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-yellow-100 text-sm font-medium">Total Collections</p>
+                        <p class="text-yellow-100 text-sm font-medium">المبيعات الكلية</p>
                         <p class="text-3xl font-bold mt-2">₹{{ number_format($totalCollections, 2) }}</p>
                     </div>
                     <svg class="h-12 w-12 text-yellow-300 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@
             <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow p-6 text-white">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-purple-100 text-sm font-medium">Assigned Customers</p>
+                        <p class="text-purple-100 text-sm font-medium">العملاء المكلف عليهم</p>
                         <p class="text-3xl font-bold mt-2">{{ $assignedCustomers->count() }}</p>
                     </div>
                     <svg class="h-12 w-12 text-purple-300 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,9 +71,9 @@
             <!-- Collections & Receipts Table -->
             <div class="lg:col-span-2 bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-gray-900">📋 Collections & Receipts</h2>
+                    <h2 class="text-lg font-semibold text-gray-900">📋 المبيعات والمستندات</h2>
                     <a href="{{ route('collections.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded">
-                        ➕ New Collection
+                        ➕ إضافة مبيعات جديدة
                     </a>
                 </div>
                 
@@ -81,12 +81,12 @@
                     <table class="w-full">
                         <thead class="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Receipt #</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Customer</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Action</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">رقم المستند</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">العميل</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">المبلغ</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">النوع</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">التاريخ</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
@@ -110,14 +110,14 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-600">{{ $collection->created_at->format('M d, Y H:i') }}</td>
                                     <td class="px-6 py-4 text-sm">
-                                        <a href="{{ route('collections.show', $collection) }}" class="text-blue-600 hover:text-blue-800 font-medium">View</a>
+                                        <a href="{{ route('collections.show', $collection) }}" class="text-blue-600 hover:text-blue-800 font-medium">عرض</a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
                                     <td colspan="6" class="px-6 py-8 text-center">
-                                        <p class="text-gray-600">No collections recorded yet</p>
-                                        <a href="{{ route('collections.create') }}" class="text-blue-600 hover:underline mt-2 inline-block">Record your first collection →</a>
+                                        <p class="text-gray-600">  لا يوجد مبيعات</p>
+                                        <a href="{{ route('collections.create') }}" class="text-blue-600 hover:underline mt-2 inline-block">إضافة مبيعات جديدة →</a>
                                     </td>
                                 </tr>
                             @endforelse
@@ -135,22 +135,22 @@
                         <a href="{{ route('collections.create') }}" class="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition">
                             <span class="text-2xl mr-3">💰</span>
                             <div>
-                                <p class="font-medium text-gray-900">Record Collection</p>
-                                <p class="text-xs text-gray-600">Add cash or cheque</p>
+                                <p class="font-medium text-gray-900">إضافة مبيعات جديدة</p>
+                                <p class="text-xs text-gray-600">إضافة مبيعات جديدة</p>
                             </div>
                         </a>
                         <a href="{{ route('customer-accounts.index') }}" class="flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition">
                             <span class="text-2xl mr-3">📊</span>
                             <div>
-                                <p class="font-medium text-gray-900">View Ledger</p>
-                                <p class="text-xs text-gray-600">Track accounts</p>
+                                <p class="font-medium text-gray-900">عرض الحسابات</p>
+                                <p class="text-xs text-gray-600">عرض الحسابات</p>
                             </div>
                         </a>
                         <a href="{{ route('customers.index') }}" class="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition">
                             <span class="text-2xl mr-3">👥</span>
                             <div>
-                                <p class="font-medium text-gray-900">View Customers</p>
-                                <p class="text-xs text-gray-600">See assigned list</p>
+                                <p class="font-medium text-gray-900">عرض العملاء</p>
+                                <p class="text-xs text-gray-600">عرض العملاء</p>
                             </div>
                         </a>
                     </div>
@@ -158,18 +158,18 @@
 
                 <!-- Collection Summary -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">📈 Collection Summary</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">📈 ملخص المبيعات</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                            <span class="text-sm font-medium text-gray-700">Today</span>
+                            <span class="text-sm font-medium text-gray-700">اليوم</span>
                             <span class="text-lg font-bold text-blue-600">₹{{ number_format($collectionsToday, 2) }}</span>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                            <span class="text-sm font-medium text-gray-700">This Week</span>
+                            <span class="text-sm font-medium text-gray-700">هذا الأسبوع</span>
                             <span class="text-lg font-bold text-green-600">₹{{ number_format($recentCollections->whereBetween('created_at', [now()->subDays(7), now()])->sum('amount'), 2) }}</span>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                            <span class="text-sm font-medium text-gray-700">This Month</span>
+                            <span class="text-sm font-medium text-gray-700">هذا الشهر</span>
                             <span class="text-lg font-bold text-yellow-600">₹{{ number_format($collectionsThisMonth, 2) }}</span>
                         </div>
                     </div>
@@ -177,14 +177,14 @@
 
                 <!-- Instructions -->
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                    <h4 class="font-semibold text-blue-900 mb-3">📋 How to Record Collections:</h4>
+                    <h4 class="font-semibold text-blue-900 mb-3">📋 كيفية تسجيل المبيعات:</h4>
                     <ol class="text-sm text-blue-800 space-y-2 list-decimal list-inside">
-                        <li>Click "New Collection" button</li>
-                        <li>Select customer from assigned list</li>
-                        <li>Enter collection amount</li>
-                        <li>Select payment type (cash/cheque)</li>
-                        <li>Assign receipt number</li>
-                        <li>Save and receipt is recorded</li>
+                        <li>اضغط على "إضافة مبيعات جديدة"</li>
+                        <li>اختر العميل من القائمة المخصصة</li>
+                        <li>أدخل المبلغ</li>
+                        <li>حدد نوع المبيعات (كاش/شيك)</li>
+                        <li>أدخل رقم المستند</li>
+                        <li>حفظ وتسجيل المبيعات</li>
                     </ol>
                 </div>
             </div>
@@ -193,7 +193,7 @@
         <!-- Collection Plans Section -->
         <div class="mt-8 bg-white rounded-lg shadow">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-900">📅 My Collection Plans</h2>
+                <h2 class="text-lg font-semibold text-gray-900"> 📅 مخططات المبيعات</h2>
             </div>
             
             @if($activePlans->count() > 0)
@@ -201,12 +201,12 @@
                     <table class="w-full">
                         <thead class="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Plan Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Plan Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Collection Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Items</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Expected Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Customers</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">اسم المخطط</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">تاريخ المخطط</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">نوع المبيعات</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">العناصر</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">المبلغ المتوقع</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">العملاء</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
@@ -242,8 +242,10 @@
                 </div>
             @else
                 <div class="px-6 py-8 text-center">
-                    <p class="text-gray-600">No active collection plans assigned yet</p>
-                    <p class="text-sm text-gray-500 mt-2">Contact your administrator to assign collection plans</p>
+                    <p class="text-gray-600">
+                        لا يوجد مخططات مفعلة حاليا
+                    </p>
+                    <p class="text-sm text-gray-500 mt-2">اتصل بمسؤول النظام لتعيين مخططات</p>
                 </div>
             @endif
         </div>
@@ -273,7 +275,8 @@
                     </div>
                 @else
                     <div class="px-6 py-8 text-center text-gray-600">
-                        No assigned customers
+                        <p class="text-gray-600">لا يوجد عملاء مكلف</p>
+                        <p class="text-sm text-gray-500 mt-2">اتصل بمسؤول النظام لتعيين عملاء</p>
                     </div>
                 @endif
             </div>
@@ -297,7 +300,8 @@
                         </div>
                     @empty
                         <div class="px-6 py-8 text-center text-gray-600">
-                            No recent collections
+                            <p class="text-gray-600">لا يوجد مبيعات مؤخرا</p>
+                            <p class="text-sm text-gray-500 mt-2">اتصل بمسؤول النظام لتعيين مبيعات</p>
                         </div>
                     @endforelse
                 </div>
@@ -310,8 +314,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Collector Dashboard</h1>
-            <p class="text-gray-600 mt-2">Welcome back, {{ $collector->name }}!</p>
+            <h1 class="text-3xl font-bold text-gray-900">  لوحة التحكم</h1>
+            <p class="text-gray-600 mt-2">مرحبا، {{ $collector->name }}!</p>
         </div>
 
         <!-- Key Metrics -->
@@ -327,8 +331,8 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-gray-600 text-sm font-medium">Today's Collections</p>
-                        <p class="text-2xl font-bold text-gray-900">₹{{ number_format($collectionsToday, 2) }}</p>
+                        <p class="text-gray-600 text-sm font-medium">المبيعات اليومية</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($collectionsToday, 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -344,8 +348,8 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-gray-600 text-sm font-medium">This Month</p>
-                        <p class="text-2xl font-bold text-gray-900">₹{{ number_format($collectionsThisMonth, 2) }}</p>
+                        <p class="text-gray-600 text-sm font-medium">المبيعات هذا الشهر</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($collectionsThisMonth, 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -361,8 +365,8 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-gray-600 text-sm font-medium">Total Collections</p>
-                        <p class="text-2xl font-bold text-gray-900">₹{{ number_format($totalCollections, 2) }}</p>
+                        <p class="text-gray-600 text-sm font-medium">المبيعات الكلية</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($totalCollections, 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -378,7 +382,7 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-gray-600 text-sm font-medium">Assigned Customers</p>
+                        <p class="text-gray-600 text-sm font-medium">العملاء المكلف</p>
                         <p class="text-2xl font-bold text-gray-900">{{ $assignedCustomers->count() }}</p>
                     </div>
                 </div>
@@ -389,8 +393,8 @@
             <!-- Recent Collections -->
             <div class="lg:col-span-2 bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-gray-900">Recent Collections</h2>
-                    <a href="{{ route('collections.create') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">Add Collection</a>
+                    <h2 class="text-lg font-semibold text-gray-900">المبيعات الأخيرة</h2>
+                    <a href="{{ route('collections.create') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">إضافة مبيعات</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -416,7 +420,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-600">No collections found</td>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-600">لا يوجد مبيعات</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -427,7 +431,7 @@
             <!-- Active Collection Plans -->
             <div class="bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-semibold text-gray-900">Active Plans</h2>
+                    <h2 class="text-lg font-semibold text-gray-900">الخطط المفعلة</h2>
                 </div>
                 <div class="divide-y divide-gray-200">
                     @forelse($activePlans as $plan)
@@ -449,7 +453,7 @@
                             </div>
                         </div>
                     @empty
-                        <div class="px-6 py-4 text-center text-gray-600">No active plans</div>
+                        <div class="px-6 py-4 text-center text-gray-600">لا يوجد خطط مفعلة</div>
                     @endforelse
                 </div>
             </div>
@@ -458,13 +462,13 @@
         <!-- Quick Actions -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
             <a href="{{ route('collections.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium text-center">
-                ➕ Add Collection
+                ➕ إضافة مبيعات
             </a>
             <a href="{{ route('cheques.create') }}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-center">
-                📄 Add Cheque
+                📄 إضافة شيك
             </a>
             <a href="{{ route('customers.index') }}" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium text-center">
-                👥 View Customers
+                👥 عرض العملاء
             </a>
         </div>
     </div>

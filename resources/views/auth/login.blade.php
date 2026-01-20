@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Collection System</title>
+    <title>تسجيل الدخول</title>
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect x='5' y='2' width='14' height='20' rx='3' stroke='%232563eb' stroke-width='2'/%3E%3Crect x='8' y='5' width='8' height='6' rx='1' fill='%232563eb' fill-opacity='0.2' stroke='%232563eb' stroke-width='1.5'/%3E%3Cpath d='M8 14H16' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M8 17H10' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M15 17L15 20' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
     
@@ -54,7 +54,7 @@
                 @csrf
                 
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">البريد الالكتروني</label>
                     <input 
                         type="email" 
                         name="email" 
@@ -69,7 +69,7 @@
                 </div>
                 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">كلمة المرور</label>
                     <input 
                         type="password" 
                         name="password" 

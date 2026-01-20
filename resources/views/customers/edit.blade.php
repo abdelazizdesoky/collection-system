@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto py-8">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold mb-6">Edit Customer</h1>
+        <h1 class="text-2xl font-bold mb-6">تعديل العميل</h1>
 
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -20,36 +20,36 @@
             @method('PUT')
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Name *</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">الاسم *</label>
                 <input type="text" name="name" value="{{ old('name', $customer->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Phone *</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">الهاتف *</label>
                 <input type="text" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Address *</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">العنوان *</label>
                 <textarea name="address" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>{{ old('address', $customer->address) }}</textarea>
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Opening Balance *</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">الرصيد الافتتاحي *</label>
                 <input type="number" name="opening_balance" step="0.01" value="{{ old('opening_balance', $customer->opening_balance) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             </div>
 
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Balance Type *</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">نوع الرصيد *</label>
                 <select name="balance_type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="debit" {{ old('balance_type', $customer->balance_type) == 'debit' ? 'selected' : '' }}>Debit (Owes Money)</option>
-                    <option value="credit" {{ old('balance_type', $customer->balance_type) == 'credit' ? 'selected' : '' }}>Credit (Credit Exists)</option>
+                    <option value="debit" {{ old('balance_type', $customer->balance_type) == 'debit' ? 'selected' : '' }}> مدين (العميل يدين)</option>
+                    <option value="credit" {{ old('balance_type', $customer->balance_type) == 'credit' ? 'selected' : '' }}>دائن (العميل يدأين)</option>
                 </select>
             </div>
 
             <div class="flex gap-2">
-                <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update</button>
-                <a href="{{ route('customers.show', $customer) }}" class="flex-1 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded text-center">Cancel</a>
+                <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">تعديل</button>
+                <a href="{{ route('customers.show', $customer) }}" class="flex-1 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded text-center">إلغاء</a>
             </div>
         </form>
     </div>

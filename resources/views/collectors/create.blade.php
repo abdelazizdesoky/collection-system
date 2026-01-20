@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto py-8 text-right" dir="rtl">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold mb-6">محصل جديد</h1>
+        <h1 class="text-2xl font-bold mb-6">مندوب جديد</h1>
 
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded text-right">
@@ -39,7 +39,7 @@
             </div>
 
             <div class="flex gap-2">
-                <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">إنشاء</button>
+                <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">  حفظ</button>
                 <a href="{{ route('collectors.index') }}" class="flex-1 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded text-center">إلغاء</a>
             </div>
         </form>

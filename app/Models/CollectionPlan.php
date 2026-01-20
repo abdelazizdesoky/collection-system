@@ -79,4 +79,12 @@ class CollectionPlan extends Model
 
         return round(min($percentage, 100), 1);
     }
+
+
+
+    public function getActualCollectedAmount(): float
+{
+    return $this->getTotalCollectedAmount();
+}
+
 }

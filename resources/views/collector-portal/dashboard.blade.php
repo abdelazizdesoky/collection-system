@@ -1,6 +1,6 @@
 @extends('layouts.collector')
 
-@section('title', 'خطط اليوم - بوابة المحصل')
+@section('title', 'خطط اليوم - بوابة المندوب')
 
 @section('content')
 <div class="max-w-4xl mx-auto text-right" dir="rtl">
