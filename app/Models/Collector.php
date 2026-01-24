@@ -13,8 +13,11 @@ class Collector extends Model
     use HasFactory, Auditable;
 
     protected $fillable = [
+        'user_id',
+        'code',
+        'name',
         'phone',
-        'area',
+        'address'
     ];
 
     /**
@@ -47,5 +50,29 @@ class Collector extends Model
     public function collections(): HasMany
     {
         return $this->hasMany(Collection::class);
+    }
+
+    /**
+     * Get all visit plans for this collector.
+     */
+    public function visitPlans(): HasMany
+    {
+        return $this->hasMany(VisitPlan::class);
+    }
+
+    /**
+     * Get all visits recorded by this collector.
+     */
+    public function visits(): HasMany
+    {
+        return $this->hasMany(Visit::class);
+    }
+
+    /**
+     * Get the customers assigned to this collector.
+     */
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
     }
 }

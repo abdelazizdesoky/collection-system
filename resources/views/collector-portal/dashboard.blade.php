@@ -23,6 +23,22 @@
         </div>
     </div>
 
+    <!-- Navigation Tabs -->
+    <div class="flex gap-4 mb-6">
+        <a href="{{ route('collector.dashboard') }}" class="flex-1 text-center py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl font-bold text-white shadow-lg shadow-emerald-500/20">
+            <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            التحصيل
+        </a>
+        <a href="{{ route('collector.visits') }}" class="flex-1 text-center py-3 px-4 bg-white dark:bg-dark-card rounded-xl font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all border border-gray-200 dark:border-dark-border">
+            <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            </svg>
+            الزيارات
+        </a>
+    </div>
+
     <!-- Plans Grid -->
     @if($todayPlans->count() > 0)
         <div class="grid gap-6">

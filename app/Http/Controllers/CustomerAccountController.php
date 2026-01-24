@@ -21,6 +21,49 @@ class CustomerAccountController extends Controller
     }
 
     /**
+     * Export customer accounts to CSV.
+     */
+    public function export()
+    {
+        $fileName = 'customer_accounts_export_'.date('Y-m-d_H-i-s').'.csv';
+        $accounts = CustomerAccount::with('customer')->latest()->get();
+
+        $headers = [
+            'Content-type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $columns = ['ID', 'العميل', 'التاريخ', 'الوصف', 'مدين', 'دائن', 'الرصيد', 'نوع المرجع'];
+
+        $callback = function () use ($accounts, $columns) {
+            $file = fopen('php://output', 'w');
+            // Add UTF-8 BOM for Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            fputcsv($file, $columns);
+
+            foreach ($accounts as $account) {
+                fputcsv($file, [
+                    $account->id,
+                    $account->customer->name,
+                    $account->date,
+                    $account->description,
+                    $account->debit,
+                    $account->credit,
+                    $account->balance,
+                    $account->reference_type,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Display ledger for a specific customer.
      */
     public function customerLedger(Customer $customer): View

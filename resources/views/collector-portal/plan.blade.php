@@ -127,12 +127,18 @@
                 </div>
 
                 @if($item->status === 'collected' && $item->collection)
-                    <div class="bg-gray-50 dark:bg-slate-800 px-4 py-2 border-t border-gray-100 dark:border-slate-700 text-sm text-gray-600 dark:text-slate-400 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-slate-800 px-4 py-3 border-t border-gray-100 dark:border-slate-700 text-sm text-gray-600 dark:text-slate-400 flex justify-between items-center">
                         <span>
-                            <span class="font-medium text-gray-900 dark:text-slate-200"></span> 
-                            إيصال رقم :{{ $item->collection->receipt_no }}
+                            <span class="opacity-60 text-xs">رقم الإيصال:</span> 
+                            <span class="font-bold text-gray-900 dark:text-slate-200">#{{ $item->collection->receipt_no }}</span>
                         </span>
-                        <a href="{{ route('collector.receipt', $item->collection) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-bold">عرض الإيصال</a>
+                        <a href="{{ route('shared.receipt', $item->collection) }}" 
+                           class="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 py-2 px-4 rounded-xl font-bold border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all text-xs">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                            </svg>
+                            طباعة الإيصال
+                        </a>
                     </div>
                 @endif
         

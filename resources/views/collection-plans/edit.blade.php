@@ -27,7 +27,8 @@
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">المحصل *</label>
-                <select name="collector_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" dir="rtl" required>
+                <select name="collector_id" class="w-full select2-search" data-placeholder="اختر المندوب..." required>
+                    <option value=""></option>
                     @foreach ($collectors as $collector)
                         <option value="{{ $collector->id }}" {{ old('collector_id', $collectionPlan->collector_id) == $collector->id ? 'selected' : '' }}>{{ $collector->name }}</option>
                     @endforeach

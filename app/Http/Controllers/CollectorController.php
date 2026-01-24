@@ -51,17 +51,41 @@ class CollectorController extends Controller
         }
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255', // Enforce name validation from User or input if needed?
+            // Actually Collector model has 'name' field too (shadowing user name or independent?)
+            // Looking at previous file view, it seems collector has 'name' but the create logic didn't validate it?
+            // Wait, previous file view store method:
+            /*
+            $validated = $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'phone' => 'required|string|max:20',
+                'area' => 'required|string|max:255',
+            ]);
+            $collector = Collector::create([
+                'phone' => $validated['phone'],
+                'area' => $validated['area'],
+            ]);
+            */
+            // Ideally we should add 'code' here.
+            'code' => 'nullable|string|unique:collectors,code',
             'phone' => 'required|string|max:20',
             'area' => 'required|string|max:255',
         ]);
 
+        // Get user name for collector name if not provided?
+        // The Create View probably doesn't have name input if it selects a User.
+        // But the Model has 'name'. 
+        // Let's grab name from User.
+        $user = \App\Models\User::findOrFail($validated['user_id']);
+        
         $collector = Collector::create([
+            'user_id' => $validated['user_id'],
+            'code' => $validated['code'] ?? null,
+            'name' => $user->name, // Sync name
             'phone' => $validated['phone'],
             'area' => $validated['area'],
         ]);
 
-        // Assign the collector profile to the selected user
-        $user = \App\Models\User::findOrFail($validated['user_id']);
         $user->update(['collector_id' => $collector->id]);
 
         return redirect()->route('collectors.index')
@@ -112,13 +136,16 @@ class CollectorController extends Controller
         }
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
+            'code' => 'nullable|string|unique:collectors,code,' . $collector->id,
             'phone' => 'required|string|max:20',
             'area' => 'required|string|max:255',
         ]);
 
         $collector->update([
+            'code' => $validated['code'] ?? null,
             'phone' => $validated['phone'],
             'area' => $validated['area'],
+            // Updates to name should probably sync with User if we are strict, or just leave as is.
         ]);
 
         // Update user association if changed

@@ -18,20 +18,20 @@
         <form action="{{ route('collections.store') }}" method="POST">
             @csrf
 
-            <div class="mb-4">
+            <div class="mb-4 text-right">
                 <label class="block text-gray-700 text-sm font-bold mb-2">العملاء *</label>
-                <select name="customer_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" dir="rtl" required>
-                    <option value="">اختر العميل</option>
+                <select name="customer_id" class="w-full select2-search" data-placeholder="اختر العميل..." required>
+                    <option value=""></option>
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 text-right">
                 <label class="block text-gray-700 text-sm font-bold mb-2">مندوب التحصيل *</label>
-                <select name="collector_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" dir="rtl" required>
-                    <option value="">اختر مندوب </option>
+                <select name="collector_id" class="w-full select2-search" data-placeholder="اختر المندوب..." required>
+                    <option value=""></option>
                     @foreach ($collectors as $collector)
                         <option value="{{ $collector->id }}" {{ old('collector_id') == $collector->id ? 'selected' : '' }}>{{ $collector->name }}</option>
                     @endforeach

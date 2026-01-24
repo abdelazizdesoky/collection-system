@@ -46,6 +46,10 @@
                 </h2>
                 <div class="space-y-4">
                     <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
+                        <p class="text-xs text-gray-500 mb-1">الكود</p>
+                        <p class="font-bold dark:text-white text-lg font-mono">{{ $customer->code ?? '-' }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
                         <p class="text-xs text-gray-500 mb-1">الاسم الكامل</p>
                         <p class="font-bold dark:text-white text-lg">{{ $customer->name }}</p>
                     </div>
@@ -56,6 +60,16 @@
                     <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
                         <p class="text-xs text-gray-500 mb-1">العنوان</p>
                         <p class="font-medium dark:text-gray-300">{{ $customer->address }}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
+                            <p class="text-xs text-gray-500 mb-1">المنطقة</p>
+                            <p class="font-medium dark:text-gray-300">{{ $customer->area->name ?? 'غير محدد' }}</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
+                            <p class="text-xs text-gray-500 mb-1">المندوب المسؤول</p>
+                            <p class="font-medium dark:text-gray-300">{{ $customer->collector->name ?? 'غير محدد' }}</p>
+                        </div>
                     </div>
                 </div>
             </div>

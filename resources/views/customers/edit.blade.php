@@ -20,6 +20,11 @@
             @method('PUT')
 
             <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">الكود (اختياري)</label>
+                <input type="text" name="code" value="{{ old('code', $customer->code) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="كود مرجعي مميز">
+            </div>
+
+            <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">الاسم *</label>
                 <input type="text" name="name" value="{{ old('name', $customer->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             </div>
@@ -44,6 +49,26 @@
                 <select name="balance_type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     <option value="debit" {{ old('balance_type', $customer->balance_type) == 'debit' ? 'selected' : '' }}> مدين (العميل يدين)</option>
                     <option value="credit" {{ old('balance_type', $customer->balance_type) == 'credit' ? 'selected' : '' }}>دائن (العميل يدأين)</option>
+                </select>
+            </div>
+
+            <div class="mb-4 text-right">
+                <label class="block text-gray-700 text-sm font-bold mb-2">المنطقة</label>
+                <select name="area_id" class="w-full select2-search" data-placeholder="اختر المنطقة...">
+                    <option value=""></option>
+                    @foreach($areas as $area)
+                        <option value="{{ $area->id }}" {{ old('area_id', $customer->area_id) == $area->id ? 'selected' : '' }}>{{ $area->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-6 text-right">
+                <label class="block text-gray-700 text-sm font-bold mb-2">المحصل المسؤول</label>
+                <select name="collector_id" class="w-full select2-search" data-placeholder="اختر المندوب المسؤول...">
+                    <option value=""></option>
+                    @foreach($collectors as $collector)
+                        <option value="{{ $collector->id }}" {{ old('collector_id', $customer->collector_id) == $collector->id ? 'selected' : '' }}>{{ $collector->name }}</option>
+                    @endforeach
                 </select>
             </div>
 

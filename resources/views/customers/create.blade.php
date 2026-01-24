@@ -19,6 +19,11 @@
             @csrf
 
             <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">الكود (اختياري)</label>
+                <input type="text" name="code" value="{{ old('code') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" placeholder="كود مرجعي مميز">
+            </div>
+
+            <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">الاسم *</label>
                 <input type="text" name="name" value="{{ old('name') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" required>
             </div>
@@ -44,6 +49,26 @@
                     <option value="">اختر النوع</option>
                     <option value="debit" {{ old('balance_type') == 'debit' ? 'selected' : '' }}>مدين</option>
                     <option value="credit" {{ old('balance_type') == 'credit' ? 'selected' : '' }}>دائن</option>
+                </select>
+            </div>
+
+            <div class="mb-4 text-right">
+                <label class="block text-gray-700 text-sm font-bold mb-2">المنطقة</label>
+                <select name="area_id" class="w-full select2-search" data-placeholder="اختر المنطقة...">
+                    <option value=""></option>
+                    @foreach($areas as $area)
+                        <option value="{{ $area->id }}" {{ old('area_id') == $area->id ? 'selected' : '' }}>{{ $area->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-6 text-right">
+                <label class="block text-gray-700 text-sm font-bold mb-2">المحصل المسؤول</label>
+                <select name="collector_id" class="w-full select2-search" data-placeholder="اختر المندوب المسؤول...">
+                    <option value=""></option>
+                    @foreach($collectors as $collector)
+                        <option value="{{ $collector->id }}" {{ old('collector_id') == $collector->id ? 'selected' : '' }}>{{ $collector->name }}</option>
+                    @endforeach
                 </select>
             </div>
 

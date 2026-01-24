@@ -1,6 +1,6 @@
 @extends('layouts.collector')
 
-@section('title', 'إيصال #' . $collection->receipt_no)
+@section('title', 'إيصال #' . $collection->formatted_receipt_no)
 
 @section('content')
 <div class="max-w-lg mx-auto">
@@ -43,8 +43,15 @@
 
         <!-- Receipt Number -->
         <div class="bg-emerald-50 dark:bg-emerald-900/20 px-6 py-4 text-center border-b border-emerald-100 dark:border-emerald-500/20">
-            <div class="text-sm text-emerald-600 dark:text-emerald-400 mb-1 font-bold">رقم الإيصال</div>
-            <div class="text-3xl font-black text-emerald-700 dark:text-emerald-300">{{ $collection->receipt_no }}</div>
+            <div class="flex flex-col items-center gap-1">
+                <div class="text-sm text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">رقم الإيصال</div>
+                <div class="text-3xl font-black text-emerald-700 dark:text-emerald-300">#{{ $collection->formatted_receipt_no }}</div>
+                @if($collection->print_count > 1)
+                    <div class="mt-1 px-3 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 rounded-full text-[10px] font-black">
+                        نسخة رقم {{ $collection->print_count }}
+                    </div>
+                @endif
+            </div>
         </div>
 
         <!-- Receipt Details -->
@@ -161,6 +168,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Print session control: Redirect away after the print dialog closes
+    window.addEventListener('afterprint', function() {
+        @php
+            $isCollector = auth()->user()->hasRole('collector');
+            $redirectUrl = route('dashboard'); 
+            
+            if ($collection->planItem) {
+                $redirectUrl = $isCollector 
+                    ? route('collector.plan', $collection->planItem->collection_plan_id)
+                    : route('visit-plans.show', $collection->planItem->visit_plan_id);
+            } elseif ($isCollector) {
+                $redirectUrl = route('collector.dashboard');
+            }
+        @endphp
+        window.location.href = "{{ $redirectUrl }}";
+    });
+</script>
 
 <style>
     @media print {

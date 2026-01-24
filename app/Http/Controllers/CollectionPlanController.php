@@ -33,8 +33,15 @@ class CollectionPlanController extends Controller
         }
 
         $collectors = Collector::all();
-
-        return view('collection-plans.create', compact('collectors'));
+        // Pass empty customers initially, or all if we want fallback, but prompt says "only collector customers"
+        // We will rely on AJAX, but for safety lets pass empty or all. 
+        // Better: pass all but view handles it via JS. 
+        // Actually, user wants "When creating plan... show ONLY collector customers".
+        // The view Create usually has a dropdown "Select Collector". 
+        // So we need to ensure the list of customers is updated when collector is selected.
+        $customers = collect();
+        
+        return view('collection-plans.create', compact('collectors', 'customers'));
     }
 
     /**
@@ -58,7 +65,18 @@ class CollectionPlanController extends Controller
         $validated['date'] = $validated['plan_date'];
         unset($validated['plan_date']);
 
-        CollectionPlan::create($validated);
+        $plan = CollectionPlan::create($validated);
+
+        if ($request->has('customers')) {
+            foreach ($request->customers as $customerId) {
+                \App\Models\CollectionPlanItem::create([
+                    'collection_plan_id' => $plan->id,
+                    'customer_id' => $customerId,
+                    'status' => 'pending',
+                    'priority' => 0, // Default priority
+                ]);
+            }
+        }
 
         return redirect()->route('collection-plans.index')
             ->with('success', 'Collection plan created successfully.');
@@ -69,7 +87,7 @@ class CollectionPlanController extends Controller
      */
     public function show(CollectionPlan $collectionPlan): View
     {
-        $collectionPlan->load('collector', 'items.customer');
+        $collectionPlan->load('collector', 'items.customer','items.collection','items.collection.cheque');
 
         return view('collection-plans.show', compact('collectionPlan'));
     }

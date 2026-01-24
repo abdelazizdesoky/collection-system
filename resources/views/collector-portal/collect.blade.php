@@ -113,7 +113,12 @@
                 </div>
                 <div>
                     <label class="block text-blue-800 dark:text-blue-300 font-bold mb-2">اسم البنك *</label>
-                    <input type="text" name="bank_name" value="{{ old('bank_name') }}" class="w-full px-4 py-3 border-2 border-white dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:border-blue-500 dark:text-white">
+                    <input type="text" name="bank_name" value="{{ old('bank_name') }}" list="banks" class="w-full px-4 py-3 border-2 border-white dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:border-blue-500 dark:text-white" placeholder="اختر البنك">
+                    <datalist id="banks">
+                        @foreach($banks as $bank)
+                            <option value="{{ $bank->name }}">
+                        @endforeach
+                    </datalist>
                 </div>
                 <div>
                     <label class="block text-blue-800 dark:text-blue-300 font-bold mb-2">تاريخ الاستحقاق *</label>
@@ -125,7 +130,7 @@
             <div id="transfer_fields" class="hidden space-y-5 mb-5 p-4 bg-amber-50/50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-500/30">
                 <div>
                     <label class="block text-amber-800 dark:text-amber-300 font-bold mb-2">اسم البنك / البرنامج *</label>
-                    <input type="text" name="bank_name_transfer" value="{{ old('bank_name') }}" class="w-full px-4 py-3 border-2 border-white dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:border-amber-500 dark:text-white">
+                    <input type="text" name="bank_name_transfer" value="{{ old('bank_name') }}" list="banks" class="w-full px-4 py-3 border-2 border-white dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:border-amber-500 dark:text-white" placeholder="اختر البنك">
                 </div>
                 <div>
                     <label class="block text-amber-800 dark:text-amber-300 font-bold mb-2">رقم المرجع (Ref No) *</label>

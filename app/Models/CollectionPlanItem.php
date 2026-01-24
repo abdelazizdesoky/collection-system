@@ -47,4 +47,25 @@ class CollectionPlanItem extends Model
     {
         return $this->belongsTo(Collection::class);
     }
+
+  
+
+
+    /**
+     * Get the collected amount attribute.
+     */
+    public function getCollectedAmountAttribute(): float
+    {
+        return $this->collection?->amount ?? 0;
+    }
+
+  
+
+    /**
+     * Get the is collected attribute.
+     */
+    public function getIsCollectedAttribute(): bool
+    {
+        return $this->collection !== null;
+    }
 }

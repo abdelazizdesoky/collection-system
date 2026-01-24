@@ -23,6 +23,16 @@ class DashboardController extends Controller
             return $this->adminDashboard();
         }
 
+        // Accountant sees their specialized financial dashboard
+        if ($user->hasRole('accountant')) {
+            return $this->accountantDashboard();
+        }
+
+        // Plan Supervisor sees their logistical dashboard
+        if ($user->hasRole('plan_supervisor')) {
+            return $this->planSupervisorDashboard();
+        }
+
         // Collectors are redirected to their dedicated portal
         if ($user->hasRole('collector')) {
             return redirect()->route('collector.dashboard');
@@ -74,6 +84,11 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
+        // Due Installments
+        $dueInstallmentsCount = \App\Models\Installment::where('status', 'pending')
+            ->whereDate('due_date', '<=', now())
+            ->count();
+
         return view('dashboards.admin', [
             'totalCustomers' => $totalCustomers,
             'totalCollectors' => $totalCollectors,
@@ -89,6 +104,79 @@ class DashboardController extends Controller
             'topCollectors' => $topCollectors,
             'activePlans' => $activePlans,
             'users' => $users,
+            'dueInstallmentsCount' => $dueInstallmentsCount,
+        ]);
+    }
+
+    private function accountantDashboard(): View
+    {
+        $totalCustomers = Customer::count();
+        $totalCollectors = Collector::count();
+        $totalCollections = Collection::sum('amount') ?? 0;
+        $totalCheques = Cheque::sum('amount') ?? 0;
+        $pendingCheques = Cheque::where('status', 'pending')->count();
+        
+        // Recent collections
+        $recentCollections = Collection::with(['customer', 'collector'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        // Overdue cheques
+        $overdueCheques = Cheque::where('status', 'pending')
+            ->whereDate('due_date', '<', now())
+            ->with('customer')
+            ->take(10)
+            ->get();
+
+        // Top collectors by collection amount
+        $topCollectors = Collector::withSum('collections', 'amount')
+            ->orderByDesc('collections_sum_amount')
+            ->take(5)
+            ->get();
+
+        return view('dashboards.accountant', [
+            'totalCustomers' => $totalCustomers,
+            'totalCollectors' => $totalCollectors,
+            'totalCollections' => $totalCollections,
+            'totalCheques' => $totalCheques,
+            'pendingCheques' => $pendingCheques,
+            'recentCollections' => $recentCollections,
+            'overdueCheques' => $overdueCheques,
+            'topCollectors' => $topCollectors,
+        ]);
+    }
+
+    private function planSupervisorDashboard(): View
+    {
+        $totalCollectionPlans = CollectionPlan::count();
+        $totalVisitPlans = \App\Models\VisitPlan::count();
+        $totalCollectors = Collector::count();
+        
+        // Active collection plans
+        $activePlans = CollectionPlan::with(['collector', 'items.customer'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        // Recent visit plans
+        $visitPlans = \App\Models\VisitPlan::with(['collector', 'items'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        // Due installments for logistics
+        $dueInstallmentsCount = \App\Models\Installment::where('status', 'pending')
+            ->whereDate('due_date', '<=', now())
+            ->count();
+
+        return view('dashboards.plan_supervisor', [
+            'totalCollectionPlans' => $totalCollectionPlans,
+            'totalVisitPlans' => $totalVisitPlans,
+            'totalCollectors' => $totalCollectors,
+            'activePlans' => $activePlans,
+            'visitPlans' => $visitPlans,
+            'dueInstallmentsCount' => $dueInstallmentsCount,
         ]);
     }
 

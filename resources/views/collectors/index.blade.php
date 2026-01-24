@@ -45,6 +45,7 @@
             <table class="w-full text-right border-collapse">
                 <thead>
                     <tr class="bg-gray-50 dark:bg-dark-tableheader text-gray-600 dark:text-gray-300">
+                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">الكود</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">الاسم</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap text-center">الهاتف</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap text-center">المنطقة</th>
@@ -54,6 +55,9 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
                     @forelse ($collectors as $collector)
                         <tr class="hover:bg-blue-50/30 dark:hover:bg-slate-700/30 transition-colors group">
+                            <td class="px-6 py-5 whitespace-nowrap bg-gray-50 dark:bg-dark-bg/50 font-mono text-sm text-gray-500 dark:text-gray-400">
+                                {{ $collector->code ?? '-' }}
+                            </td>
                             <td class="px-6 py-5 whitespace-nowrap">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold group-hover:scale-110 transition-transform">

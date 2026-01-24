@@ -22,6 +22,8 @@ class Collection extends Model
         'attachment',
         'bank_name',
         'reference_no',
+        'is_approved',
+        'print_count',
     ];
 
     protected $casts = [
@@ -74,6 +76,31 @@ class Collection extends Model
     }
 
     /**
+     * Increment the print count and check if limit is reached.
+     */
+    public function incrementPrintCount(): bool
+    {
+        if ($this->print_count >= 3) {
+            return false;
+        }
+
+        $this->increment('print_count');
+        return true;
+    }
+
+    /**
+     * Get the receipt number with version suffix if printed more than once.
+     */
+    public function getFormattedReceiptNoAttribute(): string
+    {
+        if ($this->print_count <= 1) {
+            return $this->receipt_no;
+        }
+
+        return "{$this->receipt_no}-{$this->print_count}";
+    }
+
+    /**
      * Boot the model.
      */
     protected static function boot(): void
@@ -81,8 +108,7 @@ class Collection extends Model
         parent::boot();
 
         static::created(function (Collection $collection): void {
-            // Observer logic moved to Controller for better transaction control
-            // and to solve the issue of balance not updating reliably.
+            // Observer logic moved to Controller
         });
     }
 }

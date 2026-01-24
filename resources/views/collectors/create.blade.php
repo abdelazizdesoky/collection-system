@@ -19,9 +19,14 @@
             @csrf
 
             <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">الكود (اختياري)</label>
+                <input type="text" name="code" value="{{ old('code') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" placeholder="كود مرجعي مميز">
+            </div>
+
+            <div class="mb-4 text-right">
                 <label class="block text-gray-700 text-sm font-bold mb-2">المستخدم *</label>
-                <select name="user_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" dir="rtl" required>
-                    <option value="">اختر المستخدم</option>
+                <select name="user_id" class="w-full select2-search" data-placeholder="اختر المستخدم..." required>
+                    <option value=""></option>
                     @foreach($users as $user)
                         <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ $user->email }})</option>
                     @endforeach

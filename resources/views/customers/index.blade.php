@@ -62,6 +62,7 @@
             <table class="w-full text-right border-collapse">
                 <thead>
                     <tr class="bg-gray-50 dark:bg-dark-tableheader text-gray-600 dark:text-gray-300">
+                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">الكود</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">اسم العميل</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">رقم الهاتف</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap text-center">نوع الرصيد</th>
@@ -73,6 +74,7 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
                     @forelse ($customers as $customer)
                         <tr class="hover:bg-blue-50/30 dark:hover:bg-slate-700/30 transition-colors group">
+                            <td class="px-6 py-5 whitespace-nowrap font-medium text-gray-500 dark:text-gray-400 font-mono">{{ $customer->code ?? '-' }}</td>
                             <td class="px-6 py-5">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">

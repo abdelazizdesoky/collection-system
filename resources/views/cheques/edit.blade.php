@@ -19,9 +19,10 @@
             @csrf
             @method('PUT')
 
-            <div class="mb-4">
+            <div class="mb-4 text-right">
                 <label class="block text-gray-700 text-sm font-bold mb-2">العملاء *</label>
-                <select name="customer_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <select name="customer_id" class="w-full select2-search" data-placeholder="اختر العميل..." required>
+                    <option value=""></option>
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" {{ old('customer_id', $cheque->customer_id) == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
                     @endforeach

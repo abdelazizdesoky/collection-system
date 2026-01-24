@@ -87,4 +87,5 @@ class CollectionPlan extends Model
     return $this->getTotalCollectedAmount();
 }
 
+
 }

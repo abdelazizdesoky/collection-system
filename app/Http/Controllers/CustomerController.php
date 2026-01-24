@@ -38,7 +38,10 @@ class CustomerController extends Controller
             abort(403);
         }
 
-        return view('customers.create');
+        $areas = \App\Models\Area::orderBy('name')->get();
+        $collectors = \App\Models\Collector::all();
+
+        return view('customers.create', compact('areas', 'collectors'));
     }
 
     /**
@@ -50,11 +53,14 @@ class CustomerController extends Controller
             abort(403);
         }
         $validated = $request->validate([
+            'code' => 'nullable|string|unique:customers,code',
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'address' => 'required|string',
             'opening_balance' => 'required|numeric|min:0',
             'balance_type' => 'required|in:debit,credit',
+            'area_id' => 'nullable|exists:areas,id',
+            'collector_id' => 'nullable|exists:collectors,id',
         ]);
 
         Customer::create($validated);
@@ -68,7 +74,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer): View
     {
-        $customer->load('collections', 'cheques', 'accounts');
+        $customer->load('collections', 'cheques', 'accounts', 'area', 'collector');
 
         return view('customers.show', compact('customer'));
     }
@@ -82,7 +88,10 @@ class CustomerController extends Controller
             abort(403);
         }
 
-        return view('customers.edit', compact('customer'));
+        $areas = \App\Models\Area::orderBy('name')->get();
+        $collectors = \App\Models\Collector::all();
+
+        return view('customers.edit', compact('customer', 'areas', 'collectors'));
     }
 
     /**
@@ -94,11 +103,14 @@ class CustomerController extends Controller
             abort(403);
         }
         $validated = $request->validate([
+            'code' => 'nullable|string|unique:customers,code,' . $customer->id,
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'address' => 'required|string',
             'opening_balance' => 'required|numeric|min:0',
             'balance_type' => 'required|in:debit,credit',
+            'area_id' => 'nullable|exists:areas,id',
+            'collector_id' => 'nullable|exists:collectors,id',
         ]);
 
         $customer->update($validated);

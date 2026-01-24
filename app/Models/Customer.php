@@ -12,16 +12,35 @@ class Customer extends Model
     use HasFactory, Auditable;
 
     protected $fillable = [
+        'code',
         'name',
         'phone',
         'address',
         'opening_balance',
         'balance_type',
+        'area_id',
+        'collector_id',
     ];
 
     protected $casts = [
         'opening_balance' => 'decimal:2',
     ];
+
+    /**
+     * Get the area that owns the customer.
+     */
+    public function area(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    /**
+     * Get the collector responsible for this customer.
+     */
+    public function collector(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Collector::class);
+    }
 
     /**
      * Get all collections for this customer.
@@ -53,6 +72,22 @@ class Customer extends Model
     public function accounts(): HasMany
     {
         return $this->hasMany(CustomerAccount::class);
+    }
+
+    /**
+     * Get all visit plan items for this customer.
+     */
+    public function visitPlanItems(): HasMany
+    {
+        return $this->hasMany(VisitPlanItem::class);
+    }
+
+    /**
+     * Get all visits for this customer.
+     */
+    public function visits(): HasMany
+    {
+        return $this->hasMany(Visit::class);
     }
 
     /**
