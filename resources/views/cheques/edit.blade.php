@@ -36,7 +36,12 @@
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">اسم البنك *</label>
-                <input type="text" name="bank_name" value="{{ old('bank_name', $cheque->bank_name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <select name="bank_name" class="w-full select2-search" data-placeholder="اختر البنك..." required>
+                    <option value=""></option>
+                    @foreach ($banks as $bank)
+                        <option value="{{ $bank->name }}" {{ old('bank_name', $cheque->bank_name) == $bank->name ? 'selected' : '' }}>{{ $bank->name }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="mb-4">

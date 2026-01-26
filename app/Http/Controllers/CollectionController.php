@@ -20,8 +20,15 @@ class CollectionController extends Controller
     public function index(Request $request): View
     {
         $search = $request->input('search');
+        $showTrashed = $request->input('trashed') === '1';
 
-        $collections = Collection::with('customer', 'collector')
+        $query = Collection::with('customer', 'collector');
+
+        if ($showTrashed) {
+            $query->onlyTrashed();
+        }
+
+        $collections = $query
             ->when($search, function($query, $search) {
                 return $query->where('receipt_no', 'like', "%{$search}%")
                     ->orWhereHas('customer', function($q) use ($search) {
@@ -37,7 +44,42 @@ class CollectionController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('collections.index', compact('collections'));
+        $trashedCount = Collection::onlyTrashed()->count();
+        $activeCount = Collection::count();
+
+        return view('collections.index', compact('collections', 'showTrashed', 'trashedCount', 'activeCount'));
+    }
+
+    /**
+     * Restore a soft deleted collection.
+     */
+    public function restore($id)
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        $collection = Collection::onlyTrashed()->findOrFail($id);
+        $collection->restore();
+
+        return redirect()->route('collections.index', ['trashed' => '1'])
+            ->with('success', 'تم استعادة التحصيل بنجاح.');
+    }
+
+    /**
+     * Permanently delete a collection.
+     */
+    public function forceDelete($id)
+    {
+        if (! auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $collection = Collection::onlyTrashed()->findOrFail($id);
+        $collection->forceDelete();
+
+        return redirect()->route('collections.index', ['trashed' => '1'])
+            ->with('success', 'تم حذف التحصيل نهائياً.');
     }
 
     /**
@@ -51,8 +93,9 @@ class CollectionController extends Controller
 
         $customers = Customer::all();
         $collectors = Collector::all();
+        $banks = \App\Models\Bank::orderBy('name')->get();
 
-        return view('collections.create', compact('customers', 'collectors'));
+        return view('collections.create', compact('customers', 'collectors', 'banks'));
     }
 
     /**
@@ -130,8 +173,9 @@ class CollectionController extends Controller
 
         $customers = Customer::all();
         $collectors = Collector::all();
+        $banks = \App\Models\Bank::orderBy('name')->get();
 
-        return view('collections.edit', compact('collection', 'customers', 'collectors'));
+        return view('collections.edit', compact('collection', 'customers', 'collectors', 'banks'));
     }
 
     /**
@@ -163,17 +207,23 @@ class CollectionController extends Controller
     /**
      * Remove the specified collection from database.
      */
-    public function destroy(Collection $collection)
+    public function destroy(Collection $collection, \App\Services\AccountBalanceService $accountService)
     {
         // Admins and Supervisor can delete collections
         if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
             abort(403);
         }
 
-        $collection->delete();
+        DB::transaction(function () use ($collection, $accountService) {
+            // Cancel ledger entry
+            $accountService->cancelTransaction('Collection', $collection->id);
+            
+            // Soft delete collection
+            $collection->delete();
+        });
 
         return redirect()->route('collections.index')
-            ->with('success', 'Collection deleted successfully.');
+            ->with('success', 'Collection deleted and removed from account balance successfully.');
     }
 
     /**

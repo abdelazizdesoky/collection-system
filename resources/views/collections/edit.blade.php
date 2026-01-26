@@ -52,6 +52,16 @@
                 </select>
             </div>
 
+            <div class="mb-4" id="bank-container" style="display: none;">
+                <label class="block text-gray-700 text-sm font-bold mb-2">اسم البنك</label>
+                <select name="bank_name" class="w-full select2-search" data-placeholder="اختر البنك...">
+                    <option value=""></option>
+                    @foreach ($banks as $bank)
+                        <option value="{{ $bank->name }}" {{ old('bank_name') == $bank->name ? 'selected' : '' }}>{{ $bank->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">تاريخ التحصيل *</label>
                 <input type="date" name="collection_date" value="{{ old('collection_date', $collection->collection_date->toDateString()) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
@@ -74,4 +84,23 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select2 might be enhancing select elements, so we use jQuery for events
+        const paymentType = $('select[name="payment_type"]');
+        const bankContainer = $('#bank-container');
+
+        function toggleBank() {
+            if (paymentType.val() === 'cheque') {
+                bankContainer.show();
+            } else {
+                bankContainer.hide();
+            }
+        }
+
+        paymentType.on('change', toggleBank);
+        toggleBank();
+    });
+</script>
 @endsection

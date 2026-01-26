@@ -253,10 +253,24 @@ class CollectorPortalController extends Controller
                 'bank_transfer' => 'تحويل بنكي'
             ];
 
+            $description = "تحصيل ({$paymentTypeArabic[$validated['payment_type']]}) - إيصال رقم {$validated['receipt_no']}";
+
+            // Installment Logic
+            if ($request->has('is_installment') && $request->is_installment == 1) {
+                $installment = $planItem->customer->due_installments->first();
+                if ($installment) {
+                    $installment->update([
+                        'status' => 'paid',
+                        'collection_id' => $collection->id
+                    ]);
+                    $description .= " - سداد قسط مستحق ({$installment->due_date->format('Y-m-d')})";
+                }
+            }
+
             CustomerAccount::create([
                 'customer_id' => $planItem->customer_id,
                 'date' => today(),
-                'description' => "تحصيل ({$paymentTypeArabic[$validated['payment_type']]}) - إيصال رقم {$validated['receipt_no']}",
+                'description' => $description,
                 'debit' => 0,
                 'credit' => $validated['amount'],
                 'balance' => $newBalance,
@@ -492,10 +506,24 @@ class CollectorPortalController extends Controller
                     'bank_transfer' => 'تحويل بنكي'
                 ];
 
+                $description = "تحصيل ({$paymentTypeArabic[$validated['payment_type']]}) - إيصال رقم {$validated['receipt_no']}";
+
+                // Installment Logic
+                if ($request->has('is_installment') && $request->is_installment == 1) {
+                    $installment = $visitPlanItem->customer->due_installments->first();
+                    if ($installment) {
+                        $installment->update([
+                            'status' => 'paid',
+                            'collection_id' => $collection->id
+                        ]);
+                        $description .= " - سداد قسط مستحق ({$installment->due_date->format('Y-m-d')})";
+                    }
+                }
+
                 CustomerAccount::create([
                     'customer_id' => $visitPlanItem->customer_id,
                     'date' => today(),
-                    'description' => "تحصيل ({$paymentTypeArabic[$validated['payment_type']]}) - إيصال رقم {$validated['receipt_no']}",
+                    'description' => $description,
                     'debit' => 0,
                     'credit' => $validated['amount'],
                     'balance' => $newBalance,

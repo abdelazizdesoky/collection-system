@@ -16,7 +16,7 @@
                 </div>
                 <div>
                     <h1 class="text-3xl font-black dark:text-white tracking-tight">خطط الزيارات</h1>
-                    <p class="text-gray-500 dark:text-gray-400 font-medium">تنظيم جداول زيارات المحصلين للعملاء</p>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium">تنظيم جداول زيارات المندوبين للعملاء</p>
                 </div>
             </div>
 
@@ -37,7 +37,7 @@
     <div class="bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 mb-6 border border-gray-100 dark:border-dark-border">
         <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">المحصل</label>
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">المندوب</label>
                 <select name="collector_id" class="w-full select2-search" data-placeholder="الفلترة حسب المندوب...">
                     <option value=""></option>
                     @foreach($collectors as $collector)
@@ -86,7 +86,7 @@
                 <thead>
                     <tr class="bg-gray-50 dark:bg-dark-tableheader text-gray-600 dark:text-gray-300">
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">اسم الخطة</th>
-                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المحصل</th>
+                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المندوب</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">النوع</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">التاريخ</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">العملاء</th>
@@ -104,9 +104,9 @@
                             <td class="px-6 py-5 whitespace-nowrap">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 text-xs font-bold">
-                                        {{ mb_substr($plan->collector->name, 0, 1) }}
+                                        {{ mb_substr($plan->collector->name ?? '؟', 0, 1) }}
                                     </div>
-                                    <span class="font-medium dark:text-gray-300">{{ $plan->collector->name }}</span>
+                                    <span class="font-medium dark:text-gray-300">{{ $plan->collector->name ?? 'محصل محذوف' }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-5 text-center">

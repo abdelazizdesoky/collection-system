@@ -14,14 +14,54 @@ class CollectorController extends Controller
     /**
      * Display a listing of collectors.
      */
-    /**
-     * Display a listing of collectors.
-     */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $collectors = Collector::latest()->with('user')->paginate(15);
+        $showTrashed = $request->input('trashed') === '1';
 
-        return view('collectors.index', compact('collectors'));
+        $query = Collector::with('user');
+
+        if ($showTrashed) {
+            $query->onlyTrashed();
+        }
+
+        $collectors = $query->latest()->paginate(15);
+
+        $trashedCount = Collector::onlyTrashed()->count();
+        $activeCount = Collector::count();
+
+        return view('collectors.index', compact('collectors', 'showTrashed', 'trashedCount', 'activeCount'));
+    }
+
+    /**
+     * Restore a soft deleted collector.
+     */
+    public function restore($id)
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        $collector = Collector::onlyTrashed()->findOrFail($id);
+        $collector->restore();
+
+        return redirect()->route('collectors.index', ['trashed' => '1'])
+            ->with('success', 'تم استعادة المحصل بنجاح.');
+    }
+
+    /**
+     * Permanently delete a collector.
+     */
+    public function forceDelete($id)
+    {
+        if (! auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $collector = Collector::onlyTrashed()->findOrFail($id);
+        $collector->forceDelete();
+
+        return redirect()->route('collectors.index', ['trashed' => '1'])
+            ->with('success', 'تم حذف المحصل نهائياً.');
     }
 
     /**

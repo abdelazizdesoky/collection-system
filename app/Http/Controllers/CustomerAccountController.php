@@ -69,6 +69,7 @@ class CustomerAccountController extends Controller
     public function customerLedger(Customer $customer): View
     {
         $accounts = $customer->accounts()
+            ->active()
             ->latest('date')
             ->paginate(20);
 

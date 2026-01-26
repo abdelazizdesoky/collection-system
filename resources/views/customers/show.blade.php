@@ -34,6 +34,22 @@
         </div>
     </div>
 
+    @if($customer->hasDueInstallments())
+    <div class="mb-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-2 h-full bg-red-500"></div>
+        <div class="bg-red-500 text-white p-4 rounded-xl shadow-lg shadow-red-500/30 animate-bounce">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div class="flex-1 text-center md:text-right">
+            <h3 class="text-xl font-bold text-red-800 dark:text-red-400 mb-1">تنبيه هام: أقساط مستحقة السداد!</h3>
+            <p class="text-red-600 dark:text-red-300 font-medium">هذا العميل لديه <span class="font-black text-red-800 dark:text-white">{{ $customer->due_installments->count() }}</span> أقساط حل موعد سدادها. يرجى مراجعة خطة الأقساط واتخاذ الإجراء اللازم فوراً.</p>
+        </div>
+        <a href="{{ route('installments.index', ['customer_id' => $customer->id]) }}" class="w-full md:w-auto text-center bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-red-500/20 transition-all transform hover:scale-105">
+            عرض الأقساط
+        </a>
+    </div>
+    @endif
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         <!-- Customer Info -->
         <div class="lg:col-span-1 space-y-6">

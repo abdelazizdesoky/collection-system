@@ -63,7 +63,7 @@
             </div>
 
             <div class="mb-6 text-right">
-                <label class="block text-gray-700 text-sm font-bold mb-2">المحصل المسؤول</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">المندوب المسؤول</label>
                 <select name="collector_id" class="w-full select2-search" data-placeholder="اختر المندوب المسؤول...">
                     <option value=""></option>
                     @foreach($collectors as $collector)

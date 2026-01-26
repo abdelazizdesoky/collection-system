@@ -70,7 +70,7 @@
 
             <!-- Collector -->
             <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
-                <span class="text-gray-500 dark:text-slate-400">المحصل</span>
+                <span class="text-gray-500 dark:text-slate-400">المندوب</span>
                 <span class="font-medium text-gray-800 dark:text-gray-200">{{ $collection->collector->name }}</span>
             </div>
 
@@ -120,7 +120,7 @@
 
             <!-- Amount -->
             <div class="flex justify-between items-center py-4 bg-emerald-50 dark:bg-emerald-900/20 -mx-6 px-6 rounded-lg">
-                <span class="text-emerald-600 dark:text-emerald-400 font-bold text-lg">المبلغ المحصل</span>
+                <span class="text-emerald-600 dark:text-emerald-400 font-bold text-lg">المبلغ المندوب</span>
                 <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($collection->amount, 2) }} ج.م</span>
             </div>
 
@@ -163,7 +163,7 @@
             </div>
             <div class="text-center">
                 <div class="border-t-2 border-gray-400 w-32 mb-2"></div>
-                <div class="text-sm text-gray-600">توقيع المحصل</div>
+                <div class="text-sm text-gray-600">توقيع المندوب</div>
             </div>
         </div>
     </div>

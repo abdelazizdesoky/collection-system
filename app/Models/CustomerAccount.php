@@ -6,10 +6,11 @@ use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CustomerAccount extends Model
 {
-    use HasFactory, Auditable;
+    use HasFactory, Auditable, SoftDeletes;
 
     protected $fillable = [
         'customer_id',
@@ -20,7 +21,16 @@ class CustomerAccount extends Model
         'balance',
         'reference_type',
         'reference_id',
+        'status',
     ];
+
+    /**
+     * Scope a query to only include active accounts.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
 
     protected $casts = [
         'debit' => 'decimal:2',

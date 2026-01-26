@@ -26,7 +26,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">المحصل *</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">المندوب *</label>
                 <select name="collector_id" class="w-full select2-search" data-placeholder="اختر المندوب..." required>
                     <option value=""></option>
                     @foreach ($collectors as $collector)

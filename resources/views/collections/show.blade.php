@@ -48,7 +48,7 @@
                         </a>
                     </div>
                     <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
-                        <p class="text-xs text-gray-500 mb-1">المحصل المسؤول</p>
+                        <p class="text-xs text-gray-500 mb-1">المندوب المسؤول</p>
                         <p class="font-bold dark:text-white">{{ $collection->collector->name }}</p>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
@@ -77,7 +77,7 @@
             <!-- Amount Card -->
             <div class="bg-gradient-to-br from-emerald-600 to-green-700 rounded-2xl shadow-xl p-6 text-white overflow-hidden relative">
                 <div class="relative z-10 text-center">
-                    <p class="text-sm opacity-80 mb-2">المبلغ المحصل</p>
+                    <p class="text-sm opacity-80 mb-2">المبلغ المندوب</p>
                     <h2 class="text-4xl font-black">{{ number_format($collection->amount, 2) }}</h2>
                     <p class="text-lg opacity-90 mt-1">جنيه مصري</p>
                 </div>

@@ -120,7 +120,7 @@
                             <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
-                        بوابة تحصيل
+                        بوابة مندوب    
                     </a>
            <!-- <span class="bg-emerald-800 px-3 py-1 rounded-full text-sm"> -->
                         <!-- {{ $collector->name ?? 'Collector' }} -->
@@ -177,7 +177,7 @@
     </main>
 
     <footer class="bg-gray-800 text-white text-center py-4 mt-auto no-print">
-        <p class="text-sm opacity-70">© 2026 Alarabia Group - بوابة تحصيل</p>
+        <p class="text-sm opacity-70">© 2026 Alarabia Group - بوابة مندوب</p>
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

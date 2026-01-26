@@ -58,19 +58,19 @@
         </div>
         @endrole
 
-        @role('admin|supervisor|accountant')
-        <!-- Total Collectors -->
+        <!-- @role('admin|supervisor|accountant')
+         Total Collectors 
         <div class="bg-white dark:bg-dark-card rounded-3xl shadow-2xl shadow-emerald-500/10 border border-emerald-50 dark:border-dark-border p-7 hover:border-emerald-500/50 hover:-translate-y-1.5 transition-all duration-500 group">
             <div class="flex flex-col items-center text-center">
                 <div class="bg-emerald-50 dark:bg-emerald-900/40 p-5 rounded-3xl text-emerald-600 dark:text-emerald-400 mb-5 group-hover:scale-110 transition-transform shadow-inner">
                     <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
                 <div class="text-4xl font-black text-gray-800 dark:text-white mb-1 tracking-tighter">{{ $totalCollectors }}</div>
-                <div class="text-gray-500 dark:text-gray-400 font-bold text-sm uppercase tracking-wide">إجمالي المحصلون</div>
-                <a href="{{ route('collectors.index') }}" class="mt-4 px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-xs hover:bg-emerald-600 hover:text-white transition-colors">إدارة المحصلين</a>
+                <div class="text-gray-500 dark:text-gray-400 font-bold text-sm uppercase tracking-wide">إجمالي المنديب</div>
+                <a href="{{ route('collectors.index') }}" class="mt-4 px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-xs hover:bg-emerald-600 hover:text-white transition-colors">إدارة المندوبين</a>
             </div>
         </div>
-        @endrole
+        @endrole -->
 
         @role('admin|supervisor|accountant')
         <!-- Total Collections -->
@@ -146,7 +146,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <div class="font-bold text-gray-800 dark:text-gray-200">{{ $collection->customer->name }}</div>
+                                    <div class="font-bold text-gray-800 dark:text-gray-200">{{ $collection->customer->name??'عميل محذوف' }}</div>
                                     <div class="text-[10px] text-gray-400 uppercase tracking-tighter">{{ $collection->collector->name }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap font-black text-emerald-600 dark:text-emerald-400">
@@ -222,7 +222,7 @@
                     <thead>
                         <tr class="bg-gray-50/80 dark:bg-dark-tableheader/30 text-gray-400 text-[10px] font-black uppercase tracking-wider">
                             <th class="px-6 py-4">الخطة</th>
-                            <th class="px-6 py-4 text-center">المحصل</th>
+                            <th class="px-6 py-4 text-center">المندوب</th>
                             <th class="px-6 py-4">الإنجاز</th>
                             <th class="px-6 py-4 text-left">الموقف المالي</th>
                         </tr>

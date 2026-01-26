@@ -68,7 +68,7 @@
                     <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
                 <div class="text-4xl font-black text-gray-800 dark:text-white mb-1 tracking-tighter">{{ $totalCollectors }}</div>
-                <div class="text-gray-500 dark:text-gray-400 font-bold text-sm uppercase tracking-wide">المحصلون المتاحون</div>
+                <div class="text-gray-500 dark:text-gray-400 font-bold text-sm uppercase tracking-wide">المندوبون المتاحون</div>
                 <div class="mt-4 px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-xs">قيد التشغيل</div>
             </div>
         </div>

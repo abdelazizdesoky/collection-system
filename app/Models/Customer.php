@@ -6,10 +6,11 @@ use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model
 {
-    use HasFactory, Auditable;
+    use HasFactory, Auditable, SoftDeletes;
 
     protected $fillable = [
         'code',
@@ -98,5 +99,33 @@ class Customer extends Model
         $lastAccount = $this->accounts()->latest()->first();
 
         return $lastAccount?->balance ?? $this->opening_balance;
+    }
+
+    /**
+     * Get installment plans for this customer.
+     */
+    public function installmentPlans(): HasMany
+    {
+        return $this->hasMany(InstallmentPlan::class);
+    }
+
+    /**
+     * Get due installments for this customer.
+     */
+    public function getDueInstallmentsAttribute()
+    {
+        return Installment::whereIn('installment_plan_id', $this->installmentPlans()->pluck('id'))
+            ->where('status', 'pending')
+            ->whereDate('due_date', '<=', now())
+            ->orderBy('due_date')
+            ->get();
+    }
+
+    /**
+     * Check if customer has due installments.
+     */
+    public function hasDueInstallments(): bool
+    {
+        return $this->due_installments->isNotEmpty();
     }
 }

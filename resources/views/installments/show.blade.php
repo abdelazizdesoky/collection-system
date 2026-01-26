@@ -17,11 +17,32 @@
                 <p class="text-gray-500 dark:text-gray-400 font-bold mt-1 uppercase tracking-widest text-xs">خطة تقسيط نشطة • فاتورة رقم {{ $plan->invoice_no }}</p>
             </div>
         </div>
-        <a href="{{ route('installments.index') }}" class="flex items-center gap-2 text-amber-600 font-black hover:underline group">
-            <span>العودة للقائمة</span>
-            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('installments.edit', $plan) }}" class="flex items-center gap-2 bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-3 px-6 rounded-xl transition-all shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                تعديل الخطة
+            </a>
+            <form action="{{ route('installments.destroy', $plan) }}" method="POST" onsubmit="return confirm('تحذير: هل أنت متأكد من حذف خطة التقسيط بالكامل؟ سيتم حذف جميع الأقساط المرتبطة بها.');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="flex items-center gap-2 bg-red-100 hover:bg-red-200 text-red-800 font-bold py-3 px-6 rounded-xl transition-all shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    حذف الخطة
+                </button>
+            </form>
+            <a href="{{ route('installments.index') }}" class="flex items-center gap-2 text-gray-500 font-bold hover:underline">
+                <span>العودة للقائمة</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+            </a>
+        </div>
     </div>
+
+    @if(session('success'))
+        <div class="mb-8 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 rounded-2xl flex items-center gap-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            {{ session('success') }}
+        </div>
+    @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Sidebar Info -->
@@ -102,6 +123,7 @@
                                 <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border">تاريخ الاستحقاق</th>
                                 <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border text-center">المبلغ</th>
                                 <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border text-left">الحالة</th>
+                                <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border text-center">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50 dark:divide-dark-border">
@@ -120,6 +142,20 @@
                                         <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border {{ $installment->status_color }}">
                                             {{ $installment->status_label }}
                                         </span>
+                                    </td>
+                                    <td class="px-8 py-6 text-center">
+                                        <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <a href="{{ route('installments.item.edit', $installment) }}" class="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all shadow-sm" title="تعديل">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            </a>
+                                            <form action="{{ route('installments.item.destroy', $installment) }}" method="POST" class="inline" onsubmit="return confirm('حذف هذا القسط؟');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="حذف">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

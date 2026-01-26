@@ -50,8 +50,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">المحصل <span class="text-red-500">*</span></label>
-                    <select name="collector_id" required class="w-full select2-search" data-placeholder="اختر المحصل بالاسم أو الكود...">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">المندوب <span class="text-red-500">*</span></label>
+                    <select name="collector_id" required class="w-full select2-search" data-placeholder="اختر المندوب بالاسم أو الكود...">
                         <option value=""></option>
                         @foreach($collectors as $collector)
                             <option value="{{ $collector->id }}" {{ old('collector_id') == $collector->id ? 'selected' : '' }}>
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.length === 0) {
-                    customersListBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">لا يوجد عملاء مرتبطين بهذا المحصل</td></tr>';
+                    customersListBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">لا يوجد عملاء مرتبطين بهذا المندوب</td></tr>';
                     return;
                 }
 

@@ -25,7 +25,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">المحصل *</label>
+                <label class="block text-gray-700 text-sm font-bold mb-2">المندوب *</label>
                 <select name="collector_id" class="w-full select2-search" data-placeholder="اختر المندوب..." required>
                     <option value=""></option>
                     @foreach ($collectors as $collector)
@@ -62,7 +62,7 @@
 
             <!-- Customers Selection -->
             <div class="mb-6 border rounded-lg p-4 bg-gray-50">
-                <h3 class="font-bold text-lg mb-3">العملاء (يتم التحديث بناءً على المحصل)</h3>
+                <h3 class="font-bold text-lg mb-3">العملاء (يتم التحديث بناءً على المندوب)</h3>
                 
                 <div class="max-h-60 overflow-y-auto border bg-white rounded">
                     <table class="w-full text-right" dir="rtl">
@@ -75,7 +75,7 @@
                         </thead>
                         <tbody id="customers-list">
                             <tr>
-                                <td colspan="3" class="p-4 text-center text-gray-500">الرجاء اختيار محصل أولاً</td>
+                                <td colspan="3" class="p-4 text-center text-gray-500">الرجاء اختيار مندوب أولاً</td>
                             </tr>
                         </tbody>
                     </table>
@@ -84,7 +84,6 @@
 
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    const collectorSelect = document.querySelector('select[name="collector_id"]');
                     const customersList = document.getElementById('customers-list');
                     const selectAll = document.getElementById('select-all');
 
@@ -92,25 +91,22 @@
                         document.querySelectorAll('.customer-check').forEach(cb => cb.checked = this.checked);
                     });
 
-                    // Reuse the route from visit plans or create a new one. 
-                    // Using the existing visit plan route for convenience if it returns json customers
-                    const fetchUrl = '/visit-plans/collectors'; // We need to verify this route pattern
-
-                    collectorSelect.addEventListener('change', function() {
-                        const id = this.value;
+                    // Use jQuery for Select2 compatibility
+                    $('select[name="collector_id"]').on('change', function() {
+                        const id = $(this).val();
+                        
                         if(!id) {
-                            customersList.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">الرجاء اختيار محصل أولاً</td></tr>';
+                            customersList.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">الرجاء اختيار مندوب أولاً</td></tr>';   
                             return;
                         }
 
                         customersList.innerHTML = '<tr><td colspan="3" class="p-4 text-center">جاري التحميل...</td></tr>';
 
-                        // Utilizing the existing route: Route::get('/collectors/{collector}/customers', [VisitPlanController::class, 'getCustomers'])
                         fetch(`/collectors/${id}/customers`)
                             .then(res => res.json())
                             .then(data => {
                                 if(data.length === 0) {
-                                    customersList.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">لا يوجد عملاء لهذا المحصل</td></tr>';
+                                    customersList.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">لا يوجد عملاء لهذا المندوب</td></tr>';
                                     return;
                                 }
                                 
@@ -129,7 +125,7 @@
                             })
                             .catch(err => {
                                 console.error(err);
-                                customersList.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">حدث خطأ</td></tr>';
+                                customersList.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">حدث خطأ في تحميل العملاء</td></tr>';
                             });
                     });
                 });

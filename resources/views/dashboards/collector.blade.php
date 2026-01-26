@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'لوحة تحكم المحصل')
+@section('title', 'لوحة تحكم المندوب')
 
 @section('content')
 <div class="container mx-auto py-8 px-4" dir="rtl">

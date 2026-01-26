@@ -47,7 +47,7 @@
                     <tr class="bg-gray-50 dark:bg-dark-tableheader text-gray-600 dark:text-gray-300">
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">اسم الخطة</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap text-center">التاريخ</th>
-                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المحصل المسئول</th>
+                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المندوب المسئول</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">النوع</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">العملاء</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المبلغ المستهدف</th>
@@ -69,9 +69,9 @@
                             <td class="px-6 py-5 whitespace-nowrap">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs font-bold">
-                                        {{ mb_substr($plan->collector->name, 0, 1) }}
+                                        {{ mb_substr($plan->collector->name ?? '؟', 0, 1) }}
                                     </div>
-                                    <span class="font-medium dark:text-gray-300">{{ $plan->collector->name }}</span>
+                                    <span class="font-medium dark:text-gray-300">{{ $plan->collector->name ?? 'محصل محذوف' }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-5 text-center">

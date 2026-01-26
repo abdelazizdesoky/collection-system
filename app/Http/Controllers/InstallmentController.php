@@ -107,4 +107,90 @@ class InstallmentController extends Controller
 
         return view('installments.show', compact('plan'));
     }
+    public function edit(InstallmentPlan $plan): View
+    {
+        return view('installments.edit', compact('plan'));
+    }
+
+    public function update(Request $request, InstallmentPlan $plan)
+{
+    $validated = $request->validate([
+        'invoice_no' => 'nullable|string|max:50',
+        'notes' => 'nullable|string|max:1000',
+        'status' => 'required|string|max:50',
+    ]);
+
+    $plan->update($validated);
+
+    // تحديث وصف الحساب إذا تغير رقم الفاتورة
+    if ($plan->wasChanged('invoice_no')) {
+        CustomerAccount::where('reference_type', 'InstallmentPlan')
+            ->where('reference_id', $plan->id)
+            ->update([
+                'description' => "نظام تقسيط - فاتورة رقم {$validated['invoice_no']} - مدة {$plan->duration_months} شهر",
+            ]);
+    }
+
+    return redirect()->route('installments.show', $plan)
+        ->with('success', 'تم تحديث بيانات الخطة بنجاح.');
+}
+ 
+
+    public function destroy(InstallmentPlan $plan, \App\Services\AccountBalanceService $accountService)
+    {
+        DB::transaction(function () use ($plan, $accountService) {
+            // 1. Cancel the Ledger Entry for the Plan (The Financed Amount Debit)
+            $accountService->cancelTransaction('InstallmentPlan', $plan->id);
+
+            // 2. Soft delete installments first
+            $plan->installments()->delete();
+            
+            // 3. Soft delete plan
+            $plan->delete();
+        });
+
+        return redirect()->route('installments.index')
+            ->with('success', 'تم حذف خطة التقسيط وإلغاء القيد المالي بنجاح.');
+    }
+
+    // --- Item Management ---
+
+    public function editItem(Installment $installment): View
+    {
+        return view('installments.edit-item', compact('installment'));
+    }
+
+    public function updateItem(Request $request, Installment $installment)
+    {
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+            'due_date' => 'required|date',
+            'status' => 'required|string|max:50',
+        ]);
+
+        $installment->update($validated);
+
+        // Recalculate plan status if needed? 
+        // Simple update for now.
+
+        return redirect()->route('installments.show', $installment->installmentPlan)
+            ->with('success', 'تم تحديث بيانات القسط بنجاح.');
+    }
+
+    public function destroyItem(Installment $installment)
+    {
+        $plan = $installment->installmentPlan;
+        
+        // If paid, maybe warn? But admin forced delete.
+        $installment->delete();
+
+        // Recalculate financed amount or monthly?
+        // Deleting an item changes the plan total if we were dynamically calculating.
+        // But plan has fixed 'financed_amount'. 
+        // So deleting an item just means one less payment to make (discount?).
+        // It's a manual adjustment.
+
+        return redirect()->route('installments.show', $plan)
+            ->with('success', 'تم حذف القسط بنجاح.');
+    }
 }

@@ -50,8 +50,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">المحصل <span class="text-red-500">*</span></label>
-                    <select name="collector_id" required class="w-full select2-search" data-placeholder="اختر المحصل...">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">المندوب <span class="text-red-500">*</span></label>
+                    <select name="collector_id" required class="w-full select2-search" data-placeholder="اختر المندوب...">
                         @foreach($collectors as $collector)
                             <option value="{{ $collector->id }}" {{ old('collector_id', $visitPlan->collector_id) == $collector->id ? 'selected' : '' }}>
                                 {{ $collector->name }}

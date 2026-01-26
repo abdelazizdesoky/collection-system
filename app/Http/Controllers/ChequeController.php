@@ -8,6 +8,7 @@ use App\Exports\ChequesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use DB;
 
 class ChequeController extends Controller
 {
@@ -17,8 +18,15 @@ class ChequeController extends Controller
     public function index(Request $request): View
     {
         $search = $request->input('search');
+        $showTrashed = $request->input('trashed') === '1';
 
-        $cheques = Cheque::with('customer')
+        $query = Cheque::with('customer');
+
+        if ($showTrashed) {
+            $query->onlyTrashed();
+        }
+
+        $cheques = $query
             ->when($search, function($query, $search) {
                 return $query->where('cheque_no', 'like', "%{$search}%")
                     ->orWhere('bank_name', 'like', "%{$search}%")
@@ -30,7 +38,42 @@ class ChequeController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('cheques.index', compact('cheques'));
+        $trashedCount = Cheque::onlyTrashed()->count();
+        $activeCount = Cheque::count();
+
+        return view('cheques.index', compact('cheques', 'showTrashed', 'trashedCount', 'activeCount'));
+    }
+
+    /**
+     * Restore a soft deleted cheque.
+     */
+    public function restore($id)
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        $cheque = Cheque::onlyTrashed()->findOrFail($id);
+        $cheque->restore();
+
+        return redirect()->route('cheques.index', ['trashed' => '1'])
+            ->with('success', 'تم استعادة الشيك بنجاح.');
+    }
+
+    /**
+     * Permanently delete a cheque.
+     */
+    public function forceDelete($id)
+    {
+        if (! auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $cheque = Cheque::onlyTrashed()->findOrFail($id);
+        $cheque->forceDelete();
+
+        return redirect()->route('cheques.index', ['trashed' => '1'])
+            ->with('success', 'تم حذف الشيك نهائياً.');
     }
 
     /**
@@ -39,8 +82,9 @@ class ChequeController extends Controller
     public function create(): View
     {
         $customers = Customer::all();
+        $banks = \App\Models\Bank::orderBy('name')->get();
 
-        return view('cheques.create', compact('customers'));
+        return view('cheques.create', compact('customers', 'banks'));
     }
 
     /**
@@ -79,8 +123,9 @@ class ChequeController extends Controller
     public function edit(Cheque $cheque): View
     {
         $customers = Customer::all();
+        $banks = \App\Models\Bank::orderBy('name')->get();
 
-        return view('cheques.edit', compact('cheque', 'customers'));
+        return view('cheques.edit', compact('cheque', 'customers', 'banks'));
     }
 
     /**
@@ -106,12 +151,18 @@ class ChequeController extends Controller
     /**
      * Remove the specified cheque from database.
      */
-    public function destroy(Cheque $cheque)
+    public function destroy(Cheque $cheque, \App\Services\AccountBalanceService $accountService)
     {
-        $cheque->delete();
+        DB::transaction(function () use ($cheque, $accountService) {
+            // Cancel ledger entry if it was posted (Cheques might be posted on creation or clearing)
+            // Assuming Cheque creation posted to ledger or will be posted:
+            $accountService->cancelTransaction('Cheque', $cheque->id);
+            
+            $cheque->delete();
+        });
 
         return redirect()->route('cheques.index')
-            ->with('success', 'Cheque deleted successfully.');
+            ->with('success', 'Cheque deleted and removed from account balance successfully.');
     }
 
     /**

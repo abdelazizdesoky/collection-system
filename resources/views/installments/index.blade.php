@@ -52,10 +52,10 @@
                             <td class="px-6 py-6 whitespace-nowrap">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-black text-sm shadow-inner group-hover:scale-110 transition-transform">
-                                        {{ mb_substr($plan->customer->name, 0, 1) }}
+                                        {{ mb_substr($plan->customer->name ?? '؟', 0, 1) }}
                                     </div>
                                     <div>
-                                        <div class="font-black text-gray-900 dark:text-white text-lg group-hover:text-amber-600 transition-colors uppercase">{{ $plan->customer->name }}</div>
+                                        <div class="font-black text-gray-900 dark:text-white text-lg group-hover:text-amber-600 transition-colors uppercase">{{ $plan->customer->name ?? 'عميل محذوف' }}</div>
                                         <div class="flex items-center gap-2 mt-0.5">
                                             <span class="text-[10px] bg-gray-100 dark:bg-dark-bg text-gray-500 px-2 py-0.5 rounded font-bold uppercase tracking-tighter">INV #{{ $plan->invoice_no ?? 'N/A' }}</span>
                                             <span class="text-xs text-gray-400 font-medium italic">بداية: {{ $plan->start_date->format('Y-M-d') }}</span>

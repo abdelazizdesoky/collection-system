@@ -51,7 +51,7 @@
                     @if($visit->visit_type === 'collection' && $visit->collection)
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
-                                <p class="text-xs text-emerald-600 dark:text-emerald-400 mb-1">المبلغ المحصل</p>
+                                <p class="text-xs text-emerald-600 dark:text-emerald-400 mb-1">المبلغ المندوب</p>
                                 <p class="text-2xl font-black text-emerald-700 dark:text-emerald-300">{{ number_format($visit->collection->amount, 2) }} ج.م</p>
                             </div>
                             <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30">
@@ -112,7 +112,7 @@
 
             <!-- Notes & General -->
             <div class="bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-dark-border">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">ملاحظات المحصل</h3>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">ملاحظات المندوب</h3>
                 <p class="text-gray-700 dark:text-gray-300 bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl leading-relaxed whitespace-pre-wrap">
                     {{ $visit->notes ?: 'لا توجد ملاحظات مسجلة' }}
                 </p>

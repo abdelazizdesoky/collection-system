@@ -70,7 +70,7 @@
                             </div>
                             <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 text-center border border-emerald-100 dark:border-slate -700">
                                 <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 text-sm md:text-2xl">{{ number_format($plan->total_collected, 2) }}</div>
-                                <div class="text-xs text-emerald-500 dark:text-emerald-300">المحصل (ج.م)</div>
+                                <div class="text-xs text-emerald-500 dark:text-emerald-300">المندوب (ج.م)</div>
                             </div>
                         </div>
 

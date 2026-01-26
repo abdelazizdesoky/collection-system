@@ -16,7 +16,7 @@
                 </div>
                 <div>
                     <h1 class="text-3xl font-black dark:text-white tracking-tight">إدارة المناطق</h1>
-                    <p class="text-gray-500 dark:text-gray-400 font-medium">تنظيم وتوزيع العملاء والمحصلين حسب النطاق الجغرافي</p>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium">تنظيم وتوزيع العملاء والمندوبين حسب النطاق الجغرافي</p>
                 </div>
             </div>
 

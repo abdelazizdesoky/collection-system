@@ -41,7 +41,7 @@
                 <div class="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <span class="text-gray-500 dark:text-gray-400 font-bold">المحصل</span>
+                <span class="text-gray-500 dark:text-gray-400 font-bold">المندوب</span>
             </div>
             <a href="{{ route('collectors.show', $collectionPlan->collector) }}" class="text-xl font-black dark:text-white hover:text-blue-600 transition-colors">
                 {{ $collectionPlan->collector->name }}
@@ -107,7 +107,7 @@
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap text-center">أولوية</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">العميل</th>
                         <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المبلغ المتوقع</th>
-                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المبلغ المحصل</th>
+                        <th class="px-6 py-5 text-sm font-black whitespace-nowrap">المبلغ المندوب</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">الحالة</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">الإجراءات</th>
                     </tr>

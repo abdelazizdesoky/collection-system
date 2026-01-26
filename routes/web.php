@@ -105,39 +105,31 @@ Route::middleware('auth')->group(function () {
         Route::get('/backups/download/{filename}', [BackupController::class, 'download'])->name('admin.backups.download');
         Route::post('/backups/restore/{filename}', [BackupController::class, 'restore'])->name('admin.backups.restore');
         Route::delete('/backups/{filename}', [BackupController::class, 'destroy'])->name('admin.backups.destroy');
-    });
-
-    // 1.5 Shared Security/Logging: (Admin, Accountant)
-    Route::middleware('role:admin|accountant')->group(function () {
-        // Accountant also mentioned "السجيلات" (Audit Logs) and "الحساب العام"
-        // If Accountant needs logs, move them here or create a specific sub-group.
-        // For now, keeping logs in Admin Only per Supervisor restriction, but if Accountant needs them:
-        // Route::get('/audit-logs', ...) could be here.
+        
+        // Audit Logs (Admin Only per request "monitoring procedures restricted to Admin")
         Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('admin.audit-logs.index');
-
-        // NEW: Installment System Routes
-        Route::prefix('installments')->name('installments.')->group(function () {
-            Route::get('/', [InstallmentController::class, 'index'])->name('index');
-            Route::get('/create', [InstallmentController::class, 'create'])->name('create');
-            Route::post('/', [InstallmentController::class, 'store'])->name('store');
-            Route::get('/{plan}', [InstallmentController::class, 'show'])->name('show');
-        });
     });
 
     // 2. Shared Management: Financial & Customer Focus (Admin, Supervisor, Accountant)
     Route::middleware('role:admin|supervisor|accountant')->group(function () {
-        // Customers management
+        // Customers management (Accountant needs to view/create customers for billing, Supervisor manages)
         Route::get('/customers/export', [CustomerController::class, 'export'])->name('customers.export');
+        Route::post('/customers/{id}/restore', [CustomerController::class, 'restore'])->name('customers.restore');
+        Route::delete('/customers/{id}/force-delete', [CustomerController::class, 'forceDelete'])->name('customers.forceDelete');
         Route::resource('customers', CustomerController::class);
-        // Collectors management
-        Route::get('/collectors/export', [CollectorController::class, 'export'])->name('collectors.export');
-        Route::resource('collectors', CollectorController::class);
+        
         // Collections management
         Route::get('/collections/export', [CollectionController::class, 'export'])->name('collections.export');
+        Route::post('/collections/{id}/restore', [CollectionController::class, 'restore'])->name('collections.restore');
+        Route::delete('/collections/{id}/force-delete', [CollectionController::class, 'forceDelete'])->name('collections.forceDelete');
         Route::resource('collections', CollectionController::class);
+        
         // Cheques management
         Route::get('/cheques/export', [ChequeController::class, 'export'])->name('cheques.export');
+        Route::post('/cheques/{id}/restore', [ChequeController::class, 'restore'])->name('cheques.restore');
+        Route::delete('/cheques/{id}/force-delete', [ChequeController::class, 'forceDelete'])->name('cheques.forceDelete');
         Route::resource('cheques', ChequeController::class);
+        
         // Customer Accounts (Ledger)
         Route::get('/customer-accounts/export', [CustomerAccountController::class, 'export'])->name('customer-accounts.export');
         Route::get('/customer-accounts', [CustomerAccountController::class, 'index'])->name('customer-accounts.index');
@@ -146,10 +138,26 @@ Route::middleware('auth')->group(function () {
         Route::post('/customers/{customer}/ledger', [CustomerAccountController::class, 'store'])->name('customer.ledger.store');
         Route::get('/customer-accounts/{customerAccount}', [CustomerAccountController::class, 'show'])->name('customer-accounts.show');
         
-        // Accountant also mentioned "السجيلات" (Audit Logs) and "الحساب العام"
-        // If Accountant needs logs, move them here or create a specific sub-group.
-        // For now, keeping logs in Admin Only per Supervisor restriction, but if Accountant needs them:
-        // Route::get('/audit-logs', ...) could be here.
+        // Reports
+        Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+        
+        // Installment System Routes (Moved here so Supervisor & Accountant access it)
+        Route::prefix('installments')->name('installments.')->group(function () {
+            Route::get('/', [InstallmentController::class, 'index'])->name('index');
+            Route::get('/create', [InstallmentController::class, 'create'])->name('create');
+            Route::post('/', [InstallmentController::class, 'store'])->name('store');
+            Route::get('/{plan}', [InstallmentController::class, 'show'])->name('show');
+            
+            // Plan Management
+            Route::get('/{plan}/edit', [InstallmentController::class, 'edit'])->name('edit');
+            Route::put('/{plan}', [InstallmentController::class, 'update'])->name('update');
+            Route::delete('/{plan}', [InstallmentController::class, 'destroy'])->name('destroy');
+
+            // Item Management
+            Route::get('/items/{installment}/edit', [InstallmentController::class, 'editItem'])->name('item.edit');
+            Route::put('/items/{installment}', [InstallmentController::class, 'updateItem'])->name('item.update');
+            Route::delete('/items/{installment}', [InstallmentController::class, 'destroyItem'])->name('item.destroy');
+        });
     });
 
     // 3. Shared Management: Planning Focus (Admin, Supervisor, Plan Supervisor)
@@ -169,8 +177,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/collectors/{collector}/customers', [\App\Http\Controllers\VisitPlanController::class, 'getCustomers'])->name('collectors.customers');
     });
 
-    // 4. Master Data (Admin, Supervisor)
+    // 4. Master Data & Staff (Admin, Supervisor)
     Route::middleware('role:admin|supervisor')->group(function () {
+        // Collectors (Staff) - Restricted from Accountant
+        Route::get('/collectors/export', [CollectorController::class, 'export'])->name('collectors.export');
+        Route::post('/collectors/{id}/restore', [CollectorController::class, 'restore'])->name('collectors.restore');
+        Route::delete('/collectors/{id}/force-delete', [CollectorController::class, 'forceDelete'])->name('collectors.forceDelete');
+        Route::resource('collectors', CollectorController::class);
+
         Route::resource('areas', \App\Http\Controllers\AreaController::class);
         Route::resource('banks', \App\Http\Controllers\BankController::class);
         Route::resource('visit-types', \App\Http\Controllers\VisitTypeController::class);

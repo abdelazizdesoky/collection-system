@@ -58,16 +58,22 @@
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">دائن (+)</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">الرصيد التراكمي</th>
                         <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">النوع</th>
+                        <th class="px-6 py-5 text-sm font-black text-center whitespace-nowrap">الحالة</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
                     @forelse ($accounts as $account)
-                        <tr class="hover:bg-blue-50/30 dark:hover:bg-slate-700/30 transition-colors group">
-                            <td class="px-6 py-5 whitespace-nowrap">
-                                <a href="{{ route('customers.show', $account->customer) }}" class="font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
+                        <td class="px-6 py-5 whitespace-nowrap">
+                            @if($account->customer)
+                                <a href="{{ route('customers.show', $account->customer) }}"
+                                   class="font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline">
                                     {{ $account->customer->name }}
                                 </a>
-                            </td>
+                            @else
+                                <span class="text-gray-400 italic">عميل محذوف</span>
+                            @endif
+                        </td>
+
                             <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $account->date->format('Y-m-d') }}</td>
                             <td class="px-6 py-5 text-sm dark:text-gray-300">{{ $account->description }}</td>
                             <td class="px-6 py-5 text-center whitespace-nowrap font-bold text-red-600 dark:text-red-400">
@@ -82,9 +88,15 @@
                                 </span>
                             </td>
                             <td class="px-6 py-5 text-center">
-                                <span class="px-2 py-1 text-[10px] font-bold uppercase rounded bg-gray-100 dark:bg-dark-bg text-gray-500 dark:text-gray-400">
                                     {{ $account->reference_type }}
                                 </span>
+                            </td>
+                            <td class="px-6 py-5 text-center">
+                                @if($account->status === 'cancelled')
+                                    <span class="px-2 py-1 text-[10px] font-bold uppercase rounded bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">ملغي</span>
+                                @else
+                                    <span class="px-2 py-1 text-[10px] font-bold uppercase rounded bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">نشط</span>
+                                @endif
                             </td>
                         </tr>
                     @empty

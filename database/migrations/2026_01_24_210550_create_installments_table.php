@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('installment_plan_id')->constrained()->onDelete('cascade');
             $table->date('due_date');
             $table->decimal('amount', 15, 2);
-            $table->enum('status', ['pending', 'paid', 'overdue'])->default('pending');
+            $table->string('status')->default('pending');
             $table->foreignId('collection_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });

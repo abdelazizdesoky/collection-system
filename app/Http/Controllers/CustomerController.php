@@ -16,8 +16,15 @@ class CustomerController extends Controller
     public function index(Request $request): View
     {
         $search = $request->input('search');
+        $showTrashed = $request->input('trashed') === '1';
 
-        $customers = Customer::query()
+        $query = Customer::query();
+
+        if ($showTrashed) {
+            $query->onlyTrashed();
+        }
+
+        $customers = $query
             ->when($search, function($query, $search) {
                 return $query->where('name', 'like', "%{$search}%")
                              ->orWhere('phone', 'like', "%{$search}%");
@@ -26,7 +33,42 @@ class CustomerController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('customers.index', compact('customers'));
+        $trashedCount = Customer::onlyTrashed()->count();
+        $activeCount = Customer::count();
+
+        return view('customers.index', compact('customers', 'showTrashed', 'trashedCount', 'activeCount'));
+    }
+
+    /**
+     * Restore a soft deleted customer.
+     */
+    public function restore($id)
+    {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+            abort(403);
+        }
+
+        $customer = Customer::onlyTrashed()->findOrFail($id);
+        $customer->restore();
+
+        return redirect()->route('customers.index', ['trashed' => '1'])
+            ->with('success', 'تم استعادة العميل بنجاح.');
+    }
+
+    /**
+     * Permanently delete a customer.
+     */
+    public function forceDelete($id)
+    {
+        if (! auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $customer = Customer::onlyTrashed()->findOrFail($id);
+        $customer->forceDelete();
+
+        return redirect()->route('customers.index', ['trashed' => '1'])
+            ->with('success', 'تم حذف العميل نهائياً.');
     }
 
     /**

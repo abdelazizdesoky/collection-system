@@ -6,9 +6,11 @@ use App\Models\CollectionPlan;
 use App\Models\CollectionPlanItem;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class CollectionPlanItemController extends Controller
+{
     /**
      * Show the form for creating a new collection plan item (single).
      */
@@ -28,7 +30,9 @@ class CollectionPlanItemController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('collection-plan-items.create', compact('collectionPlan', 'customers'));
+        $plans = CollectionPlan::all();
+
+        return view('collection-plan-items.create', compact('collectionPlan', 'customers', 'plans'));
     }
 
     /**
@@ -68,11 +72,17 @@ class CollectionPlanItemController extends Controller
         if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'user'])) {
             abort(403);
         }
-
+        $plans = CollectionPlan::all();
+        $customers = Customer::where('collector_id', $collectionPlanItem->collector_id)
+            ->whereNotIn('id', CollectionPlanItem::where('collection_plan_id', $collectionPlanItem->collection_plan_id)
+                ->where('id', '!=', $collectionPlanItem->id)
+                ->pluck('customer_id'))
+            ->orderBy('name')
+            ->get();
         // Ideally we shouldn't change customer of an item, but maybe amounts/priority.
         // If we want to change customer, filtering logic applies again.
         
-        return view('collection-plan-items.edit', compact('collectionPlanItem'));
+        return view('collection-plan-items.edit', compact('collectionPlanItem','plans','customers'));
     }
 
     /**

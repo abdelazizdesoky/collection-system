@@ -105,7 +105,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <div class="font-bold text-gray-800 dark:text-gray-200">{{ $collection->customer->name }}</div>
+                                    <div class="font-bold text-gray-800 dark:text-gray-200">{{ $collection->customer->name ?? 'غير معروف' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap font-black text-emerald-600 dark:text-emerald-400">
                                     ج.م {{ number_format($collection->amount, 2) }}

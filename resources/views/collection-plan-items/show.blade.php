@@ -21,7 +21,7 @@
                     </a>
                 </div>
                 <div>
-                    <span class="font-semibold">المحصل:</span>
+                    <span class="font-semibold">المندوب:</span>
                     <a href="{{ route('collectors.show', $collectionPlanItem->collectionPlan->collector) }}" class="text-blue-600 hover:text-blue-900">
                         {{ $collectionPlanItem->collectionPlan->collector->name }}
                     </a>
