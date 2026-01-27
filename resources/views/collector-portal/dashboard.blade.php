@@ -45,8 +45,16 @@
             @foreach($todayPlans as $plan)
                 <div class="bg-white dark:bg-dark-card rounded-2xl shadow-lg hover:shadow-xl transition-shadow overflow-hidden border border-gray-100 dark:border-dark-border">
                     <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4">
-                        <h2 class="text-xl font-bold text-white">{{ $plan->name }}</h2>
-                        <p class="text-emerald-100 text-sm">{{ ($plan->collection_type ?? 'regular') === 'regular' ? 'تحصيل عادي' : 'تحصيل خاص' }}</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="text-xl font-bold text-white">{{ $plan->name }}</h2>
+                                <p class="text-emerald-100 text-sm">{{ ($plan->collection_type ?? 'regular') === 'regular' ? 'تحصيل عادي' : 'تحصيل خاص' }}</p>
+                            </div>
+                            <div class="text-left">
+                                <span class="block text-white font-bold text-sm">{{ $plan->date_label }}</span>
+                                <span class="text-emerald-100 text-xs">{{ $plan->type_label ?? ($plan->type === 'weekly' ? 'أسبوعي' : ($plan->type === 'monthly' ? 'شهري' : 'يومي')) }}</span>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="p-6">

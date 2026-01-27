@@ -128,11 +128,28 @@ class VisitPlan extends Model
     public function scopeForDate($query, $date)
     {
         return $query->where(function ($q) use ($date) {
-            $q->where('start_date', '<=', $date)
-              ->where(function ($q2) use ($date) {
-                  $q2->whereNull('end_date')
-                     ->orWhere('end_date', '>=', $date);
-              });
+            $q->where(function ($dq) use ($date) {
+                $dq->where('frequency', 'daily')
+                   ->whereDate('start_date', $date);
+            })->orWhere(function ($wq) use ($date) {
+                $wq->whereIn('frequency', ['weekly', 'monthly'])
+                   ->whereDate('start_date', '<=', $date)
+                   ->whereDate('end_date', '>=', $date);
+            });
         });
+    }
+
+    /**
+     * Get a descriptive date label for the plan.
+     */
+    public function getDateLabelAttribute(): string
+    {
+        $start = $this->start_date->format('Y/m/d');
+        
+        if ($this->frequency === 'daily' || !$this->end_date || $this->start_date->isSameDay($this->end_date)) {
+            return $start;
+        }
+
+        return $start . ' - ' . $this->end_date->format('Y/m/d');
     }
 }

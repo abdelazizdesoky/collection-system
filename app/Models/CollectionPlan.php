@@ -84,9 +84,48 @@ class CollectionPlan extends Model
 
 
     public function getActualCollectedAmount(): float
-{
-    return $this->getTotalCollectedAmount();
-}
+    {
+        return $this->getTotalCollectedAmount();
+    }
 
+    /**
+     * Scope to get plans for a specific date.
+     */
+    public function scopeForDate($query, $date)
+    {
+        // $date is a Carbon instance
+        return $query->where(function ($q) use ($date) {
+            $q->where(function ($dq) use ($date) {
+                $dq->where('type', 'daily')
+                   ->whereDate('date', $date);
+            })->orWhere(function ($wq) use ($date) {
+                $wq->where('type', 'weekly')
+                   ->whereDate('date', '<=', $date)
+                   ->whereDate('date', '>=', $date->copy()->subDays(6));
+            })->orWhere(function ($mq) use ($date) {
+                $mq->where('type', 'monthly')
+                   ->whereMonth('date', $date->month)
+                   ->whereYear('date', $date->year);
+            });
+        });
+    }
 
+    /**
+     * Get a descriptive date label for the plan.
+     */
+    public function getDateLabelAttribute(): string
+    {
+        if (!$this->date) return '';
+
+        if ($this->type === 'weekly') {
+            $end = $this->date->copy()->addDays(6);
+            return $this->date->format('Y/m/d') . ' - ' . $end->format('Y/m/d');
+        }
+
+        if ($this->type === 'monthly') {
+            return $this->date->format('Y/m');
+        }
+
+        return $this->date->format('Y/m/d');
+    }
 }

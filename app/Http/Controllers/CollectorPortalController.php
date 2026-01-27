@@ -28,6 +28,7 @@ class CollectorPortalController extends Controller
         // Collection Plans for today
         $todayPlans = CollectionPlan::where('collector_id', $collector->id)
             ->whereIn('status', ['open', 'in_progress'])
+            ->forDate(today())
             ->latest()
             ->get();
 
@@ -65,6 +66,7 @@ class CollectorPortalController extends Controller
         // Visit Plans for today
         $todayPlans = \App\Models\VisitPlan::where('collector_id', $collector->id)
             ->whereIn('status', ['open', 'in_progress', 'closed'])
+            ->forDate(today())
             ->latest()
             ->get();
 

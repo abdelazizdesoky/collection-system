@@ -45,7 +45,11 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <h2 class="text-xl font-bold text-white">{{ $plan->name }}</h2>
-                                <p class="text-purple-100 text-sm">{{ $plan->frequency_label }}</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-purple-100 text-sm">{{ $plan->frequency_label }}</p>
+                                    <span class="text-purple-200 text-xs">|</span>
+                                    <p class="text-white text-sm font-medium">{{ $plan->date_label }}</p>
+                                </div>
                             </div>
                             <span class="px-3 py-1 bg-white/20 backdrop-blur rounded-lg text-white text-sm font-bold">
                                 {{ $plan->status_label }}
