@@ -108,6 +108,10 @@ Route::middleware('auth')->group(function () {
         
         // Audit Logs (Admin Only per request "monitoring procedures restricted to Admin")
         Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('admin.audit-logs.index');
+
+        // Settings
+        Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('admin.settings.index');
+        Route::post('/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('admin.settings.update');
     });
 
     // 2. Shared Management: Financial & Customer Focus (Admin, Supervisor, Accountant)
@@ -165,6 +169,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/collection-plans/export', [CollectionPlanController::class, 'export'])->name('collection-plans.export');
         Route::resource('collection-plans', CollectionPlanController::class);
         Route::resource('collection-plan-items', CollectionPlanItemController::class);
+        
+        Route::get('/installments/{plan}/print', [InstallmentController::class, 'printReceipts'])->name('installments.print');
         
         Route::get('/visit-plans/export', [\App\Http\Controllers\VisitPlanController::class, 'export'])->name('visit-plans.export');
         Route::resource('visit-plans', \App\Http\Controllers\VisitPlanController::class);

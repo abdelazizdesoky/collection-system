@@ -198,10 +198,39 @@ class CollectionController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $collection->update($validated);
+        return DB::transaction(function () use ($validated, $collection) {
+            $oldAmount = $collection->amount;
+            $collection->update($validated);
 
-        return redirect()->route('collections.show', $collection)
-            ->with('success', 'Collection updated successfully.');
+            if ($oldAmount != $collection->amount) {
+                // If amount changed, we need to adjust the ledger.
+                // Instead of editing the original entry (which might be in the middle of a ledger),
+                // we add a correction entry if preferred, OR we update the original and recalculate.
+                // The user asked for "مدين بقيمة المبلغ الذى تم زيادة او نقصان" (Debit with the amount increased or decreased).
+                
+                $diff = $collection->amount - $oldAmount;
+                // If diff > 0 (amount increased), we need to CREDIT the customer MORE (reduce balance).
+                // If diff < 0 (amount decreased), we need to DEBIT the customer (increase balance).
+                
+                CustomerAccount::create([
+                    'customer_id' => $collection->customer_id,
+                    'date' => now(),
+                    'description' => "تعديل مبلغ التحصيل - إيصال #{$collection->receipt_no}",
+                    'debit' => $diff < 0 ? abs($diff) : 0,
+                    'credit' => $diff > 0 ? $diff : 0,
+                    'balance' => 0, // Will be recalculated
+                    'reference_type' => 'CollectionAdjustment',
+                    'reference_id' => $collection->id,
+                ]);
+
+                // Recalculate balance for this customer
+                $accountService = app(\App\Services\AccountBalanceService::class);
+                $accountService->recalculateBalance($collection->customer_id);
+            }
+
+            return redirect()->route('collections.show', $collection)
+                ->with('success', 'تم تحديث التحصيل وتعديل الرصيد بنجاح.');
+        });
     }
 
     /**

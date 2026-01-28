@@ -112,15 +112,22 @@
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('collector.dashboard') }}" class="text-2xl font-bold hover:text-emerald-200 flex items-center gap-2">
-                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
-                            <rect x="8" y="5" width="8" height="6" rx="1" fill="white" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
-                            <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        بوابة مندوب    
+                    <a href="{{ route('collector.dashboard') }}" class="flex items-center gap-3 group">
+                        <div class="bg-white/10 p-2 rounded-xl backdrop-blur-md border border-white/10 group-hover:bg-white/20 transition-all">
+                            @if($logo = get_setting('company_logo'))
+                                <img src="{{ asset('storage/' . $logo) }}" class="h-6 w-auto">
+                            @else
+                                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="8" y="5" width="8" height="6" rx="1" fill="white" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            @endif
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-lg font-black tracking-tighter leading-none">{{ get_setting('company_name', 'Alarabia Group') }}</span>
+                            <span class="text-[10px] font-bold opacity-80 uppercase tracking-widest">بوابة المندوب</span>
+                        </div>
                     </a>
            <!-- <span class="bg-emerald-800 px-3 py-1 rounded-full text-sm"> -->
                         <!-- {{ $collector->name ?? 'Collector' }} -->
@@ -177,7 +184,7 @@
     </main>
 
     <footer class="bg-gray-800 text-white text-center py-4 mt-auto no-print">
-        <p class="text-sm opacity-70">© 2026 Alarabia Group - بوابة مندوب</p>
+        <p class="text-sm opacity-70">© 2026 {{ get_setting('company_name', 'Alarabia Group') }} - بوابة مندوب</p>
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

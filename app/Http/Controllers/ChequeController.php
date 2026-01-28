@@ -142,10 +142,32 @@ class ChequeController extends Controller
             'status' => 'required|in:pending,cleared,bounced',
         ]);
 
-        $cheque->update($validated);
+        return DB::transaction(function () use ($validated, $cheque) {
+            $oldAmount = $cheque->amount;
+            $cheque->update($validated);
 
-        return redirect()->route('cheques.show', $cheque)
-            ->with('success', 'Cheque updated successfully.');
+            if ($oldAmount != $cheque->amount) {
+                $diff = $cheque->amount - $oldAmount;
+                // If amount increased (diff > 0), CREDIT customer (reduce balance)
+                // If amount decreased (diff < 0), DEBIT customer (increase balance)
+                
+                CustomerAccount::create([
+                    'customer_id' => $cheque->customer_id,
+                    'date' => now(),
+                    'description' => "تعديل مبلغ شيك - رقم #{$cheque->cheque_no}",
+                    'debit' => $diff < 0 ? abs($diff) : 0,
+                    'credit' => $diff > 0 ? $diff : 0,
+                    'balance' => 0, // Recalculated
+                    'reference_type' => 'ChequeAdjustment',
+                    'reference_id' => $cheque->id,
+                ]);
+
+                app(\App\Services\AccountBalanceService::class)->recalculateBalance($cheque->customer_id);
+            }
+
+            return redirect()->route('cheques.show', $cheque)
+                ->with('success', 'تم تحديث الشيك وتعديل الحساب بنجاح.');
+        });
     }
 
     /**

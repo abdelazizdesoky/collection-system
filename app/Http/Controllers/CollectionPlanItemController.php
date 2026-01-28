@@ -12,6 +12,15 @@ use Illuminate\View\View;
 class CollectionPlanItemController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     * Redirects to the collection plans list.
+     */
+    public function index(): RedirectResponse
+    {
+        return redirect()->route('collection-plans.index');
+    }
+
+    /**
      * Show the form for creating a new collection plan item (single).
      */
     public function create(Request $request): View
@@ -65,6 +74,15 @@ class CollectionPlanItemController extends Controller
     }
 
     /**
+     * Display the specified collection plan item.
+     * Redirects to the parent collection plan details.
+     */
+    public function show(CollectionPlanItem $collectionPlanItem): RedirectResponse
+    {
+        return redirect()->route('collection-plans.show', $collectionPlanItem->collection_plan_id);
+    }
+
+    /**
      * Show the form for editing the specified collection plan item.
      */
     public function edit(CollectionPlanItem $collectionPlanItem): View
@@ -73,7 +91,7 @@ class CollectionPlanItemController extends Controller
             abort(403);
         }
         $plans = CollectionPlan::all();
-        $customers = Customer::where('collector_id', $collectionPlanItem->collector_id)
+        $customers = Customer::where('collector_id', $collectionPlanItem->collectionPlan->collector_id)
             ->whereNotIn('id', CollectionPlanItem::where('collection_plan_id', $collectionPlanItem->collection_plan_id)
                 ->where('id', '!=', $collectionPlanItem->id)
                 ->pluck('customer_id'))

@@ -187,7 +187,7 @@
                         </svg>
                     </div>
                     <div class="sidebar-header-text">
-                        <span class="text-lg font-black text-gray-900 dark:text-white tracking-tight">النظام المالي</span>
+                        <span class="text-lg font-black text-gray-900 dark:text-white tracking-tight">{{ get_setting('company_name', 'النظام المالي')??"" }}</span>
                         <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Premium Dashboard</p>
                     </div>
                 </div>
@@ -324,6 +324,13 @@
                                 <span class="text-sm sidebar-text">النسخ الاحتياطي</span>
                             </a>
                             @endhasrole
+
+                            @hasrole('admin')
+                            <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <span class="text-sm sidebar-text">الإعدادات العامة</span>
+                            </a>
+                            @endhasrole
                         </div>
                     </div>
                 </nav>
@@ -359,15 +366,19 @@
                         <button id="toggle-sidebar" class="p-2.5 rounded-xl hover:bg-white/10 focus:outline-none transition-all border border-white/10">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
-                        <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                            <div class="bg-white/20 p-2 rounded-lg backdrop-blur-md">
-                                <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
-                                    <rect x="8" y="5" width="8" height="6" rx="1" fill="white" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
-                                    <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
+                        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+                            <div class="bg-white/10 p-2 rounded-xl backdrop-blur-md group-hover:bg-white/20 transition-all border border-white/10">
+                                @if($logo = get_setting('company_logo'))
+                                    <img src="{{ asset('storage/' . $logo) }}" class="h-8 w-auto">
+                                @else
+                                    <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="8" y="5" width="8" height="6" rx="1" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+                                        <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                @endif
                             </div>
-                            <span class="text-xl md:text-2xl font-black tracking-tighter">Alarabia Group</span>
+                            <span class="text-xl md:text-2xl font-black tracking-tighter group-hover:translate-x-1 transition-transform inline-block">{{ get_setting('company_name', 'Alarabia Group') }}</span>
                         </a>
                     </div>
                     
@@ -443,7 +454,7 @@
     </div>
     <!-- Footer (Inside main to scroll with content) -->
                 <footer class="mt-auto py-8 text-center text-gray-500 text-sm border-t border-gray-200">
-                    <p>&copy; 2026 Alarabia Group جميع الحقوق محفوظة.</p>
+                    <p>&copy; 2026 {{ get_setting('company_name', 'Alarabia Group') }} جميع الحقوق محفوظة.</p>
                 </footer>
     <!-- Toggle Script -->
     <!-- JQuery and Select2 JS -->

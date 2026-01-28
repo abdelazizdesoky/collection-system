@@ -153,6 +153,15 @@ class InstallmentController extends Controller
             ->with('success', 'تم حذف خطة التقسيط وإلغاء القيد المالي بنجاح.');
     }
 
+    public function printReceipts(InstallmentPlan $plan): View
+    {
+        $plan->load(['customer', 'installments' => function($q) {
+            $q->orderBy('due_date');
+        }]);
+
+        return view('installments.print', compact('plan'));
+    }
+
     // --- Item Management ---
 
     public function editItem(Installment $installment): View
@@ -168,29 +177,57 @@ class InstallmentController extends Controller
             'status' => 'required|string|max:50',
         ]);
 
-        $installment->update($validated);
+        return DB::transaction(function () use ($validated, $installment) {
+            $oldAmount = (float) $installment->amount;
+            $installment->update($validated);
 
-        // Recalculate plan status if needed? 
-        // Simple update for now.
+            if ($oldAmount != (float) $installment->amount) {
+                $diff = (float) $installment->amount - $oldAmount;
+                // If installment increased (diff > 0), customer DEBT increases -> DEBIT.
+                // If installment decreased (diff < 0), customer DEBT decreases -> CREDIT.
+                
+                CustomerAccount::create([
+                    'customer_id' => $installment->installmentPlan->customer_id,
+                    'date' => now(),
+                    'description' => "تعديل قيمة قسط - خطة #{$installment->installmentPlan->id}",
+                    'debit' => $diff > 0 ? $diff : 0,
+                    'credit' => $diff < 0 ? abs($diff) : 0,
+                    'balance' => 0, // Recalculated
+                    'reference_type' => 'InstallmentAdjustment',
+                    'reference_id' => $installment->id,
+                ]);
 
-        return redirect()->route('installments.show', $installment->installmentPlan)
-            ->with('success', 'تم تحديث بيانات القسط بنجاح.');
+                app(\App\Services\AccountBalanceService::class)->recalculateBalance($installment->installmentPlan->customer_id);
+            }
+
+            return redirect()->route('installments.show', $installment->installmentPlan)
+                ->with('success', 'تم تحديث بيانات القسط وتعديل الحساب بنجاح.');
+        });
     }
 
     public function destroyItem(Installment $installment)
     {
         $plan = $installment->installmentPlan;
         
-        // If paid, maybe warn? But admin forced delete.
-        $installment->delete();
+        return DB::transaction(function () use ($installment, $plan) {
+            // Delete the installment debt from customer ledger
+            CustomerAccount::create([
+                'customer_id' => $plan->customer_id,
+                'date' => now(),
+                'description' => "حذف قسط - قيمة " . number_format($installment->amount, 2),
+                'debit' => 0,
+                'credit' => $installment->amount,
+                'balance' => 0, // Recalculated
+                'reference_type' => 'InstallmentDeletion',
+                'reference_id' => $installment->id,
+            ]);
 
-        // Recalculate financed amount or monthly?
-        // Deleting an item changes the plan total if we were dynamically calculating.
-        // But plan has fixed 'financed_amount'. 
-        // So deleting an item just means one less payment to make (discount?).
-        // It's a manual adjustment.
+            $installment->delete();
 
-        return redirect()->route('installments.show', $plan)
-            ->with('success', 'تم حذف القسط بنجاح.');
+            app(\App\Services\AccountBalanceService::class)->recalculateBalance($plan->customer_id);
+
+            return redirect()->route('installments.show', $plan)
+                ->with('success', 'تم حذف القسط وتعديل رصيد العميل بنجاح.');
+        });
     }
 }

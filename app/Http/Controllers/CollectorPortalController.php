@@ -316,6 +316,7 @@ class CollectorPortalController extends Controller
         }
 
         $collection->load(['customer', 'collector', 'planItem']);
+        $collector = $collection->collector;
 
         return view('collector-portal.receipt', compact('collection', 'collector'));
     }

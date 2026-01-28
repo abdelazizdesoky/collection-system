@@ -37,8 +37,11 @@
     <div class="bg-white dark:bg-dark-card rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-dark-border" id="receipt">
         <!-- Header -->
         <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-8 text-white text-center">
-            <h1 class="text-2xl font-bold mb-2">Alarabia Group</h1>
+            <h1 class="text-2xl font-bold mb-2">{{ get_setting('company_name', 'Alarabia Group') }}</h1>
             <p class="opacity-80">إيصال تحصيل</p>
+            @if($activity = get_setting('company_activity'))
+                <p class="text-xs opacity-70 mt-1">{{ $activity }}</p>
+            @endif
         </div>
 
         <!-- Receipt Number -->
@@ -150,7 +153,13 @@
         <!-- Footer -->
         <div class="bg-gray-50 dark:bg-slate-800/50 px-6 py-4 text-center text-sm text-gray-500 dark:text-slate-400 border-t border-gray-100 dark:border-slate-700">
             <p>شكراً لتعاملكم معنا</p>
-            <p class="mt-1">© 2026 Alarabia Group</p>
+            @if($address = get_setting('company_address'))
+                <p class="mt-1 text-xs">{{ $address }}</p>
+            @endif
+            @if($phone = get_setting('company_phone'))
+                <p class="text-xs">{{ $phone }}</p>
+            @endif
+            <p class="mt-1">© 2026 {{ get_setting('company_name', 'Alarabia Group') }}</p>
         </div>
     </div>
 
@@ -190,10 +199,78 @@
 
 <style>
     @media print {
-        body { background: white !important; }
+        @page {
+            margin: 0;
+            size: 80mm auto; /* Standard POS width */
+        }
+        body { 
+            background: white !important; 
+            margin: 0;
+            padding: 0;
+            width: 80mm;
+            -webkit-print-color-adjust: exact;
+        }
         .no-print { display: none !important; }
-        #receipt { box-shadow: none !important; border-radius: 0 !important; }
         .print-only { display: block !important; }
+        
+        #receipt { 
+            box-shadow: none !important; 
+            border: none !important; 
+            width: 80mm !important;
+            margin: 0 !important;
+            padding: 2mm !important;
+            border-radius: 0 !important;
+            background: white !important;
+            color: black !important;
+        }
+
+        /* POS Specific Styling */
+        .bg-gradient-to-r, .bg-emerald-600, .bg-teal-600, .bg-emerald-50, .bg-blue-50, .bg-amber-50, .bg-gray-50, .dark\:bg-dark-card {
+            background: transparent !important;
+            color: black !important;
+            border-bottom: 1px dashed #000 !important;
+        }
+        
+        .text-white, .text-emerald-100, .text-emerald-600, .text-emerald-700, .text-blue-600, .text-amber-600, .text-gray-500, .text-gray-700, .dark\:text-gray-200 {
+            color: black !important;
+        }
+
+        .border-b, .border-t, .border, .border-gray-100, .border-emerald-100 {
+            border-color: black !important;
+            border-style: dashed !important;
+            border-width: 0 0 1px 0 !important;
+        }
+
+        .flex-row, .flex {
+            display: flex !important;
+        }
+
+        h1, h2, .font-black, .font-bold {
+            color: black !important;
+            font-weight: bold !important;
+        }
+
+        .rounded-2xl, .rounded-xl, .rounded-lg {
+            border-radius: 0 !important;
+        }
+
+        /* Logo/Header Optimization */
+        .bg-gradient-to-r {
+            padding: 5mm 0 !important;
+            text-align: center !important;
+        }
+
+        /* Better Spacing for Thermal */
+        .p-6 { padding: 2mm !important; }
+        .py-8 { padding-top: 4mm !important; padding-bottom: 4mm !important; }
+        .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 2mm !important; }
+        
+        /* Amount highlight for thermal */
+        .bg-emerald-50 {
+            border: 1px solid black !important;
+            margin: 2mm 0 !important;
+            padding: 3mm !important;
+        }
     }
 </style>
 @endsection
