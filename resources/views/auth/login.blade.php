@@ -47,7 +47,7 @@
                     <path d="M8 17H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     <path d="M15 17L15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Alarabia Group</h1>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">{{ get_setting('company_name', ' ')??"" }}</h1>
             </div>
             
             <form action="{{ route('login') }}" method="POST" class="space-y-6">

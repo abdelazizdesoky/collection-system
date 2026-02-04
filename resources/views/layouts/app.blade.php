@@ -187,7 +187,7 @@
                         </svg>
                     </div>
                     <div class="sidebar-header-text">
-                        <span class="text-lg font-black text-gray-900 dark:text-white tracking-tight">{{ get_setting('company_name', 'النظام المالي')??"" }}</span>
+                        <span class="text-lg font-black text-gray-900 dark:text-white tracking-tight">{{ get_setting('company_name', ' ')??"" }}</span>
                         <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Premium Dashboard</p>
                     </div>
                 </div>

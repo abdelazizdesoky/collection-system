@@ -77,7 +77,16 @@ class Collection extends Model
     }
 
     /**
+     * Get the visit associated with this collection.
+     */
+    public function visit(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Visit::class);
+    }
+
+    /**
      * Increment the print count and check if limit is reached.
+     * Maximum allowed prints is 3.
      */
     public function incrementPrintCount(): bool
     {

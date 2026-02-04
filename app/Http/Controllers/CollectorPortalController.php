@@ -269,16 +269,20 @@ class CollectorPortalController extends Controller
                 }
             }
 
-            CustomerAccount::create([
-                'customer_id' => $planItem->customer_id,
-                'date' => today(),
-                'description' => $description,
-                'debit' => 0,
-                'credit' => $validated['amount'],
-                'balance' => $newBalance,
-                'reference_type' => 'Collection',
-                'reference_id' => $collection->id,
-            ]);
+            // Record to Customer Ledger ONLY if NOT a cheque
+            // Cheques will be recorded only when cleared/collected
+            if ($validated['payment_type'] !== 'cheque') {
+                CustomerAccount::create([
+                    'customer_id' => $planItem->customer_id,
+                    'date' => today(),
+                    'description' => $description,
+                    'debit' => 0,
+                    'credit' => $validated['amount'],
+                    'balance' => $newBalance, // Use the calculated newBalance
+                    'reference_type' => 'Collection',
+                    'reference_id' => $collection->id,
+                ]);
+            }
 
             // 5. Check if Plan is Completed
             $plan = $planItem->collectionPlan;
@@ -315,10 +319,18 @@ class CollectorPortalController extends Controller
             ]);
         }
 
-        $collection->load(['customer', 'collector', 'planItem']);
+        $collection->load(['customer', 'collector', 'planItem', 'visit.visitPlanItem', 'cheque']);
         $collector = $collection->collector;
 
-        return view('collector-portal.receipt', compact('collection', 'collector'));
+        // Determine redirection URL after printing
+        $returnUrl = route('collector.dashboard');
+        if ($collection->visit) {
+            $returnUrl = route('visit.details', $collection->visit->id);
+        } elseif ($collection->planItem) {
+            $returnUrl = route('collector.plan', $collection->planItem->collection_plan_id);
+        }
+
+        return view('collector-portal.receipt', compact('collection', 'collector', 'returnUrl'));
     }
 
 
@@ -522,17 +534,20 @@ class CollectorPortalController extends Controller
                         $description .= " - سداد قسط مستحق ({$installment->due_date->format('Y-m-d')})";
                     }
                 }
-
-                CustomerAccount::create([
-                    'customer_id' => $visitPlanItem->customer_id,
-                    'date' => today(),
-                    'description' => $description,
-                    'debit' => 0,
-                    'credit' => $validated['amount'],
-                    'balance' => $newBalance,
-                    'reference_type' => 'Collection',
-                    'reference_id' => $collection->id,
-                ]);
+                // Record to Customer Ledger ONLY if NOT a cheque
+                // Cheques will be recorded only when cleared/collected
+                if ($validated['payment_type'] !== 'cheque') {
+                    CustomerAccount::create([
+                        'customer_id' => $visitPlanItem->customer_id,
+                        'date' => today(),
+                        'description' => $description,
+                        'debit' => 0,
+                        'credit' => $validated['amount'],
+                        'balance' => $newBalance,
+                        'reference_type' => 'Collection',
+                        'reference_id' => $collection->id,
+                    ]);
+                }
             }
                 $orderAmount = null;
                 $orderDetails = null;

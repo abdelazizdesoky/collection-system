@@ -3,274 +3,221 @@
 @section('title', 'إيصال #' . $collection->formatted_receipt_no)
 
 @section('content')
-<div class="max-w-lg mx-auto">
+<div class="max-w-md mx-auto">
     <!-- Action Buttons (No Print) -->
     <div class="flex flex-wrap gap-4 mb-6 no-print">
-        @if($collection->planItem)
-            <a href="{{ route('collector.plan', $collection->planItem->collection_plan_id) }}" 
-               class="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-3 px-4 rounded-xl shadow-md transition-colors text-center font-bold flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
-                العودة للخطة اليومية
-            </a>
-        @endif
-        
-        <button onclick="window.print()" 
-                class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-3 px-4 rounded-xl shadow-md transition-colors text-center font-bold flex items-center justify-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button onclick="handlePrint()" 
+                class="flex-1 @if($collection->print_count >= 3) bg-red-600 hover:bg-red-700 @else bg-emerald-600 hover:bg-emerald-700 @endif text-white py-4 px-4 rounded-xl shadow-md transition-colors text-center font-bold flex items-center justify-center gap-2 text-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
             </svg>
-            طباعة الإيصال
+            طباعة (نسخة {{ $collection->print_count }} من 3)
         </button>
 
-        <a href="{{ route('collector.dashboard') }}" 
-           class="w-full bg-white dark:bg-dark-card hover:bg-gray-50 dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-xl shadow-sm border border-gray-200 dark:border-dark-border transition-colors text-center font-medium flex items-center justify-center gap-2 mt-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-            </svg>
-            العودة للرئيسية
+        <a href="{{ $returnUrl }}" 
+           class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-bold transition-colors text-center flex items-center justify-center">
+            إنهاء
         </a>
     </div>
 
-    <!-- Receipt Card -->
-    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-dark-border" id="receipt">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-8 text-white text-center">
-            <h1 class="text-2xl font-bold mb-2">{{ get_setting('company_name', 'Alarabia Group') }}</h1>
-            <p class="opacity-80">إيصال تحصيل</p>
+    <!-- Receipt Container -->
+    <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-dark-border p-6" id="receipt">
+        <!-- Thermal Header -->
+        <div class="text-center border-b-4 border-black pb-2 mb-4 header-section">
+            @if($logo = get_setting('company_logo'))
+                <div class="flex justify-center mb-2 logo-container">
+                    <img src="{{ asset('storage/' . $logo) }}" alt="Logo" class="max-h-16 w-auto print-logo">
+                </div>
+            @endif
+            <h1 class="font-black text-black mb-1 leading-tight company-name">{{ get_setting('company_name', 'Alarabia Group') }}</h1>
+            <p class="font-bold text-black receipt-title">إيصال تحصيل نقدية/شيك</p>
             @if($activity = get_setting('company_activity'))
-                <p class="text-xs opacity-70 mt-1">{{ $activity }}</p>
+                <p class="text-black opacity-80 mt-1 company-activity">{{ $activity }}</p>
             @endif
         </div>
 
-        <!-- Receipt Number -->
-        <div class="bg-emerald-50 dark:bg-emerald-900/20 px-6 py-4 text-center border-b border-emerald-100 dark:border-emerald-500/20">
-            <div class="flex flex-col items-center gap-1">
-                <div class="text-sm text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">رقم الإيصال</div>
-                <div class="text-3xl font-black text-emerald-700 dark:text-emerald-300">#{{ $collection->formatted_receipt_no }}</div>
-                @if($collection->print_count > 1)
-                    <div class="mt-1 px-3 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 rounded-full text-[10px] font-black">
-                        نسخة رقم {{ $collection->print_count }}
-                    </div>
-                @endif
-            </div>
+        <!-- Receipt Info -->
+        <div class="text-center mb-4 info-section">
+            <div class="font-bold text-black receipt-no-label">رقم الإيصال</div>
+            <div class="font-black text-black receipt-no-value">#{{ $collection->formatted_receipt_no }}</div>
+            @if($collection->print_count > 1)
+                <div class="inline-block mt-2 px-4 py-1 bg-gray-200 text-black border-2 border-black font-black print-version">
+                    نسخة رقم {{ $collection->print_count }}
+                </div>
+            @endif
+            <div class="text-black mt-1 font-bold receipt-date">{{ $collection->collection_date->format('Y/m/d H:i') }}</div>
         </div>
 
-        <!-- Receipt Details -->
-        <div class="p-6 space-y-4">
-            <!-- Date -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
-                <span class="text-gray-500 dark:text-slate-400">التاريخ</span>
-                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $collection->collection_date->format('Y/m/d') }}</span>
+        <!-- Details Table -->
+        <div class="space-y-2 details-section mb-4">
+            <div class="flex justify-between items-start border-b-2 border-black pb-2">
+                <span class="text-black min-w-[100px] font-black">العميل:</span>
+                <span class="font-black text-right text-black customer-name">{{ $collection->customer->name }}</span>
+            </div>
+            
+            <div class="flex justify-between items-center border-b-2 border-black pb-2">
+                <span class="text-black font-black">المندوب:</span>
+                <span class="font-black text-right text-black collector-name">{{ $collection->collector->name }}</span>
             </div>
 
-            <!-- Customer -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
-                <span class="text-gray-500 dark:text-slate-400">اسم العميل</span>
-                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $collection->customer->name }}</span>
-            </div>
-
-            <!-- Collector -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
-                <span class="text-gray-500 dark:text-slate-400">المندوب</span>
-                <span class="font-medium text-gray-800 dark:text-gray-200">{{ $collection->collector->name }}</span>
-            </div>
-
-            <!-- Payment Type -->
-            <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-slate-700">
-                <span class="text-gray-500 dark:text-slate-400">طريقة الدفع</span>
-                <span class="font-bold text-gray-800 dark:text-gray-200">
-                    @if($collection->payment_type === 'cash')
-                        نقدي
-                    @elseif($collection->payment_type === 'cheque')
-                        شيك
-                    @else
-                        تحويل بنكي
-                    @endif
+            @if($collection->payment_type === 'cheque' || $collection->payment_type === 'bank_transfer')
+                <div class="flex justify-between border-b-2 border-dashed border-black pb-2">
+                    <span class="text-black font-black">اسم البنك:</span>
+                    <span class="text-black font-black">{{ $collection->bank_name ?? ($collection->cheque->bank_name ?? 'N/A') }}</span>
+                </div>
+            @endif
+            
+            <div class="flex justify-between items-center border-b-2 border-black pb-2">
+                <span class="text-black font-black">طريقة الدفع:</span>
+                <span class="font-black text-right text-black payment-type">
+                    @if($collection->payment_type === 'cash') نقدي
+                    @elseif($collection->payment_type === 'cheque') شيك
+                    @else تحويل بنكي @endif
                 </span>
             </div>
 
             @if($collection->payment_type === 'cheque' && $collection->cheque)
-                <!-- Cheque Details -->
-                <div class="bg-blue-50/50 p-4 rounded-xl space-y-2 text-sm border border-blue-100">
-                    <div class="flex justify-between">
-                        <span class="text-blue-600">رقم الشيك:</span>
-                        <span class="font-bold">{{ $collection->cheque->cheque_no }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-blue-600">البنك:</span>
-                        <span class="font-bold">{{ $collection->cheque->bank_name }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-blue-600">تاريخ الاستحقاق:</span>
-                        <span class="font-bold">{{ $collection->cheque->due_date->format('Y/m/d') }}</span>
-                    </div>
+                <div class="bg-gray-100 p-3 border-4 border-black text-black font-black space-y-1 cheque-details">
+                    <div class="flex justify-between"><span>رقم الشيك:</span> <b class="text-black">{{ $collection->cheque->cheque_no }}</b></div>
+                    <div class="flex justify-between"><span>البنك:</span> <b class="text-black">{{ $collection->cheque->bank_name }}</b></div>
+                    <div class="flex justify-between"><span>تاريخ الاستحقاق:</span> <b class="text-black">{{ $collection->cheque->due_date->format('Y/m/d') }}</b></div>
                 </div>
             @elseif($collection->payment_type === 'bank_transfer')
-                <!-- Transfer Details -->
-                <div class="bg-amber-50/50 p-4 rounded-xl space-y-2 text-sm border border-amber-100">
-                    <div class="flex justify-between">
-                        <span class="text-amber-600">البنك / البرنامج:</span>
-                        <span class="font-bold">{{ $collection->bank_name }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-amber-600">رقم المرجع (Ref):</span>
-                        <span class="font-bold font-mono">{{ $collection->reference_no }}</span>
-                    </div>
+                <div class="bg-gray-100 p-3 border-4 border-black text-black font-black space-y-1 transfer-details">
+                    <div class="flex justify-between"><span>البنك:</span> <b class="text-black">{{ $collection->bank_name }}</b></div>
+                    <div class="flex justify-between"><span>رقم المرجع:</span> <b class="font-mono text-black">{{ $collection->reference_no }}</b></div>
                 </div>
             @endif
 
-            <!-- Amount -->
-            <div class="flex justify-between items-center py-4 bg-emerald-50 dark:bg-emerald-900/20 -mx-6 px-6 rounded-lg">
-                <span class="text-emerald-600 dark:text-emerald-400 font-bold text-lg">المبلغ المندوب</span>
-                <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($collection->amount, 2) }} ج.م</span>
+            <!-- Grand Total -->
+            <div class="border-4 border-black text-black p-4 text-center mt-4 amount-section">
+                <div class="font-black mb-0 amount-label">المبلغ المحصل</div>
+                <div class="font-black amount-value">{{ number_format($collection->amount, 2) }} <small class="currency">ج.م</small></div>
+                <div class="font-bold text-lg mt-1 tafqeet-value">{{ tafqeet($collection->amount) }}</div>
             </div>
-
-            @if($collection->attachment)
-                <!-- Attachment Proof -->
-                <div class="py-4 border-t border-gray-100 no-print">
-                    <span class="text-gray-500 block mb-3 font-bold">إثبات الدفع (صورة)</span>
-                    <div class="rounded-2xl overflow-hidden border-2 border-gray-100 shadow-sm">
-                        <img src="{{ asset('storage/' . $collection->attachment) }}" alt="إثبات الدفع" class="w-full h-auto max-h-64 object-cover">
-                    </div>
-                    <a href="{{ asset('storage/' . $collection->attachment) }}" target="_blank" class="mt-2 text-blue-600 text-xs font-bold flex items-center gap-1 hover:underline">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                        فتح الصورة بحجم كامل
-                    </a>
-                </div>
-            @endif
-
-            @if($collection->notes)
-                <!-- Notes -->
-                <div class="py-3 border-t border-gray-100 italic">
-                    <span class="text-gray-500 block mb-1 text-xs">ملاحظات إضافية</span>
-                    <span class="text-gray-700 font-medium leading-relaxed">{{ $collection->notes }}</span>
-                </div>
-            @endif
         </div>
 
-        <!-- Footer -->
-        <div class="bg-gray-50 dark:bg-slate-800/50 px-6 py-4 text-center text-sm text-gray-500 dark:text-slate-400 border-t border-gray-100 dark:border-slate-700">
-            <p>شكراً لتعاملكم معنا</p>
-            @if($address = get_setting('company_address'))
-                <p class="mt-1 text-xs">{{ $address }}</p>
-            @endif
-            @if($phone = get_setting('company_phone'))
-                <p class="text-xs">{{ $phone }}</p>
-            @endif
-            <p class="mt-1">© 2026 {{ get_setting('company_name', 'Alarabia Group') }}</p>
-        </div>
-    </div>
+        @if($collection->notes)
+            <div class="text-black mb-4 text-center font-black p-3 border-2 border-black italic notes-section text-lg">
+                * {{ $collection->notes }}
+            </div>
+        @endif
 
-    <!-- Signature Area (Print Only) -->
-    <div class="hidden print-only mt-8">
-        <div class="flex justify-between px-8">
-            <div class="text-center">
-                <div class="border-t-2 border-gray-400 w-32 mb-2"></div>
-                <div class="text-sm text-gray-600">توقيع العميل</div>
+        <!-- QR & Footer Section -->
+        <div class="text-center py-1 border-t-4 border-black qr-section">
+            <div class="inline-block p-1 bg-white border-2 border-black">
+                @php
+                    $qrPayload = "Receipt: #{$collection->receipt_no}\nCustomer: {$collection->customer->name}\nAmount: {$collection->amount} EGP\nDate: {$collection->collection_date->format('Y-m-d')}";
+                    $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($qrPayload);
+                @endphp
+                <img src="{{ $qrUrl }}" alt="QR Code" class="w-32 h-32 mx-auto qr-img">
             </div>
-            <div class="text-center">
-                <div class="border-t-2 border-gray-400 w-32 mb-2"></div>
-                <div class="text-sm text-gray-600">توقيع المندوب</div>
-            </div>
+            <p class="text-black mt-0 font-black footer-thanks">شكراً لتعاملكم معنا</p>
+        </div>
+
+        <!-- Footer Contact -->
+        <div class="text-center text-black footer-contact">
+            @if($address = get_setting('company_address')) <p class="mb-0 font-bold text-xs">{{ $address }}</p> @endif
+            @if($phone = get_setting('company_phone')) <p class="font-black text-sm">ت: {{ $phone }}</p> @endif
         </div>
     </div>
 </div>
 
 <script>
-    // Print session control: Redirect away after the print dialog closes
-    window.addEventListener('afterprint', function() {
-        @php
-            $isCollector = auth()->user()->hasRole('collector');
-            $redirectUrl = route('dashboard'); 
-            
-            if ($collection->planItem) {
-                $redirectUrl = $isCollector 
-                    ? route('collector.plan', $collection->planItem->collection_plan_id)
-                    : route('visit-plans.show', $collection->planItem->visit_plan_id);
-            } elseif ($isCollector) {
-                $redirectUrl = route('collector.dashboard');
-            }
-        @endphp
-        window.location.href = "{{ $redirectUrl }}";
-    });
+    function handlePrint() {
+        window.print();
+        // Redirect to returnUrl after print dialog
+        setTimeout(() => {
+            window.location.href = "{{ $returnUrl }}";
+        }, 1500);
+    }
+    
+    // Fallback for some browsers where print blocks execution
+    window.onafterprint = function() {
+        window.location.href = "{{ $returnUrl }}";
+    };
 </script>
+
+@push('scripts')
+<script>
+    // Scripts are handled in the content block for maximum reliability
+</script>
+@endpush
 
 <style>
     @media print {
         @page {
             margin: 0;
-            size: 80mm auto; /* Standard POS width */
+            size: 210mm auto; /* Fixed 80mm roll width */
         }
-        body { 
-            background: white !important; 
-            margin: 0;
-            padding: 0;
-            width: 80mm;
+        html, body {
+            height: auto;
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 210mm !important;
             -webkit-print-color-adjust: exact;
+            color: black !important;
+            font-family: 'Cairo', Arial, sans-serif;
+            font-weight: 900 !important;
+            overflow: visible !important;
         }
-        .no-print { display: none !important; }
-        .print-only { display: block !important; }
-        
         #receipt { 
             box-shadow: none !important; 
             border: none !important; 
-            width: 80mm !important;
+            width: 210mm !important; 
             margin: 0 !important;
-            padding: 2mm !important;
+            padding: 2mm 2mm 0 2mm !important;
             border-radius: 0 !important;
-            background: white !important;
-            color: black !important;
+            display: block !important;
+            page-break-inside: avoid;
+            page-break-after: avoid;
         }
-
-        /* POS Specific Styling */
-        .bg-gradient-to-r, .bg-emerald-600, .bg-teal-600, .bg-emerald-50, .bg-blue-50, .bg-amber-50, .bg-gray-50, .dark\:bg-dark-card {
-            background: transparent !important;
-            color: black !important;
-            border-bottom: 1px dashed #000 !important;
-        }
+        .max-w-md { max-width: 100% !important; width: 100% !important; }
+        .no-print { display: none !important; }
+        .print-only { display: block !important; }
         
-        .text-white, .text-emerald-100, .text-emerald-600, .text-emerald-700, .text-blue-600, .text-amber-600, .text-gray-500, .text-gray-700, .dark\:text-gray-200 {
-            color: black !important;
-        }
-
-        .border-b, .border-t, .border, .border-gray-100, .border-emerald-100 {
-            border-color: black !important;
-            border-style: dashed !important;
-            border-width: 0 0 1px 0 !important;
-        }
-
-        .flex-row, .flex {
-            display: flex !important;
-        }
-
-        h1, h2, .font-black, .font-bold {
-            color: black !important;
-            font-weight: bold !important;
-        }
-
-        .rounded-2xl, .rounded-xl, .rounded-lg {
-            border-radius: 0 !important;
-        }
-
-        /* Logo/Header Optimization */
-        .bg-gradient-to-r {
-            padding: 5mm 0 !important;
-            text-align: center !important;
-        }
-
-        /* Better Spacing for Thermal */
-        .p-6 { padding: 2mm !important; }
-        .py-8 { padding-top: 4mm !important; padding-bottom: 4mm !important; }
-        .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 2mm !important; }
+        .print-logo { max-height: 100mm !important; margin: 0 auto 0 !important; display: block !important; -webkit-print-color-adjust: exact; filter: grayscale(100%) contrast(100%); }
         
-        /* Amount highlight for thermal */
-        .bg-emerald-50 {
-            border: 1px solid black !important;
-            margin: 2mm 0 !important;
-            padding: 3mm !important;
-        }
+        /* Ultra-bold, High-contrast sizes */
+        .company-name { font-size: 26pt !important; margin-bottom: 2mm !important; font-weight: 900 !important; }
+        .receipt-title { font-size: 20pt !important; font-weight: 900 !important; }
+        .company-activity { font-size: 14pt !important; font-weight: 900 !important; }
+        
+        .receipt-no-label { font-size: 16pt !important; font-weight: 900 !important; }
+        .receipt-no-value { font-size: 38pt !important; margin: 3mm 0 !important; font-weight: 900 !important; }
+        .receipt-date { font-size: 16pt !important; font-weight: 900 !important; }
+        .print-version { font-size: 16pt !important; padding: 2mm !important; font-weight: 900 !important; border-width: 3px !important; }
+        
+        .details-section span { font-size: 22pt !important; font-weight: 900 !important; }
+        .customer-name { font-size: 24pt !important; font-weight: 900 !important; }
+        
+        .amount-section { border: 6px solid black !important; margin-top: 5mm !important; padding: 6mm !important; }
+        .amount-label { font-size: 20pt !important; font-weight: 900 !important; }
+        .amount-value { font-size: 52pt !important; font-weight: 900 !important; }
+        .currency { font-size: 20pt !important; }
+        .tafqeet-value { font-size: 20pt !important; font-weight: 900 !important; margin-top: 1mm !important; }
+        
+        .notes-section { font-size: 18pt !important; margin-bottom: 5mm !important; padding: 3mm !important; border-width: 3px !important; }
+        .footer-thanks { font-size: 14pt !important; margin-top: 0mm !important; font-weight: 900 !important; }
+        .footer-contact p { font-size: 15pt !important; font-weight: 900 !important; line-height: 1 !important; }
+        
+        .qr-section { padding-top: 1mm !important; border-top-width: 2px !important; }
+        .qr-img { width: 65mm !important; height: 65mm !important; }
+        .footer-contact { border-top: none !important; padding-top: 0 !important; }
+        
+        /* Eliminate all Gray/Opacity for Thermal */
+        * { color: black !important; border-color: black !important; opacity: 1 !important; }
+        .bg-gray-100, .bg-gray-200 { background-color: #eee !important; -webkit-print-color-adjust: exact; border: 1.5px solid black !important; }
+        
+        /* Spacing */
+        .mb-6, .mb-4, .mb-2 { margin-bottom: 0mm !important; }
+        .pb-6, .pb-4, .pb-2 { padding-bottom: 0mm !important; }
+        .mt-6, .mt-4, .mt-2 { margin-top: 2mm !important; }
+        
+        /* Ensure no extra space at the very bottom */
+        body { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+        .footer-contact { margin-bottom: 0 !important; padding-bottom: 0 !important; }
     }
 </style>
 @endsection

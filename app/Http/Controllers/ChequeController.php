@@ -143,26 +143,49 @@ class ChequeController extends Controller
         ]);
 
         return DB::transaction(function () use ($validated, $cheque) {
+            $oldStatus = $cheque->status;
             $oldAmount = $cheque->amount;
+            
             $cheque->update($validated);
 
-            if ($oldAmount != $cheque->amount) {
-                $diff = $cheque->amount - $oldAmount;
-                // If amount increased (diff > 0), CREDIT customer (reduce balance)
-                // If amount decreased (diff < 0), DEBIT customer (increase balance)
-                
-                CustomerAccount::create([
+            $accountService = app(\App\Services\AccountBalanceService::class);
+
+            // Logic: Cheques only affect balance when CLEARED
+            
+            // 1. If it was NOT cleared and NOW IT IS -> Create Ledger Entry
+            if ($oldStatus !== 'cleared' && $cheque->status === 'cleared') {
+                \App\Models\CustomerAccount::create([
                     'customer_id' => $cheque->customer_id,
                     'date' => now(),
-                    'description' => "تعديل مبلغ شيك - رقم #{$cheque->cheque_no}",
+                    'description' => "تحصيل شيك (مقبول) - رقم #{$cheque->cheque_no}",
+                    'debit' => 0,
+                    'credit' => $cheque->amount,
+                    'balance' => 0, // Recalculated
+                    'reference_type' => 'Cheque',
+                    'reference_id' => $cheque->id,
+                ]);
+                $accountService->recalculateBalance($cheque->customer_id);
+            }
+            
+            // 2. If it WAS cleared and NOW IT IS NOT -> Cancel Ledger Entry
+            elseif ($oldStatus === 'cleared' && $cheque->status !== 'cleared') {
+                $accountService->cancelTransaction('Cheque', $cheque->id);
+            }
+            
+            // 3. If it WAS cleared and STILL IS but amount changed -> Adjust existing entry
+            elseif ($oldStatus === 'cleared' && $cheque->status === 'cleared' && $oldAmount != $cheque->amount) {
+                $diff = $cheque->amount - $oldAmount;
+                \App\Models\CustomerAccount::create([
+                    'customer_id' => $cheque->customer_id,
+                    'date' => now(),
+                    'description' => "تعديل مبلغ شيك (مقبول) - رقم #{$cheque->cheque_no}",
                     'debit' => $diff < 0 ? abs($diff) : 0,
                     'credit' => $diff > 0 ? $diff : 0,
                     'balance' => 0, // Recalculated
                     'reference_type' => 'ChequeAdjustment',
                     'reference_id' => $cheque->id,
                 ]);
-
-                app(\App\Services\AccountBalanceService::class)->recalculateBalance($cheque->customer_id);
+                $accountService->recalculateBalance($cheque->customer_id);
             }
 
             return redirect()->route('cheques.show', $cheque)
