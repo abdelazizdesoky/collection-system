@@ -59,13 +59,6 @@
                 <span class="text-black font-black">المندوب:</span>
                 <span class="font-black text-right text-black collector-name">{{ $collection->collector->name }}</span>
             </div>
-
-            @if($collection->payment_type === 'cheque' || $collection->payment_type === 'bank_transfer')
-                <div class="flex justify-between border-b-2 border-dashed border-black pb-2">
-                    <span class="text-black font-black">اسم البنك:</span>
-                    <span class="text-black font-black">{{ $collection->bank_name ?: ($collection->cheque->bank_name ?? 'N/A') }}</span>
-                </div>
-            @endif
             
             <div class="flex justify-between items-center border-b-2 border-black pb-2">
                 <span class="text-black font-black">طريقة الدفع:</span>
@@ -76,15 +69,15 @@
                 </span>
             </div>
 
-            @if($collection->payment_type === 'cheque' && $collection->cheque)
+                @if($collection->payment_type === 'cheque' && $collection->cheque)
                 <div class="bg-gray-100 p-3 border-4 border-black text-black font-black space-y-1 cheque-details">
                     <div class="flex justify-between"><span>رقم الشيك:</span> <b class="text-black">{{ $collection->cheque->cheque_no }}</b></div>
-                    <div class="flex justify-between"><span>البنك:</span> <b class="text-black">{{ $collection->cheque->bank_name }}</b></div>
+                    <div class="flex justify-between"><span>البنك:</span> <b class="text-black">{{ $collection->cheque->bank_name ?? 'N/A' }}</b></div>
                     <div class="flex justify-between"><span>تاريخ الاستحقاق:</span> <b class="text-black">{{ $collection->cheque->due_date->format('Y/m/d') }}</b></div>
                 </div>
             @elseif($collection->payment_type === 'bank_transfer')
                 <div class="bg-gray-100 p-3 border-4 border-black text-black font-black space-y-1 transfer-details">
-                    <div class="flex justify-between"><span>البنك:</span> <b class="text-black">{{ $collection->bank_name }}</b></div>
+                    <div class="flex justify-between"><span>البنك:</span> <b class="text-black">{{ $collection->bank_name }}</b></div>  
                     <div class="flex justify-between"><span>رقم المرجع:</span> <b class="font-mono text-black">{{ $collection->reference_no }}</b></div>
                 </div>
             @endif

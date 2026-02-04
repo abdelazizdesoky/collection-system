@@ -169,10 +169,10 @@
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">اسم البنك <span class="text-red-500">*</span></label>
-                        <select name="bank_name" class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white">
+                        <select name="bank_name_cheque" class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white">
                             <option value="">اختر البنك / المحفظة</option>
                             @foreach($banks as $bank)
-                                <option value="{{ $bank->name }}" {{ old('bank_name') == $bank->name ? 'selected' : '' }}>
+                                <option value="{{ $bank->name }}" {{ old('bank_name_cheque') == $bank->name ? 'selected' : '' }}>
                                     {{ $bank->name }} ({{ $bank->type == 'wallet' ? 'محفظة' : 'بنك' }})
                                 </option>
                             @endforeach
@@ -188,14 +188,14 @@
                 <div id="bank-transfer-fields" class="space-y-4 hidden">
                     <div>
                         <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">اسم البنك <span class="text-red-500">*</span></label>
-                        <select name="bank_name" class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white">
-                            <option value="">اختر البنك / المحفظة</option>
-                            @foreach($banks as $bank)
-                                <option value="{{ $bank->name }}" {{ old('bank_name') == $bank->name ? 'selected' : '' }}>
-                                    {{ $bank->name }} ({{ $bank->type == 'wallet' ? 'محفظة' : 'بنك' }})
-                                </option>
-                            @endforeach
-                        </select>
+                    <select name="bank_name_transfer" class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white">
+                        <option value="">اختر البنك / المحفظة</option>
+                        @foreach($banks as $bank)
+                            <option value="{{ $bank->name }}" {{ old('bank_name_transfer') == $bank->name ? 'selected' : '' }}>
+                                {{ $bank->name }} ({{ $bank->type == 'wallet' ? 'محفظة' : 'بنك' }})
+                            </option>
+                        @endforeach
+                    </select>
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">رقم المرجع</label>

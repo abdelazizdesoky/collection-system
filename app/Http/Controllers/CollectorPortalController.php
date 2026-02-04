@@ -181,6 +181,7 @@ class CollectorPortalController extends Controller
                 },
             ],
             // Cheque details
+            'cheque_no' => 'required_if:payment_type,cheque|nullable|string',
             'bank_name' => 'nullable|exists:banks,name',
             'bank_name_cheque' => 'nullable|exists:banks,name',
             'bank_name_transfer' => 'nullable|exists:banks,name',

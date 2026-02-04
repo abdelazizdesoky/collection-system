@@ -273,11 +273,6 @@
                 }
             }
 
-            // Sync bank_name field for transfer if needed since controller looks for 'bank_name'
-            document.querySelector('input[name="bank_name_transfer"]').addEventListener('input', function(e) {
-                document.querySelector('input[name="bank_name"]').value = e.target.value;
-            });
-
             // Handle old input on load
             window.onload = function() {
                 const selectedType = document.querySelector('input[name="payment_type"]:checked').value;
