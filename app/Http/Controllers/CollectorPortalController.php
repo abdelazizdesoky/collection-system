@@ -181,14 +181,17 @@ class CollectorPortalController extends Controller
                 },
             ],
             // Cheque details
-            'cheque_no' => 'required_if:payment_type,cheque|nullable|string',
-            'bank_name' => 'required_if:payment_type,cheque,bank_transfer|nullable|exists:banks,name',
+            'bank_name' => 'nullable|exists:banks,name',
+            'bank_name_cheque' => 'nullable|exists:banks,name',
+            'bank_name_transfer' => 'nullable|exists:banks,name',
             'due_date' => 'required_if:payment_type,cheque|nullable|date',
             // Bank transfer details
             'reference_no' => 'required_if:payment_type,bank_transfer|nullable|string',
         ], [
             'cheque_no.required_if' => 'رقم الشيك مطلوب عند الدفع بشيك',
             'bank_name.required_if' => 'اسم البنك مطلوب',
+            'bank_name_cheque.required_if' => 'اسم البنك مطلوب',
+            'bank_name_transfer.required_if' => 'اسم البنك مطلوب',
             'bank_name.exists' => 'يرجى اختيار بنك صالح من القائمة',
             'due_date.required_if' => 'تاريخ الاستحقاق مطلوب عند الدفع بشيك',
             'reference_no.required_if' => 'رقم المرجع مطلوب عند التحويل البنكي',
@@ -209,6 +212,8 @@ class CollectorPortalController extends Controller
             }
 
             // 1. Create Collection
+            $bankName = $validated['bank_name'] ?? ($validated['bank_name_cheque'] ?? ($validated['bank_name_transfer'] ?? null));
+
             $collection = Collection::create([
                 'customer_id' => $planItem->customer_id,
                 'collector_id' => $collector->id,
@@ -218,7 +223,7 @@ class CollectorPortalController extends Controller
                 'receipt_no' => $validated['receipt_no'],
                 'notes' => $validated['notes'],
                 'attachment' => $attachmentPath,
-                'bank_name' => $validated['bank_name'] ?? null,
+                'bank_name' => $bankName,
                 'reference_no' => $validated['reference_no'] ?? null,
             ]);
 
@@ -228,7 +233,7 @@ class CollectorPortalController extends Controller
                     'customer_id' => $planItem->customer_id,
                     'collection_id' => $collection->id,
                     'cheque_no' => $validated['cheque_no'],
-                    'bank_name' => $validated['bank_name'],
+                    'bank_name' => $bankName,
                     'amount' => $validated['amount'],
                     'due_date' => $validated['due_date'],
                     'status' => 'pending',
@@ -437,7 +442,9 @@ class CollectorPortalController extends Controller
             'receipt_no' => 'required_if:visit_type,collection|nullable|string|unique:collections,receipt_no',
             'payment_type' => 'required_if:visit_type,collection|nullable|in:cash,cheque,bank_transfer',
             'cheque_no' => 'required_if:payment_type,cheque|nullable|string',
-            'bank_name' => 'nullable|exists:banks,name', // Strict bank selection
+            'bank_name' => 'nullable|exists:banks,name',
+            'bank_name_cheque' => 'nullable|exists:banks,name',
+            'bank_name_transfer' => 'nullable|exists:banks,name',
             'due_date' => 'required_if:payment_type,cheque|nullable|date',
             'reference_no' => 'required_if:payment_type,bank_transfer|nullable|string',
             // Order fields
@@ -479,6 +486,8 @@ class CollectorPortalController extends Controller
 
             // If visit type is collection, create Collection record
             if ($validated['visit_type'] === 'collection') {
+                $bankName = $validated['bank_name'] ?? ($validated['bank_name_cheque'] ?? ($validated['bank_name_transfer'] ?? null));
+
                 $collection = Collection::create([
                     'customer_id' => $visitPlanItem->customer_id,
                     'collector_id' => $collector->id,
@@ -488,7 +497,7 @@ class CollectorPortalController extends Controller
                     'receipt_no' => $validated['receipt_no'],
                     'notes' => $validated['notes'],
                     'attachment' => $attachmentPath,
-                    'bank_name' => $validated['bank_name'] ?? null,
+                    'bank_name' => $bankName,
                     'reference_no' => $validated['reference_no'] ?? null,
                 ]);
 
@@ -500,7 +509,7 @@ class CollectorPortalController extends Controller
                         'customer_id' => $visitPlanItem->customer_id,
                         'collection_id' => $collection->id,
                         'cheque_no' => $validated['cheque_no'],
-                        'bank_name' => $validated['bank_name'],
+                        'bank_name' => $bankName,
                         'amount' => $validated['amount'],
                         'due_date' => $validated['due_date'],
                         'status' => 'pending',

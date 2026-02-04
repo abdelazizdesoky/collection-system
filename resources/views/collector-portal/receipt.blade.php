@@ -63,7 +63,7 @@
             @if($collection->payment_type === 'cheque' || $collection->payment_type === 'bank_transfer')
                 <div class="flex justify-between border-b-2 border-dashed border-black pb-2">
                     <span class="text-black font-black">اسم البنك:</span>
-                    <span class="text-black font-black">{{ $collection->bank_name ?? ($collection->cheque->bank_name ?? 'N/A') }}</span>
+                    <span class="text-black font-black">{{ $collection->bank_name ?: ($collection->cheque->bank_name ?? 'N/A') }}</span>
                 </div>
             @endif
             
@@ -151,7 +151,8 @@
             size: 210mm auto; /* Fixed 80mm roll width */
         }
         html, body {
-            height: auto;
+            height: auto !important;
+            min-height: 0 !important;
             background: white !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -218,6 +219,7 @@
         /* Ensure no extra space at the very bottom */
         body { margin-bottom: 0 !important; padding-bottom: 0 !important; }
         .footer-contact { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+        main, .container, .py-12, .py-6 { padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; }
     }
 </style>
 @endsection
