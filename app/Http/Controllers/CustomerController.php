@@ -116,7 +116,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer): View
     {
-        $customer->load('collections', 'cheques', 'accounts', 'area', 'collector');
+        $customer->load('collections', 'cheques', 'accounts', 'area', 'collector', 'issues.collector', 'installmentPlans.installments');
 
         return view('customers.show', compact('customer'));
     }

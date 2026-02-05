@@ -160,8 +160,14 @@ Route::middleware('auth')->group(function () {
             // Item Management
             Route::get('/items/{installment}/edit', [InstallmentController::class, 'editItem'])->name('item.edit');
             Route::put('/items/{installment}', [InstallmentController::class, 'updateItem'])->name('item.update');
+            Route::post('/items/{installment}/postpone', [InstallmentController::class, 'postponeItem'])->name('item.postpone');
             Route::delete('/items/{installment}', [InstallmentController::class, 'destroyItem'])->name('item.destroy');
         });
+
+        // Issue Management
+        Route::post('/issues/{id}/restore', [\App\Http\Controllers\IssueController::class, 'restore'])->name('issues.restore');
+        Route::delete('/issues/{id}/force-delete', [\App\Http\Controllers\IssueController::class, 'forceDelete'])->name('issues.force-delete');
+        Route::resource('issues', \App\Http\Controllers\IssueController::class)->only(['index', 'show', 'update', 'destroy'])->withTrashed(['show', 'destroy']);
     });
 
     // 3. Shared Management: Planning Focus (Admin, Supervisor, Plan Supervisor)
@@ -213,4 +219,7 @@ Route::middleware(['auth', 'role:collector'])->prefix('collector')->name('collec
     Route::get('/visit-plan/{visitPlan}', [CollectorPortalController::class, 'showVisitPlan'])->name('visit-plan');
     Route::get('/visit/{visitPlanItem}', [CollectorPortalController::class, 'showVisitForm'])->name('visit');
     Route::post('/visit/{visitPlanItem}', [CollectorPortalController::class, 'storeVisit'])->name('visit.store');
+    
+    // Issue Update from Portal
+    Route::post('/issues/{issue}/update', [CollectorPortalController::class, 'updateIssue'])->name('issues.update');
 });

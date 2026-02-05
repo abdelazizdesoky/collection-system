@@ -96,7 +96,7 @@ class Customer extends Model
      */
     public function getCurrentBalance(): string
     {
-        $lastAccount = $this->accounts()->latest()->first();
+        $lastAccount = $this->accounts()->active()->latest('id')->first();
 
         return $lastAccount?->balance ?? $this->opening_balance;
     }
@@ -127,5 +127,13 @@ class Customer extends Model
     public function hasDueInstallments(): bool
     {
         return $this->due_installments->isNotEmpty();
+    }
+
+    /**
+     * Get all issues for this customer.
+     */
+    public function issues(): HasMany
+    {
+        return $this->hasMany(Issue::class);
     }
 }

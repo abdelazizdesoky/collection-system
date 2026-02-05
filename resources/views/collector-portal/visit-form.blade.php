@@ -76,6 +76,7 @@
         </div>
     @endif
 
+
     <!-- Visit Form -->
     <form action="{{ route('collector.visit.store', $visitPlanItem) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
@@ -234,17 +235,78 @@
                 <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 بيانات المشكلة
             </h3>
-            <div class="space-y-4">
+
+            @if(isset($activeIssues) && $activeIssues->count() > 0)
+            <!-- Choice Toggle (New vs Existing) -->
+            <div class="mb-6 grid grid-cols-2 gap-4">
+                <label class="cursor-pointer group">
+                    <input type="radio" name="issue_action_type" value="existing" class="hidden peer" {{ old('issue_action_type', 'existing') == 'existing' ? 'checked' : '' }}>
+                    <div class="p-4 rounded-2xl border-2 border-gray-100 dark:border-dark-border peer-checked:border-rose-500 peer-checked:bg-rose-50 dark:peer-checked:bg-rose-900/20 text-center transition-all">
+                        <svg class="w-6 h-6 mx-auto mb-2 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-300">متابعة مشكلة سابقة</span>
+                    </div>
+                </label>
+                <label class="cursor-pointer group">
+                    <input type="radio" name="issue_action_type" value="new" class="hidden peer" {{ old('issue_action_type') == 'new' ? 'checked' : '' }}>
+                    <div class="p-4 rounded-2xl border-2 border-gray-100 dark:border-dark-border peer-checked:border-rose-500 peer-checked:bg-rose-50 dark:peer-checked:bg-rose-900/20 text-center transition-all">
+                        <svg class="w-6 h-6 mx-auto mb-2 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-300">تسجيل مشكلة جديدة</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Follow-up Section -->
+            <div id="existing-issue-section" class="mb-6 space-y-4">
+                <div class="bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-800/50 rounded-xl p-5">
+                    @if($activeIssues->count() > 1)
+                    <div class="mb-5">
+                        <label class="block text-sm font-bold text-rose-800 dark:text-rose-400 mb-2">اختر المشكلة للمتابعة <span class="text-red-500">*</span></label>
+                        <select name="selected_issue_id" id="selected_issue_id" class="w-full rounded-xl border-rose-100 dark:border-dark-border dark:bg-dark-bg dark:text-white focus:ring-rose-500 transition-all text-sm h-14">
+                            @foreach($activeIssues as $issue)
+                                <option value="{{ $issue->id }}" {{ old('selected_issue_id') == $issue->id ? 'selected' : '' }} data-desc="{{ $issue->description }}">
+                                    [{{ $issue->status_label }}] {{ Str::limit($issue->description, 50) }} ({{ $issue->created_at->format('Y-m-d') }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @else
+                    <input type="hidden" name="selected_issue_id" value="{{ $activeIssues->first()->id }}">
+                    <div class="mb-5 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-rose-100 dark:border-rose-900/30">
+                        <span class="block text-[10px] font-black uppercase text-rose-600 mb-1">المشكلة العالقة</span>
+                        <p class="text-xs text-gray-700 dark:text-gray-300 italic">"{{ $activeIssues->first()->description }}"</p>
+                    </div>
+                    @endif
+
+                    <div class="space-y-4 pt-4 border-t border-rose-100 dark:border-rose-800/30">
+                        <div>
+                            <label class="block text-sm font-bold text-rose-800 dark:text-rose-400 mb-2">تحديث أو تعليق <span class="text-red-500">*</span></label>
+                            <textarea name="followup_comment" rows="3" class="w-full text-sm rounded-xl border-rose-100 dark:border-dark-border dark:bg-dark-bg dark:text-white focus:ring-rose-500 transition-all" placeholder="أضف تفاصيل المتابعة هنا...">{{ old('followup_comment') }}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-rose-800 dark:text-rose-400 mb-2">تغيير الحالة</label>
+                            <select name="followup_status" class="w-full text-sm rounded-xl border-rose-100 dark:border-dark-border dark:bg-dark-bg dark:text-white focus:ring-rose-500 transition-all h-12">
+                                <option value="pending" {{ old('followup_status') == 'pending' ? 'selected' : '' }}>معلق (بدون تغيير)</option>
+                                <option value="processing" {{ old('followup_status') == 'processing' ? 'selected' : '' }}>قيد المعالجة</option>
+                                <option value="resolved">تم الحل (إغلاق)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            <!-- New Issue Section -->
+            <div id="new-issue-section" class="space-y-4 {{ (isset($activeIssues) && $activeIssues->count() > 0 && old('issue_action_type', 'existing') == 'existing') ? 'hidden' : '' }}">
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">وصف المشكلة <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">وصف المشكلة الجديدة <span class="text-red-500">*</span></label>
                     <textarea name="issue_description" rows="4"
-                        class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white"
-                        placeholder="اكتب وصف المشكلة هنا...">{{ old('issue_description') }}</textarea>
+                        class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white focus:ring-rose-500 transition-all"
+                        placeholder="اكتب وصف المشكلة بالتفصيل هنا...">{{ old('issue_description') }}</textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">حالة المشكلة <span class="text-red-500">*</span></label>
                     <select name="issue_status"
-                        class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white">
+                        class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white h-12 focus:ring-rose-500">
                         <option value="pending" {{ old('issue_status') == 'pending' ? 'selected' : '' }}>قيد المعالجة</option>
                         <option value="resolved" {{ old('issue_status') == 'resolved' ? 'selected' : '' }}>تم الحل</option>
                         <option value="escalated" {{ old('issue_status') == 'escalated' ? 'selected' : '' }}>تم التصعيد</option>
@@ -290,6 +352,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const paymentType = document.getElementById('payment-type');
     const chequeFields = document.getElementById('cheque-fields');
     const bankTransferFields = document.getElementById('bank-transfer-fields');
+    const issueActionRadios = document.querySelectorAll('input[name="issue_action_type"]');
+    const existingIssueSection = document.getElementById('existing-issue-section');
+    const newIssueSection = document.getElementById('new-issue-section');
 
     function updateVisitTypeFields() {
         const selectedType = document.querySelector('input[name="visit_type"]:checked')?.value;
@@ -304,6 +369,45 @@ document.addEventListener('DOMContentLoaded', function() {
             orderFields.classList.remove('hidden');
         } else if (selectedType === 'issue') {
             issueFields.classList.remove('hidden');
+            updateIssueSection();
+        }
+    }
+
+    function updateIssueSection() {
+        const existingSection = document.getElementById('existing-issue-section');
+        const newSection = document.getElementById('new-issue-section');
+        if (!existingSection || !newSection) return;
+        
+        const selectedAction = document.querySelector('input[name="issue_action_type"]:checked')?.value;
+        
+        if (selectedAction === 'existing') {
+            existingSection.classList.remove('hidden');
+            newSection.classList.add('hidden');
+            
+            // Disable new issue inputs to avoid validation errors
+            newSection.querySelectorAll('textarea, select').forEach(el => {
+                el.disabled = true;
+                el.required = false;
+            });
+            // Enable existing section inputs
+            existingSection.querySelectorAll('textarea, select').forEach(el => {
+                el.disabled = false;
+                if (el.name === 'followup_comment') el.required = true;
+            });
+        } else {
+            existingSection.classList.add('hidden');
+            newSection.classList.remove('hidden');
+            
+            // Enable new issue inputs
+            newSection.querySelectorAll('textarea, select').forEach(el => {
+                el.disabled = false;
+                el.required = true;
+            });
+            // Disable existing section inputs
+            existingSection.querySelectorAll('textarea, select').forEach(el => {
+                el.disabled = true;
+                el.required = false;
+            });
         }
     }
 
@@ -321,6 +425,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     visitTypeRadios.forEach(radio => {
         radio.addEventListener('change', updateVisitTypeFields);
+    });
+
+    issueActionRadios.forEach(radio => {
+        radio.addEventListener('change', updateIssueSection);
     });
 
     if (paymentType) {

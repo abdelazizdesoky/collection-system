@@ -6,6 +6,8 @@ use App\Models\Collection;
 use App\Models\CollectionPlan;
 use App\Models\CollectionPlanItem;
 use App\Models\CustomerAccount;
+use App\Models\Issue;
+use App\Models\IssueHistory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -400,7 +402,13 @@ class CollectorPortalController extends Controller
         // Prompt says "defined manually", suggesting a table. I saw VisitType model earlier.
         $visitTypes = \App\Models\VisitType::orderBy('id')->get(); // Using ID order or a specific 'sort_order' if available
 
-        return view('collector-portal.visit-form', compact('visitPlanItem', 'collector', 'receiptNo', 'banks', 'visitTypes'));
+        // Fetch unresolved issues for this customer
+        $activeIssues = \App\Models\Issue::where('customer_id', $visitPlanItem->customer_id)
+            ->where('status', '!=', 'resolved')
+            ->latest()
+            ->get();
+
+        return view('collector-portal.visit-form', compact('visitPlanItem', 'collector', 'receiptNo', 'banks', 'visitTypes', 'activeIssues'));
     }
 
     /**
@@ -449,21 +457,28 @@ class CollectorPortalController extends Controller
             'due_date' => 'required_if:payment_type,cheque|nullable|date',
             'reference_no' => 'required_if:payment_type,bank_transfer|nullable|string',
             // Order fields
-            'order_details' => 'required_if:visit_type,order|nullable|string|max:2000',
-            'order_amount' => 'required_if:visit_type,order|nullable|numeric|min:0',
-            // Issue fields
-            'issue_description' => 'required_if:visit_type,issue|nullable|string|max:2000',
-            'issue_status' => 'required_if:visit_type,issue|nullable|in:pending,resolved,escalated',
-        ], [
-            'amount.required_if' => 'المبلغ مطلوب عند التحصيل',
-            'receipt_no.required_if' => 'رقم الإيصال مطلوب عند التحصيل',
-            'payment_type.required_if' => 'نوع الدفع مطلوب عند التحصيل',
-            'bank_name.exists' => 'يرجى اختيار بنك صالح من القائمة',
-            'order_details.required_if' => 'تفاصيل الأوردر مطلوبة',
-            'order_amount.required_if' => 'قيمة الأوردر مطلوبة',
-            'issue_description.required_if' => 'وصف المشكلة مطلوب',
-            'issue_status.required_if' => 'حالة المشكلة مطلوبة',
-        ]);
+        'order_details' => 'required_if:visit_type,order|nullable|string|max:2000',
+        'order_amount' => 'required_if:visit_type,order|nullable|numeric|min:0',
+        // Issue fields
+        'issue_action_type' => 'required_if:visit_type,issue|nullable|in:new,existing',
+        'selected_issue_id' => 'required_if:issue_action_type,existing|nullable|exists:issues,id',
+        'followup_comment' => 'required_if:issue_action_type,existing|nullable|string|max:1000',
+        'followup_status' => 'required_if:issue_action_type,existing|nullable|in:pending,processing,resolved',
+        'issue_description' => 'required_if:issue_action_type,new|nullable|string|max:2000',
+        'issue_status' => 'required_if:issue_action_type,new|nullable|in:pending,resolved,escalated',
+    ], [
+        'amount.required_if' => 'المبلغ مطلوب عند التحصيل',
+        'receipt_no.required_if' => 'رقم الإيصال مطلوب عند التحصيل',
+        'payment_type.required_if' => 'نوع الدفع مطلوب عند التحصيل',
+        'bank_name.exists' => 'يرجى اختيار بنك صالح من القائمة',
+        'order_details.required_if' => 'تفاصيل الأوردر مطلوبة',
+        'order_amount.required_if' => 'قيمة الأوردر مطلوبة',
+        'issue_action_type.required_if' => 'يرجى اختيار نوع الإجراء للمشكلة (جديدة/متابعة)',
+        'selected_issue_id.required_if' => 'يرجى اختيار المشكلة المراد متابعتها',
+        'followup_comment.required_if' => 'تعليق المتابعة مطلوب',
+        'issue_description.required_if' => 'وصف المشكلة مطلوب',
+        'issue_status.required_if' => 'حالة المشكلة مطلوبة',
+    ]);
 
         return DB::transaction(function () use ($visitPlanItem, $collector, $validated, $request) {
             // Map visit_type string to ID if possible
@@ -566,62 +581,99 @@ class CollectorPortalController extends Controller
                     $orderAmount  = $validated['order_amount'];
                     $orderDetails = $validated['order_details'];
                 }
-            // Create Visit record
-            \App\Models\Visit::create([
-                'visit_plan_item_id' => $visitPlanItem->id,
-                'collector_id' => $collector->id,
-                'customer_id' => $visitPlanItem->customer_id,
-                'visit_type' => $validated['visit_type'],
-                'visit_type_id' => $visitTypeId,
-                'visit_time' => now(),
-                'notes' => $validated['notes'],
-                'attachment' => $attachmentPath,
-                'collection_id' => $collectionId,
-                'issue_description' => $validated['issue_description'] ?? null,
-                'issue_status' => $validated['issue_status'] ?? null,
-                'order_details' => $orderDetails,
-                'order_amount'  => $orderAmount,
-            ]);
+            // Create the visit record
+        $visit = \App\Models\Visit::create([
+            'collector_id' => $collector->id,
+            'customer_id' => $visitPlanItem->customer_id,
+            'visit_plan_item_id' => $visitPlanItem->id,
+            'visit_type' => $validated['visit_type'],
+            'visit_type_id' => $visitTypeId,
+            'visit_time' => now(),
+            'notes' => $validated['notes'],
+            'collection_id' => $collectionId,
+            'attachment' => $attachmentPath,
+            'order_details' => $orderDetails,
+            'order_amount'  => $orderAmount,
+        ]);
 
-            // Update Plan Item status
-            $lockedItem->update(['status' => 'visited']);
+        // Process Issue updates or creation
+        if ($validated['visit_type'] === 'issue') {
+            if ($validated['issue_action_type'] === 'existing') {
+                $issue = Issue::findOrFail($validated['selected_issue_id']);
+                $oldStatus = $issue->status;
+                $issue->update(['status' => $validated['followup_status']]);
 
-            // Check if Plan is Completed
-            $plan = $visitPlanItem->visitPlan;
-            $pendingCount = $plan->items()->where('status', 'pending')->count();
-
-            if ($pendingCount === 0) {
-                $plan->update(['status' => 'closed']);
-            } elseif ($plan->status === 'open') {
-                $plan->update(['status' => 'in_progress']);
+                IssueHistory::create([
+                    'issue_id' => $issue->id,
+                    'user_id' => auth()->id(),
+                    'comment' => $validated['followup_comment'],
+                    'old_status' => $oldStatus,
+                    'new_status' => $validated['followup_status'],
+                ]);
+            } else {
+                Issue::create([
+                    'customer_id' => $visitPlanItem->customer_id,
+                    'collector_id' => $collector->id,
+                    'visit_id' => $visit->id,
+                    'description' => $validated['issue_description'],
+                    'status' => $validated['issue_status'] ?? 'pending',
+                ]);
             }
+        }
 
-            if ($validated['visit_type'] === 'collection' && $collectionId) {
-                return redirect()->route('shared.receipt', $collectionId)
-                    ->with('success', 'تم تسجيل التحصيل بنجاح!');
-            }
+        // Update Plan Item status
+        $lockedItem->update(['status' => 'visited']);
 
-            return redirect()->route('collector.visit-plan', $visitPlanItem->visit_plan_id)
-                ->with('success', 'تم تسجيل الزيارة بنجاح!');
-        });
-    }
+        // Check if Plan is Completed
+        $plan = $visitPlanItem->visitPlan;
+        $pendingCount = $plan->items()->where('status', 'pending')->count();
+
+        if ($pendingCount === 0) {
+            $plan->update(['status' => 'closed']);
+        } elseif ($plan->status === 'open') {
+            $plan->update(['status' => 'in_progress']);
+        }
+
+        if ($validated['visit_type'] === 'collection' && $collectionId) {
+            return redirect()->route('shared.receipt', $collectionId)
+                ->with('success', 'تم تسجيل التحصيل بنجاح!');
+        }
+
+        return redirect()->route('collector.visit-plan', $visitPlanItem->visit_plan_id)
+            ->with('success', 'تم تسجيل الزيارة بنجاح!');
+    });
+}
 
     /**
      * Show details for a specific visit.
      */
     public function showVisitDetails(\App\Models\Visit $visit): View
     {
-        $user = auth()->user();
-        $collector = $user->collector;
+        $visit->load(['visitPlanItem.customer', 'visitPlanItem.visitPlan', 'collection']);
+        return view('collector-portal.visit-details', compact('visit'));
+    }
 
-        // Ensure the visit belongs to this collector
-        if ($visit->collector_id !== $collector->id) {
-            abort(403, 'This visit does not belong to you.');
-        }
+    /**
+     * Update an existing issue from the collector portal.
+     */
+    public function updateIssue(Request $request, Issue $issue): RedirectResponse
+    {
+        $validated = $request->validate([
+            'comment' => 'required|string|max:1000',
+            'status' => 'required|string|in:pending,processing,resolved',
+        ]);
 
-        $visit->load(['customer', 'collection', 'visitPlanItem.visitPlan']);
+        $oldStatus = $issue->status;
+        $issue->update(['status' => $validated['status']]);
 
-        return view('collector-portal.visit-details', compact('visit', 'collector'));
+        IssueHistory::create([
+            'issue_id' => $issue->id,
+            'user_id' => auth()->id(),
+            'comment' => $validated['comment'],
+            'old_status' => $oldStatus,
+            'new_status' => $validated['status'],
+        ]);
+
+        return redirect()->back()->with('success', 'تم تحديث المشكلة بنجاح.');
     }
 }
-

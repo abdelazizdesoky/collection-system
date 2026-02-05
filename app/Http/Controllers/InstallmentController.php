@@ -142,15 +142,40 @@ class InstallmentController extends Controller
             // 1. Cancel the Ledger Entry for the Plan (The Financed Amount Debit)
             $accountService->cancelTransaction('InstallmentPlan', $plan->id);
 
-            // 2. Soft delete installments first
+            // 2. Cancel any individual installment adjustments/deletions related to this plan
+            $installmentIds = $plan->installments()->withTrashed()->pluck('id')->toArray();
+            $accountService->cancelRelatedTransactions('InstallmentAdjustment', $installmentIds);
+            $accountService->cancelRelatedTransactions('InstallmentDeletion', $installmentIds);
+
+            // 3. Soft delete installments first
             $plan->installments()->delete();
             
-            // 3. Soft delete plan
+            // 4. Soft delete plan
             $plan->delete();
         });
 
         return redirect()->route('installments.index')
-            ->with('success', 'تم حذف خطة التقسيط وإلغاء القيد المالي بنجاح.');
+            ->with('success', 'تم حذف خطة التقسيط وإلغاء القيود المالية المرتبطة بها بنجاح.');
+    }
+
+    public function postponeItem(Installment $installment)
+    {
+        return DB::transaction(function () use ($installment) {
+            $plan = $installment->installmentPlan;
+            
+            // Get the latest due date among ALL installments in this plan
+            $latestInstallment = $plan->installments()->latest('due_date')->first();
+            
+            // The new date should be one month after the latest scheduled installment
+            $newDate = \Carbon\Carbon::parse($latestInstallment->due_date)->addMonth();
+            
+            $installment->update([
+                'due_date' => $newDate,
+            ]);
+
+            return redirect()->route('installments.show', $plan)
+                ->with('success', 'تم ترحيل القسط إلى نهاية الجدول الزمني (بعد آخر قسط مجدول).');
+        });
     }
 
     public function printReceipts(InstallmentPlan $plan): View

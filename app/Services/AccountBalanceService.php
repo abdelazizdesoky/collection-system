@@ -13,19 +13,30 @@ class AccountBalanceService
      */
     public function cancelTransaction(string $type, int $id): void
     {
+        $this->cancelRelatedTransactions($type, [$id]);
+    }
+
+    /**
+     * Cancel multiple transactions in the ledger and recalculate balance.
+     */
+    public function cancelRelatedTransactions(string $type, array $ids): void
+    {
         $entries = CustomerAccount::where('reference_type', $type)
-            ->where('reference_id', $id)
+            ->whereIn('reference_id', $ids)
+            ->where('status', 'active')
             ->get();
 
+        $affectedCustomerIds = $entries->pluck('customer_id')->unique();
+
         foreach ($entries as $entry) {
-            // Mark as cancelled
             $entry->update([
                 'status' => 'cancelled',
                 'description' => 'ملغي - ' . $entry->description
             ]);
-            
-            // Recalculate ledger for this customer
-            $this->recalculateBalance($entry->customer_id);
+        }
+
+        foreach ($affectedCustomerIds as $customerId) {
+            $this->recalculateBalance($customerId);
         }
     }
 

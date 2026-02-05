@@ -147,8 +147,17 @@
                                             {{ $installment->status_label }}
                                         </span>
                                     </td>
+
                                     <td class="px-8 py-6 text-center">
-                                        <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div class="flex items-center justify-center gap-2">
+                                            @if($installment->status == 'pending')
+                                                <form action="{{ route('installments.item.postpone', $installment) }}" method="POST" class="inline" onsubmit="return confirm('ترحيل هذا القسط للشهر القادم؟');">
+                                                    @csrf
+                                                    <button type="submit" class="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 hover:bg-amber-600 hover:text-white transition-all shadow-sm" title="ترحيل للشهر القادم">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                                                    </button>
+                                                </form>
+                                            @endif
                                             <a href="{{ route('installments.item.edit', $installment) }}" class="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all shadow-sm" title="تعديل">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             </a>
@@ -162,6 +171,7 @@
                                         </div>
                                     </td>
                                 </tr>
+```
                             @endforeach
                         </tbody>
                     </table>
