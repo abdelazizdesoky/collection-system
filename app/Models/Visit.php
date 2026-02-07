@@ -24,9 +24,18 @@ class Visit extends Model
         'collection_id',
         'issue_description',
         'issue_status',
+        'issue_id',
         'order_details',
         'order_amount',
     ];
+
+    /**
+     * Get the issue associated with this visit.
+     */
+    public function issue(): BelongsTo
+    {
+        return $this->belongsTo(Issue::class);
+    }
 
     protected $casts = [
         'visit_time' => 'datetime',
@@ -100,6 +109,7 @@ class Visit extends Model
             'pending' => 'قيد المعالجة',
             'resolved' => 'تم الحل',
             'escalated' => 'تم التصعيد',
+            'closed' => 'مغلقة',
             default => $this->issue_status,
         };
     }

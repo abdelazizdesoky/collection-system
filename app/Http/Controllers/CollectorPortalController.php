@@ -457,15 +457,22 @@ class CollectorPortalController extends Controller
             'due_date' => 'required_if:payment_type,cheque|nullable|date',
             'reference_no' => 'required_if:payment_type,bank_transfer|nullable|string',
             // Order fields
-        'order_details' => 'required_if:visit_type,order|nullable|string|max:2000',
-        'order_amount' => 'required_if:visit_type,order|nullable|numeric|min:0',
-        // Issue fields
+            'order_details' => 'required_if:visit_type,order|nullable|string|max:2000',
+            'order_amount' => 'required_if:visit_type,order|nullable|numeric|min:0',
+            // Issue fields
         'issue_action_type' => 'required_if:visit_type,issue|nullable|in:new,existing',
         'selected_issue_id' => 'required_if:issue_action_type,existing|nullable|exists:issues,id',
         'followup_comment' => 'required_if:issue_action_type,existing|nullable|string|max:1000',
-        'followup_status' => 'required_if:issue_action_type,existing|nullable|in:pending,processing,resolved',
-        'issue_description' => 'required_if:issue_action_type,new|nullable|string|max:2000',
-        'issue_status' => 'required_if:issue_action_type,new|nullable|in:pending,resolved,escalated',
+        'followup_status' => 'required_if:issue_action_type,existing|nullable|in:pending,processing,resolved,closed',
+        'issue_description' => [
+            'nullable', 'string', 'max:2000',
+            function ($attribute, $value, $fail) use ($request) {
+                if ($request->visit_type === 'issue' && $request->issue_action_type === 'new' && empty($value)) {
+                    $fail('وصف المشكلة مطلوب عند تسجيل مشكلة جديدة.');
+                }
+            }
+        ],
+        'issue_status' => 'required_if:issue_action_type,new|nullable|in:pending,resolved,escalated,closed',
     ], [
         'amount.required_if' => 'المبلغ مطلوب عند التحصيل',
         'receipt_no.required_if' => 'رقم الإيصال مطلوب عند التحصيل',
@@ -480,13 +487,20 @@ class CollectorPortalController extends Controller
         'issue_status.required_if' => 'حالة المشكلة مطلوبة',
     ]);
 
-        return DB::transaction(function () use ($visitPlanItem, $collector, $validated, $request) {
-            // Map visit_type string to ID if possible
-            $visitType = \App\Models\VisitType::where('name', $validated['visit_type'])->first();
-            $visitTypeId = $visitType ? $visitType->id : null;
+    // Secondary check: if visit_type is not issue, clear issue-related validated data
+    if ($request->visit_type !== 'issue') {
+        $validated['issue_action_type'] = null;
+        $validated['issue_description'] = null;
+        $validated['issue_status'] = null;
+    }
 
-            // Lock the item row to prevent race conditions
-            $lockedItem = \App\Models\VisitPlanItem::where('id', $visitPlanItem->id)->lockForUpdate()->first();
+    return DB::transaction(function () use ($visitPlanItem, $collector, $validated, $request) {
+        // Map visit_type string to ID if possible
+        $visitType = \App\Models\VisitType::where('name', $validated['visit_type'])->first();
+        $visitTypeId = $visitType ? $visitType->id : null;
+
+        // Lock the item row to prevent race conditions
+        $lockedItem = \App\Models\VisitPlanItem::where('id', $visitPlanItem->id)->lockForUpdate()->first();
 
             if ($lockedItem->status === 'visited') {
                 throw new \Exception('This item has already been visited.');
@@ -594,6 +608,12 @@ class CollectorPortalController extends Controller
             'attachment' => $attachmentPath,
             'order_details' => $orderDetails,
             'order_amount'  => $orderAmount,
+            'issue_description' => $validated['visit_type'] === 'issue' 
+                ? ($validated['issue_action_type'] === 'new' ? $validated['issue_description'] : $validated['followup_comment']) 
+                : null,
+            'issue_status' => $validated['visit_type'] === 'issue' 
+                ? ($validated['issue_action_type'] === 'new' ? $validated['issue_status'] : $validated['followup_status']) 
+                : null,
         ]);
 
         // Process Issue updates or creation
@@ -601,23 +621,37 @@ class CollectorPortalController extends Controller
             if ($validated['issue_action_type'] === 'existing') {
                 $issue = Issue::findOrFail($validated['selected_issue_id']);
                 $oldStatus = $issue->status;
-                $issue->update(['status' => $validated['followup_status']]);
+                
+                $updateData = ['status' => $validated['followup_status']];
+                if ($validated['followup_status'] === 'closed') {
+                    $updateData['closure_reason'] = $validated['followup_comment'];
+                }
+                
+                $issue->update($updateData);
 
                 IssueHistory::create([
                     'issue_id' => $issue->id,
                     'user_id' => auth()->id(),
+                    'visit_id' => $visit->id,
                     'comment' => $validated['followup_comment'],
                     'old_status' => $oldStatus,
                     'new_status' => $validated['followup_status'],
                 ]);
+                
+                // Link visit to the head issue record
+                $visit->update(['issue_id' => $issue->id]);
             } else {
-                Issue::create([
+                $issue = Issue::create([
                     'customer_id' => $visitPlanItem->customer_id,
                     'collector_id' => $collector->id,
                     'visit_id' => $visit->id,
                     'description' => $validated['issue_description'],
                     'status' => $validated['issue_status'] ?? 'pending',
+                    'closure_reason' => ($validated['issue_status'] ?? 'pending') === 'closed' ? $validated['issue_description'] : null,
                 ]);
+
+                // Link visit to the newly created head issue record
+                $visit->update(['issue_id' => $issue->id]);
             }
         }
 
@@ -649,7 +683,7 @@ class CollectorPortalController extends Controller
      */
     public function showVisitDetails(\App\Models\Visit $visit): View
     {
-        $visit->load(['visitPlanItem.customer', 'visitPlanItem.visitPlan', 'collection']);
+        $visit->load(['visitPlanItem.customer', 'visitPlanItem.visitPlan', 'collection', 'issue']);
         return view('collector-portal.visit-details', compact('visit'));
     }
 

@@ -184,6 +184,11 @@
                         <input type="date" name="due_date" value="{{ old('due_date') }}"
                             class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white">
                     </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">صورة الشيك <span class="text-red-500">*</span></label>
+                        <input type="file" name="attachment" accept="image/*" capture="environment"
+                            class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                    </div>
                 </div>
                 <!-- Bank Transfer Fields -->
                 <div id="bank-transfer-fields" class="space-y-4 hidden">
@@ -287,12 +292,15 @@
                             <select name="followup_status" class="w-full text-sm rounded-xl border-rose-100 dark:border-dark-border dark:bg-dark-bg dark:text-white focus:ring-rose-500 transition-all h-12">
                                 <option value="pending" {{ old('followup_status') == 'pending' ? 'selected' : '' }}>معلق (بدون تغيير)</option>
                                 <option value="processing" {{ old('followup_status') == 'processing' ? 'selected' : '' }}>قيد المعالجة</option>
-                                <option value="resolved">تم الحل (إغلاق)</option>
+                                <option value="resolved" {{ old('followup_status') == 'resolved' ? 'selected' : '' }}>تم الحل (إغلاق)</option>
+                                <!-- <option value="closed" {{ old('followup_status') == 'closed' ? 'selected' : '' }}>مغلقة</option> -->
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
+            @else
+                <input type="hidden" name="issue_action_type" value="new">
             @endif
 
             <!-- New Issue Section -->
@@ -310,6 +318,7 @@
                         <option value="pending" {{ old('issue_status') == 'pending' ? 'selected' : '' }}>قيد المعالجة</option>
                         <option value="resolved" {{ old('issue_status') == 'resolved' ? 'selected' : '' }}>تم الحل</option>
                         <option value="escalated" {{ old('issue_status') == 'escalated' ? 'selected' : '' }}>تم التصعيد</option>
+                        <!-- <option value="closed" {{ old('issue_status') == 'closed' ? 'selected' : '' }}>مغلقة</option> -->
                     </select>
                 </div>
             </div>
@@ -324,11 +333,6 @@
                     <textarea name="notes" rows="3"
                         class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white"
                         placeholder="أي ملاحظات إضافية...">{{ old('notes') }}</textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">صورة/مرفق</label>
-                    <input type="file" name="attachment" accept="image/*" capture="environment"
-                        class="w-full rounded-xl border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
                 </div>
             </div>
         </div>
@@ -363,12 +367,21 @@ document.addEventListener('DOMContentLoaded', function() {
         orderFields.classList.add('hidden');
         issueFields.classList.add('hidden');
         
+        // Disable all inputs in these sections by default
+        collectionFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+        orderFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+        issueFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+        
         if (selectedType === 'collection') {
             collectionFields.classList.remove('hidden');
+            collectionFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = false);
+            updatePaymentFields(); // Ensure payment fields are correctly enabled/disabled
         } else if (selectedType === 'order') {
             orderFields.classList.remove('hidden');
+            orderFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = false);
         } else if (selectedType === 'issue') {
             issueFields.classList.remove('hidden');
+            issueFields.querySelectorAll('input, select, textarea').forEach(el => el.disabled = false);
             updateIssueSection();
         }
     }

@@ -54,6 +54,10 @@
             <span class="text-[10px] font-black uppercase text-gray-400 group-hover:text-rose-100 mb-1">تم التصعيد</span>
             <span class="text-3xl font-black dark:text-white group-hover:text-white">{{ $stats['escalated'] }}</span>
         </div>
+        <div class="bg-white dark:bg-dark-card p-6 rounded-[2rem] shadow-xl border border-gray-100 dark:border-dark-border flex flex-col items-center justify-center group hover:bg-slate-600 transition-all duration-500">
+            <span class="text-[10px] font-black uppercase text-gray-400 group-hover:text-slate-100 mb-1">مغلقة</span>
+            <span class="text-3xl font-black dark:text-white group-hover:text-white">{{ $stats['closed'] }}</span>
+        </div>
     </div>
 
     <!-- Filters -->
@@ -67,6 +71,7 @@
                     <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>قيد المعالجة</option>
                     <option value="resolved" {{ request('status') == 'resolved' ? 'selected' : '' }}>تم الحل</option>
                     <option value="escalated" {{ request('status') == 'escalated' ? 'selected' : '' }}>تم التصعيد</option>
+                    <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>مغلقة</option>
                 </select>
             </div>
             <div class="md:col-start-4 flex items-end">
@@ -84,6 +89,7 @@
                         <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border">العميل</th>
                         <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border">مندوب الزيارة</th>
                         <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border">التاريخ</th>
+                        <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border">وصف المشكلة</th>
                         <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border">الحالة</th>
                         <th class="px-8 py-5 border-b border-gray-50 dark:border-dark-border text-center">الإجراءات</th>
                     </tr>
@@ -101,6 +107,11 @@
                             <td class="px-8 py-6">
                                 <div class="font-bold dark:text-white text-sm">{{ $issue->created_at->format('Y-m-d') }}</div>
                                 <div class="text-[10px] text-gray-400 font-medium mt-0.5">{{ $issue->created_at->diffForHumans() }}</div>
+                            </td>
+                            <td class="px-8 py-6 max-w-xs">
+                                <div class="text-xs text-gray-600 dark:text-gray-400 truncate" title="{{ $issue->description }}">
+                                    {{ Str::limit($issue->description, 50) }}
+                                </div>
                             </td>
                             <td class="px-8 py-6">
                                 <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border {{ $issue->status_color }}">
@@ -149,7 +160,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-8 py-12 text-center text-gray-400 font-bold">لا يوجد مشكلات مسجلة حالياً</td>
+                            <td colspan="6" class="px-8 py-12 text-center text-gray-400 font-bold">لا يوجد مشكلات مسجلة حالياً</td>
                         </tr>
                     @endforelse
                 </tbody>

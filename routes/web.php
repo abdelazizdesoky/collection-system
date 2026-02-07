@@ -114,8 +114,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('admin.settings.update');
     });
 
-    // 2. Shared Management: Financial & Customer Focus (Admin, Supervisor, Accountant)
-    Route::middleware('role:admin|supervisor|accountant')->group(function () {
+    // 2. Shared Management: Financial & Customer Focus (Admin, Supervisor, Accountant, Plan Supervisor)
+    Route::middleware('role:admin|supervisor|accountant|plan_supervisor')->group(function () {
         // Customers management (Accountant needs to view/create customers for billing, Supervisor manages)
         Route::get('/customers/export', [CustomerController::class, 'export'])->name('customers.export');
         Route::post('/customers/{id}/restore', [CustomerController::class, 'restore'])->name('customers.restore');

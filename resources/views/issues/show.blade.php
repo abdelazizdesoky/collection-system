@@ -68,6 +68,7 @@
                             <option value="processing" {{ $issue->status == 'processing' ? 'selected' : '' }}>قيد المعالجة</option>
                             <option value="resolved" {{ $issue->status == 'resolved' ? 'selected' : '' }}>تم الحل</option>
                             <option value="escalated" {{ $issue->status == 'escalated' ? 'selected' : '' }}>تم التصعيد</option>
+                            <option value="closed" {{ $issue->status == 'closed' ? 'selected' : '' }}>مغلقة</option>
                         </select>
                     </div>
 
@@ -91,6 +92,11 @@
                         <textarea name="resolution_notes" rows="3" class="w-full rounded-xl border-gray-100 dark:border-dark-border dark:bg-dark-bg dark:text-white focus:ring-rose-500 transition-all">{{ $issue->resolution_notes }}</textarea>
                     </div>
 
+                    <div id="closure_field" class="{{ $issue->status == 'closed' ? '' : 'hidden' }}">
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-2">سبب الإغلاق</label>
+                        <textarea name="closure_reason" rows="3" class="w-full rounded-xl border-gray-100 dark:border-dark-border dark:bg-dark-bg dark:text-white focus:ring-rose-500 transition-all">{{ $issue->closure_reason }}</textarea>
+                    </div>
+
                 <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-rose-500/30">حفظ التغييرات</button>
                 </form>
             </div>
@@ -100,7 +106,7 @@
                 <h3 class="text-lg font-black dark:text-white mb-4 border-b border-gray-50 dark:border-dark-border pb-4 italic text-rose-600">منطقة العمليات الحساسة</h3>
                 
                 @if($issue->trashed())
-                    @if(auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                    @if(auth()->user()->hasAnyRole(['admin', 'supervisor', 'plan_supervisor']))
                         <form action="{{ route('issues.restore', $issue->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2">
@@ -121,7 +127,7 @@
                         </form>
                     @endif
                 @else
-                    @if(auth()->user()->hasAnyRole(['admin', 'supervisor']))
+                    @if(auth()->user()->hasAnyRole(['admin', 'supervisor', 'plan_supervisor']))
                         <form action="{{ route('issues.destroy', $issue) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                             @csrf
                             @method('DELETE')
@@ -232,6 +238,16 @@
                         </div>
                     </div>
                     @endif
+
+                    @if($issue->closure_reason)
+                    <div class="relative pr-16">
+                        <div class="absolute right-5 top-0 w-4 h-4 rounded-full bg-slate-500 border-4 border-white dark:border-dark-card z-10 shadow-sm"></div>
+                        <div class="bg-slate-50/50 dark:bg-slate-900/10 p-5 rounded-2xl border border-slate-100 dark:border-slate-800/30">
+                            <span class="text-slate-600 text-[10px] font-black uppercase block mb-2">تحديث إداري: سبب الإغلاق</span>
+                            <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{{ $issue->closure_reason }}</p>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
             @endif
@@ -244,12 +260,15 @@
         const val = this.value;
         const esc = document.getElementById('escalation_field');
         const res = document.getElementById('resolution_field');
+        const cls = document.getElementById('closure_field');
         
         esc.classList.add('hidden');
         res.classList.add('hidden');
+        cls.classList.add('hidden');
         
         if (val === 'escalated') esc.classList.remove('hidden');
         if (val === 'resolved') res.classList.remove('hidden');
+        if (val === 'closed') cls.classList.remove('hidden');
     });
 </script>
 @endsection

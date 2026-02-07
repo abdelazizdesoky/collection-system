@@ -23,6 +23,7 @@ class Issue extends Model
         'priority',
         'escalation_reason',
         'resolution_notes',
+        'closure_reason',
     ];
 
     public function customer(): BelongsTo
@@ -52,6 +53,7 @@ class Issue extends Model
             'processing' => 'قيد المعالجة',
             'resolved' => 'تم الحل',
             'escalated' => 'تم التصعيد',
+            'closed' => 'مغلقة',
             default => $this->status,
         };
     }
@@ -63,6 +65,7 @@ class Issue extends Model
             'processing' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
             'resolved' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
             'escalated' => 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400',
+            'closed' => 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400',
             default => 'bg-gray-100 text-gray-800',
         };
     }

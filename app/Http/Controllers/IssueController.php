@@ -32,6 +32,7 @@ class IssueController extends Controller
             'processing' => Issue::where('status', 'processing')->count(),
             'resolved' => Issue::where('status', 'resolved')->count(),
             'escalated' => Issue::where('status', 'escalated')->count(),
+            'closed' => Issue::where('status', 'closed')->count(),
             'total' => Issue::count(),
         ];
 
@@ -50,10 +51,11 @@ class IssueController extends Controller
     public function update(Request $request, Issue $issue)
     {
         $validated = $request->validate([
-            'status' => 'required|string|in:pending,processing,resolved,escalated',
+            'status' => 'required|string|in:pending,processing,resolved,escalated,closed',
             'priority' => 'required|string|in:low,normal,high,urgent',
             'escalation_reason' => 'required_if:status,escalated|nullable|string|max:1000',
             'resolution_notes' => 'required_if:status,resolved|nullable|string|max:1000',
+            'closure_reason' => 'required_if:status,closed|nullable|string|max:1000',
         ]);
 
         $issue->update($validated);
@@ -67,7 +69,7 @@ class IssueController extends Controller
      */
     public function destroy(Issue $issue)
     {
-        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'plan_supervisor'])) {
             abort(403);
         }
 
@@ -82,7 +84,7 @@ class IssueController extends Controller
      */
     public function restore($id)
     {
-        if (! auth()->user()->hasAnyRole(['admin', 'supervisor'])) {
+        if (! auth()->user()->hasAnyRole(['admin', 'supervisor', 'plan_supervisor'])) {
             abort(403);
         }
 

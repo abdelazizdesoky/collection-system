@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <!-- Visit Types (Optimization) -->
+        <!-- Visit Types (Optimization)
         <div class="bg-white dark:bg-dark-card rounded-3xl shadow-2xl shadow-amber-500/10 border border-amber-50 dark:border-dark-border p-7 hover:border-amber-500/50 hover:-translate-y-1.5 transition-all duration-500 group">
             <div class="flex flex-col items-center text-center">
                 <div class="bg-amber-50 dark:bg-amber-900/40 p-5 rounded-3xl text-amber-600 dark:text-amber-400 mb-5 group-hover:scale-110 transition-transform shadow-inner">
@@ -83,7 +83,7 @@
                 <div class="text-xl font-bold dark:text-white">إدارة المهام</div>
                 <a href="{{ route('visit-types.index') }}" class="mt-4 px-4 py-1.5 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg font-bold text-xs hover:bg-amber-600 hover:text-white transition-colors">تخصيص الأنواع</a>
             </div>
-        </div>
+        </div> -->
 
         <!-- Due Installments -->
         <div class="bg-white dark:bg-dark-card rounded-3xl shadow-2xl shadow-indigo-500/10 border border-indigo-50 dark:border-dark-border p-7 hover:border-indigo-500/50 hover:-translate-y-1.5 transition-all duration-500 group">

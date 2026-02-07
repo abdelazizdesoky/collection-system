@@ -15,10 +15,16 @@ class IssueHistory extends Model
     protected $fillable = [
         'issue_id',
         'user_id',
+        'visit_id',
         'comment',
         'old_status',
         'new_status',
     ];
+
+    public function visit(): BelongsTo
+    {
+        return $this->belongsTo(Visit::class);
+    }
 
     public function issue(): BelongsTo
     {
