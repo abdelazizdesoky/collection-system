@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'بوابة تحصيل')</title>
+    <title>@yield('title', 'بوابة المندوب')</title>
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect x='5' y='2' width='14' height='20' rx='3' stroke='%23059669' stroke-width='2'/%3E%3Crect x='8' y='5' width='8' height='6' rx='1' fill='%23059669' fill-opacity='0.2' stroke='%23059669' stroke-width='1.5'/%3E%3Cpath d='M8 14H16' stroke='%23059669' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M8 17H10' stroke='%23059669' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M15 17L15 20' stroke='%23059669' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
     
@@ -35,6 +35,9 @@
             }
         }
     </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body { font-family: 'Cairo', sans-serif; }
@@ -126,7 +129,7 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-lg font-black tracking-tighter leading-none">{{ get_setting('company_name', 'Alarabia Group') }}</span>
-                            <span class="text-[10px] font-bold opacity-80 uppercase tracking-widest">بوابة المندوب</span>
+                            <span class="text-[10px] font-bold opacity-80 uppercase tracking-widest">بوابة المندوب الموحدة</span>
                         </div>
                     </a>
            <!-- <span class="bg-emerald-800 px-3 py-1 rounded-full text-sm"> -->
@@ -184,7 +187,7 @@
     </main>
 
     <footer class="bg-gray-800 text-white text-center py-4 mt-auto no-print">
-        <p class="text-sm opacity-70">© 2026 {{ get_setting('company_name', 'Alarabia Group') }} - بوابة مندوب</p>
+        <p class="text-sm opacity-70">© 2026 {{ get_setting('company_name', 'Alarabia Group') }} - بوابة المندوب</p>
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

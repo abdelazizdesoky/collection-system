@@ -43,6 +43,14 @@
         </div>
     </div>
 
+    <!-- Actions (Sale Invoice Shortcut) -->
+    <div class="mb-6 flex justify-end">
+        <a href="{{ route('collector.sale-invoice.create', ['customer' => $visitPlanItem->customer_id]) }}" class="bg-violet-100 hover:bg-violet-200 text-violet-700 dark:bg-violet-900/30 dark:hover:bg-violet-900/50 dark:text-violet-300 font-bold py-2 px-4 rounded-xl inline-flex items-center gap-2 transition-colors border border-violet-200 dark:border-violet-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            إصدار فاتورة بيع جديدة
+        </a>
+    </div>
+
     @if ($errors->any())
         <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-xl">
             <ul class="list-disc list-inside">

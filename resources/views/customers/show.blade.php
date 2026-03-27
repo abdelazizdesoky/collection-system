@@ -50,325 +50,200 @@
     </div>
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <!-- Customer Info -->
-        <div class="lg:col-span-1 space-y-6">
-            <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-dark-border">
-                <h2 class="text-lg font-bold dark:text-white mb-6 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    المعلومات الأساسية
-                </h2>
-                <div class="space-y-4">
-                    <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
-                        <p class="text-xs text-gray-500 mb-1">الكود</p>
-                        <p class="font-bold dark:text-white text-lg font-mono">{{ $customer->code ?? '-' }}</p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
-                        <p class="text-xs text-gray-500 mb-1">الاسم الكامل</p>
-                        <p class="font-bold dark:text-white text-lg">{{ $customer->name }}</p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
-                        <p class="text-xs text-gray-500 mb-1">رقم الهاتف</p>
-                        <p class="font-bold dark:text-white text-lg" dir="ltr">{{ $customer->phone }}</p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
-                        <p class="text-xs text-gray-500 mb-1">العنوان</p>
-                        <p class="font-medium dark:text-gray-300">{{ $customer->address }}</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
-                            <p class="text-xs text-gray-500 mb-1">المنطقة</p>
-                            <p class="font-medium dark:text-gray-300">{{ $customer->area->name ?? 'غير محدد' }}</p>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
-                            <p class="text-xs text-gray-500 mb-1">المندوب المسؤول</p>
-                            <p class="font-medium dark:text-gray-300">{{ $customer->collector->name ?? 'غير محدد' }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-xl p-6 text-white overflow-hidden relative">
-                <div class="relative z-10">
-                    <h2 class="text-lg font-bold mb-4 opacity-90">ملخص الحساب</h2>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-end border-b border-white/10 pb-4">
-                            <div>
-                                <p class="text-xs opacity-75 mb-1">الرصيد الحالي</p>
-                                <p class="text-4xl font-black">{{ number_format($customer->getCurrentBalance(), 2) }}</p>
-                            </div>
-                            <span class="text-sm opacity-90">ج.م</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 pt-2">
-                            <div>
-                                <p class="text-xs opacity-75">إجمالي التحصيلات</p>
-                                <p class="text-xl font-bold">{{ $customer->collections->count() }}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs opacity-75">إجمالي الشيكات</p>
-                                <p class="text-xl font-bold">{{ $customer->cheques->count() }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Abstract BG Icon -->
-                <svg class="absolute -bottom-6 -left-6 w-32 h-32 opacity-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
+    <div x-data="{ activeTab: 'overview' }" class="space-y-8">
+        <!-- Tabs Navigation -->
+        <div class="flex flex-wrap gap-2 border-b border-gray-100 dark:border-dark-border pb-px overflow-x-auto">
+            <button @click="activeTab = 'overview'" 
+                :class="activeTab === 'overview' ? 'border-blue-500 text-blue-600 dark:text-blue-400 font-black px-6 py-3 border-b-2' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 px-6 py-3 font-bold'"
+                class="transition-all text-sm whitespace-nowrap">
+                نظرة عامة
+            </button>
+            <button @click="activeTab = 'ledger'" 
+                :class="activeTab === 'ledger' ? 'border-blue-500 text-blue-600 dark:text-blue-400 font-black px-6 py-3 border-b-2' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 px-6 py-3 font-bold'"
+                class="transition-all text-sm whitespace-nowrap">
+                كشف الحساب (Ledger)
+            </button>
+            <button @click="activeTab = 'installments'" 
+                :class="activeTab === 'installments' ? 'border-blue-500 text-blue-600 dark:text-blue-400 font-black px-6 py-3 border-b-2' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 px-6 py-3 font-bold'"
+                class="transition-all text-sm whitespace-nowrap">
+                الأقساط المتبقية
+            </button>
+            <button @click="activeTab = 'collections'" 
+                :class="activeTab === 'collections' ? 'border-blue-500 text-blue-600 dark:text-blue-400 font-black px-6 py-3 border-b-2' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 px-6 py-3 font-bold'"
+                class="transition-all text-sm whitespace-nowrap">
+                التحصيلات والشيكات
+            </button>
+            <button @click="activeTab = 'issues'" 
+                :class="activeTab === 'issues' ? 'border-blue-500 text-blue-600 dark:text-blue-400 font-black px-6 py-3 border-b-2' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 px-6 py-3 font-bold'"
+                class="transition-all text-sm whitespace-nowrap">
+                المشكلات ({{ $customer->issues->count() }})
+            </button>
         </div>
 
-        <!-- Recent Activity Tabs -->
-        <div class="lg:col-span-2 space-y-8">
-            <!-- Recent Collections -->
-            <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-dark-border">
-                <div class="p-6 border-b border-gray-100 dark:border-dark-border flex justify-between items-center">
-                    <h2 class="text-lg font-bold dark:text-white flex items-center gap-2">
-                        <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        أحدث التحصيلات
+        <!-- Tab Contents -->
+        
+        <!-- Overview Tab -->
+        <div x-show="activeTab === 'overview'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Customer Info (Moved from sidebar) -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-dark-border">
+                    <h2 class="text-lg font-bold dark:text-white mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        المعلومات الأساسية
                     </h2>
-                    <a href="{{ route('customer.ledger', $customer) }}" class="text-blue-500 hover:text-blue-700 text-sm font-bold">عرض كشف الحساب كاملاً &larr;</a>
-                </div>
-                @if ($customer->collections->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-right">
-                            <thead class="bg-gray-50 dark:bg-dark-tableheader">
-                                <tr>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">رقم الإيصال</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">المبلغ</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">النوع</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">التاريخ</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
-                                @foreach ($customer->collections->take(5) as $collection)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                                        <td class="px-6 py-4 dark:text-gray-300 font-medium tracking-wider">
-                                            <a href="{{ route('collections.show', $collection) }}" class="text-blue-500 hover:underline">
-                                                #{{ $collection->receipt_no }}
-                                            </a>
-                                        </td>
-                                        <td class="px-6 py-4 font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($collection->amount, 2) }}</td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-2 py-1 text-xs font-bold rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                                {{ $collection->payment_type === 'cash' ? 'نقدي' : 'شيك' }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{{ $collection->collection_date->format('Y-m-d') }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
+                            <p class="text-xs text-gray-500 mb-1">الكود</p>
+                            <p class="font-bold dark:text-white text-lg font-mono">{{ $customer->code ?? '-' }}</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
+                            <p class="text-xs text-gray-500 mb-1">الاسم الكامل</p>
+                            <p class="font-bold dark:text-white text-lg">{{ $customer->name }}</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
+                            <p class="text-xs text-gray-500 mb-1">رقم الهاتف</p>
+                            <p class="font-bold dark:text-white text-lg" dir="ltr">{{ $customer->phone }}</p>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-dark-bg/30 p-3 rounded-xl border border-gray-100 dark:border-dark-border">
+                            <p class="text-xs text-gray-500 mb-1">العنوان</p>
+                            <p class="font-medium dark:text-gray-300 text-sm">{{ $customer->address }}</p>
+                        </div>
                     </div>
-                @else
-                    <div class="p-8 text-center text-gray-400">لا توجد تحصيلات مسجلة بعد.</div>
-                @endif
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-xl p-6 text-white overflow-hidden relative">
+                    <div class="relative z-10">
+                        <h2 class="text-lg font-bold mb-4 opacity-90 text-right">ملخص الحساب</h2>
+                        <div class="space-y-4 text-right">
+                            <div class="flex flex-row-reverse justify-between items-end border-b border-white/10 pb-4">
+                                <div>
+                                    <p class="text-xs opacity-75 mb-1">الرصيد الحالي</p>
+                                    <p class="text-4xl font-black">{{ number_format($customer->getCurrentBalance(), 2) }}</p>
+                                </div>
+                                <span class="text-sm opacity-90">ج.م</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Due Installments -->
-            @php $dueInstallments = $customer->due_installments; @endphp
-            @if ($dueInstallments->count() > 0)
-            <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl overflow-hidden border border-red-100 dark:border-red-900/30">
-                <div class="p-6 border-b border-red-50 dark:border-red-900/20 flex justify-between items-center bg-red-50/50 dark:bg-red-900/10">
-                    <h2 class="text-lg font-bold text-red-700 dark:text-red-400 flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        أقساط مستحقة السداد
-                    </h2>
-                    <span class="px-3 py-1 bg-red-600 text-white text-xs font-black rounded-full shadow-lg shadow-red-500/30 animate-pulse">
-                        {{ $dueInstallments->count() }} متأخر
-                    </span>
+            <!-- Recent Summary Dash (Move existing tables here but simplified) -->
+            <div class="lg:col-span-2 space-y-6 text-right">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-emerald-50 dark:bg-emerald-900/10 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-900/20">
+                        <p class="text-emerald-600 dark:text-emerald-400 font-bold mb-1">إجمالي التحصيلات</p>
+                        <p class="text-2xl font-black text-emerald-800 dark:text-emerald-200">{{ number_format($customer->collections->sum('amount'), 2) }} ج.م</p>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-2xl border border-blue-100 dark:border-blue-900/20">
+                        <p class="text-blue-600 dark:text-blue-400 font-bold mb-1">إجمالي المبيعات</p>
+                        <p class="text-2xl font-black text-blue-800 dark:text-blue-200">{{ number_format($customer->accounts->sum('debit'), 2) }} ج.م</p>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right">
-                        <thead class="bg-gray-50 dark:bg-dark-tableheader">
-                            <tr>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">تاريخ الاستحقاق</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">رقم الفاتورة</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">المبلغ</th>
-                                <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">أيام التأخير</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
-                            @foreach ($dueInstallments as $installment)
-                                <tr class="hover:bg-red-50/30 dark:hover:bg-red-900/5 transition-colors">
-                                    <td class="px-6 py-4 font-bold text-red-600 dark:text-red-400 text-sm">
-                                        {{ $installment->due_date->format('Y-m-d') }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <a href="{{ route('installments.show', $installment->installment_plan_id) }}" class="text-blue-500 hover:underline font-medium">
-                                            #{{ $installment->installmentPlan->invoice_no }}
-                                        </a>
-                                    </td>
-                                    <td class="px-6 py-4 font-black dark:text-white">{{ number_format($installment->amount, 2) }}</td>
-                                    <td class="px-6 py-4">
-                                        @php $days = now()->diffInDays($installment->due_date, false); @endphp
-                                        <span class="text-xs font-bold text-red-500">
-                                            {{ abs($days) }} يوم
-                                        </span>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            @endif
-
-            <!-- Installment Plans -->
-            <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-dark-border">
-                <div class="p-6 border-b border-gray-100 dark:border-dark-border flex justify-between items-center">
-                    <h2 class="text-lg font-bold dark:text-white flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-                        </svg>
-                        خطط الأقساط النشطة
-                    </h2>
-                    <a href="{{ route('installments.create', ['customer_id' => $customer->id]) }}" class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-lg text-xs font-bold hover:bg-indigo-600 hover:text-white transition-all">+ خطة جديدة</a>
-                </div>
-                @if ($customer->installmentPlans->count() > 0)
-                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @foreach ($customer->installmentPlans as $plan)
-                            <div class="p-4 rounded-2xl border border-gray-100 dark:border-dark-border bg-gray-50/50 dark:bg-dark-bg/20 relative overflow-hidden group">
-                                <div class="flex justify-between items-start mb-4">
-                                    <div>
-                                        <a href="{{ route('installments.show', $plan) }}" class="text-sm font-black dark:text-white hover:text-indigo-500 flex items-center gap-1 group-hover:translate-x-1 duration-300">
-                                            فاتورة #{{ $plan->invoice_no }}
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                                        </a>
-                                        <p class="text-[10px] text-gray-500 mt-0.5">بدأت في {{ $plan->start_date->format('Y-m-d') }}</p>
-                                    </div>
-                                    <span class="px-2 py-0.5 text-[10px] font-black rounded {{ $plan->status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700' }} uppercase">
-                                        {{ $plan->status === 'active' ? 'نشطة' : 'مغلقة' }}
-                                    </span>
+                
+                <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-dark-border p-6">
+                    <h3 class="text-md font-black dark:text-white mb-4">آخر العمليات</h3>
+                    <div class="space-y-3">
+                        @foreach($customer->accounts->take(5) as $entry)
+                            <div class="flex justify-between items-center p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-all border border-transparent hover:border-gray-100">
+                                <span class="text-gray-400 text-[10px] font-bold">{{ $entry->date->format('Y/m/d') }}</span>
+                                <div class="flex-1 px-4">
+                                    <span class="text-sm font-bold dark:text-gray-300">{{ $entry->description }}</span>
                                 </div>
-                                <div class="space-y-3">
-                                    <div class="flex justify-between items-center text-xs">
-                                        <span class="text-gray-500">المدفوع:</span>
-                                        <span class="font-bold text-emerald-600 tracking-wider">{{ number_format($plan->paid_amount, 2) }}</span>
-                                    </div>
-                                    <div class="flex justify-between items-center text-xs">
-                                        <span class="text-gray-500">المتبقي:</span>
-                                        <span class="font-bold text-rose-600 tracking-wider">{{ number_format($plan->remaining_amount, 2) }}</span>
-                                    </div>
-                                    <!-- Progress Bar -->
-                                    <div class="mt-4">
-                                        <div class="flex justify-between items-center mb-1">
-                                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">اكتمال السداد</span>
-                                            <span class="text-[10px] font-black text-indigo-500 tracking-widest">{{ $plan->progress_percentage }}%</span>
-                                        </div>
-                                        <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                                            <div class="bg-indigo-500 h-full transition-all duration-1000 ease-out" style="width: {{ $plan->progress_percentage }}%"></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <span class="font-black {{ $entry->debit > 0 ? 'text-red-500' : 'text-emerald-500' }}">
+                                    {{ $entry->debit > 0 ? '+' . number_format($entry->debit, 2) : '-' . number_format($entry->credit, 2) }}
+                                </span>
                             </div>
                         @endforeach
                     </div>
-                @else
-                    <div class="p-8 text-center text-gray-400">لا توجد خطط أقساط مسجلة.</div>
-                @endif
-            </div>
-
-            <!-- Recent Cheques -->
-            <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-dark-border">
-                <div class="p-6 border-b border-gray-100 dark:border-dark-border">
-                    <h2 class="text-lg font-bold dark:text-white flex items-center gap-2">
-                        <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                        </svg>
-                        الشيكات الأخيرة
-                    </h2>
+                    <button @click="activeTab = 'ledger'" class="w-full mt-4 py-2 text-blue-500 font-bold text-sm hover:underline font-bold">مشاهدة الكشف الكامل &rarr;</button>
                 </div>
-                @if ($customer->cheques->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-right">
-                            <thead class="bg-gray-50 dark:bg-dark-tableheader">
-                                <tr>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">رقم الشيك</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">المبلغ</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">البنك</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">الحالة</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
-                                @foreach ($customer->cheques->take(5) as $cheque)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                                        <td class="px-6 py-4 dark:text-gray-300 font-medium tracking-wider">
-                                            <a href="{{ route('cheques.show', $cheque) }}" class="text-amber-600 hover:underline">
-                                                #{{ $cheque->cheque_no }}
-                                            </a>
-                                        </td>
-                                        <td class="px-6 py-4 font-bold dark:text-white">{{ number_format($cheque->amount, 2) }}</td>
-                                        <td class="px-6 py-4 dark:text-gray-300">{{ $cheque->bank_name }}</td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-2 py-1 text-xs font-bold rounded-lg
-                                                {{ $cheque->status == 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 
-                                                   ($cheque->status == 'cleared' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400') }}">
-                                                {{ $cheque->status == 'pending' ? 'معلق' : ($cheque->status == 'cleared' ? 'محصل' : 'مرفوض') }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="p-8 text-center text-gray-400">لا توجد شيكات مسجلة بعد.</div>
-                @endif
             </div>
+        </div>
 
-            <!-- Customer Issues -->
+        <!-- Ledger Tab (The requested Account Statement) -->
+        <div x-show="activeTab === 'ledger'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
             <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-dark-border">
-                <div class="p-6 border-b border-gray-100 dark:border-dark-border">
-                    <h2 class="text-lg font-bold dark:text-white flex items-center gap-2">
-                        <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                        المشكلات والشكاوى
+                <div class="p-6 border-b border-gray-100 dark:border-dark-border flex justify-between items-center bg-gray-50/50 dark:bg-dark-bg/20">
+                    <h2 class="text-lg font-black dark:text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 00-4-4H5m11 0h2a4 4 0 014 4v2m-6-10a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        كشف حساب تفصيلي (Ledger)
                     </h2>
-                </div>
-                @if ($customer->issues->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-right">
-                            <thead class="bg-gray-50 dark:bg-dark-tableheader">
-                                <tr>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">المشكلة</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">بواسطة</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">الحالة</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400">التاريخ</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
-                                @foreach ($customer->issues->sortByDesc('created_at') as $issue)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <a href="{{ route('issues.show', $issue) }}" class="text-rose-600 hover:underline">
-                                                <p class="text-sm font-medium truncate max-w-xs">{{ $issue->description }}</p>
-                                            </a>
-                                        </td>
-                                        <td class="px-6 py-4 text-sm dark:text-gray-400">{{ $issue->collector->name ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-2 py-1 text-[10px] font-black uppercase tracking-widest border {{ $issue->status_color }}">
-                                                {{ $issue->status_label }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-[10px] font-bold">{{ $issue->created_at->format('Y-m-d') }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="flex gap-2">
+                        <a href="{{ route('accounting.adjustments.customer', $customer) }}" class="bg-amber-100 text-amber-700 px-4 py-2 rounded-xl text-xs font-black shadow-sm hover:bg-amber-200 transition-all flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                            تسجيل تسوية يدوية
+                        </a>
+                        <button onclick="window.print()" class="bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl text-xs font-black hover:bg-gray-200 transition-all">طباعة الكشف</button>
                     </div>
-                @else
-                    <div class="p-8 text-center text-gray-400">لا توجد مشكلات مسجلة لهذا العميل.</div>
-                @endif
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse">
+                        <thead class="bg-gray-100 dark:bg-dark-tableheader text-gray-500 text-xs font-black uppercase tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4 border-b border-gray-200 dark:border-dark-border">التاريخ</th>
+                                <th class="px-6 py-4 border-b border-gray-200 dark:border-dark-border">البيان / التفاصيل</th>
+                                <th class="px-6 py-4 border-b border-gray-200 dark:border-dark-border">مدين (Debitor)</th>
+                                <th class="px-6 py-4 border-b border-gray-200 dark:border-dark-border">دائن (Creditor)</th>
+                                <th class="px-6 py-4 border-b border-gray-200 dark:border-dark-border text-blue-600 dark:text-blue-400 underline">الرصيد المتبقي</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-dark-border">
+                            <!-- Opening Balance Row -->
+                            <tr class="bg-blue-50/30 dark:bg-blue-900/5">
+                                <td class="px-6 py-4 text-xs font-bold text-gray-400 italic">البداية</td>
+                                <td class="px-6 py-4 font-black dark:text-gray-300">رصيد افتتاحي</td>
+                                <td class="px-6 py-4">{{ $customer->balance_type === 'debit' ? number_format($customer->opening_balance, 2) : '0.00' }}</td>
+                                <td class="px-6 py-4">{{ $customer->balance_type === 'credit' ? number_format($customer->opening_balance, 2) : '0.00' }}</td>
+                                <td class="px-6 py-4 font-black">{{ number_format($customer->opening_balance, 2) }}</td>
+                            </tr>
+                            @foreach ($customer->accounts as $account)
+                                <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/20 transition-colors">
+                                    <td class="px-6 py-3 text-sm font-medium dark:text-gray-400">{{ $account->date->format('Y-m-d') }}</td>
+                                    <td class="px-6 py-3 font-bold dark:text-white text-sm">
+                                        {{ $account->description }}
+                                        @if($account->reference_id)
+                                            <span class="text-[10px] text-gray-400 font-normal mr-1 tracking-tighter">(#{{ $account->reference_type }} {{ $account->reference_id }})</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-3 text-red-600 font-bold">{{ $account->debit > 0 ? number_format($account->debit, 2) : '-' }}</td>
+                                    <td class="px-6 py-3 text-emerald-600 font-bold">{{ $account->credit > 0 ? number_format($account->credit, 2) : '-' }}</td>
+                                    <td class="px-6 py-3 font-black dark:text-blue-400">{{ number_format($account->balance, 2) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot class="bg-gray-50 dark:bg-dark-tablefooter border-t-2 border-gray-200 dark:border-dark-border">
+                            <tr class="font-black text-lg">
+                                <td colspan="2" class="px-6 py-4 dark:text-white text-left">الرصيد النهائي:</td>
+                                <td colspan="3" class="px-6 py-4 text-blue-600 dark:text-blue-400">{{ number_format($customer->getCurrentBalance(), 2) }} ج.م</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
+        </div>
+
+        <!-- Installments Tab -->
+        <div x-show="activeTab === 'installments'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+             @include('customers.partials.installments_tab')
+        </div>
+
+        <!-- Collections Tab -->
+        <div x-show="activeTab === 'collections'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+             @include('customers.partials.collections_tab')
+        </div>
+
+        <!-- Issues Tab -->
+        <div x-show="activeTab === 'issues'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+             @include('customers.partials.issues_tab')
         </div>
     </div>
 </div>
+
+<style>
+    @media print {
+        .no-print { display: none !important; }
+        .container { max-width: 100% !important; padding: 0 !important; }
+        body { background: white !important; }
+    }
+</style>
 @endsection

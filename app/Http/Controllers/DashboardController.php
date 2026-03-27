@@ -38,6 +38,11 @@ class DashboardController extends Controller
             return redirect()->route('collector.dashboard');
         }
 
+        // Sellers are redirected to the POS interface
+        if ($user->hasRole('seller')) {
+            return redirect()->route('pos.index');
+        }
+
         // Default user dashboard
         return $this->userDashboard();
     }

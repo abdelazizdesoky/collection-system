@@ -75,7 +75,7 @@
                                             @if($key !== 'updated_at' && $key !== 'created_at')
                                                 <div class="text-xs p-1.5 rounded bg-gray-50 dark:bg-dark-bg/50 border border-gray-100 dark:border-dark-border overflow-hidden text-ellipsis whitespace-nowrap">
                                                     <span class="font-black text-gray-500 dark:text-gray-400">{{ $key }}:</span> 
-                                                    <span class="text-rose-500 dark:text-rose-400 line-through opacity-70">{{ is_array($log->old_values[$key]) ? json_encode($log->old_values[$key]) : $log->old_values[$key] }}</span>
+                                                    <span class="text-rose-500 dark:text-rose-400 line-through opacity-70">{{ is_array($log->old_values[$key] ?? '') ? json_encode($log->old_values[$key] ?? '') : ($log->old_values[$key] ?? '') }}</span>
                                                     <span class="mx-1 text-gray-400">←</span>
                                                     <span class="text-blue-600 dark:text-blue-400 font-bold">{{ is_array($value) ? json_encode($value) : $value }}</span>
                                                 </div>

@@ -35,6 +35,9 @@
             }
         }
     </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <!-- Cairo Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -202,14 +205,36 @@
                         </a>
                     </div>
 
+                    @role('admin|supervisor')
+                    <!-- Pending Approvals -->
+                    <div>
+                        <a href="{{ route('admin.approvals.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('admin.approvals.*') ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 font-bold shadow-sm border border-amber-200 dark:border-amber-800' : 'text-gray-500 dark:text-gray-400 hover:bg-amber-50 dark:hover:bg-amber-900/10' }}">
+                            <div class="relative">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                @php $pendingCount = \App\Models\SaleInvoice::where('status', 'pending_approval')->count() + \App\Models\Collection::where('status', 'pending')->count() + \App\Models\Visit::where('status', 'pending')->count(); @endphp
+                                @if($pendingCount > 0)
+                                    <span class="absolute -top-1 -right-1 flex h-4 w-4">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[8px] text-white items-center justify-center font-black">{{ $pendingCount }}</span>
+                                    </span>
+                                @endif
+                            </div>
+                            <span class="text-sm sidebar-text">مراجعة العمليات</span>
+                        </a>
+                    </div>
+                    @endrole
+
                     @role('admin|supervisor|accountant')
                     <!-- Financial Operations -->
-                    <div class="space-y-2">
-                        <h3 class="px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center gap-2 sidebar-group-header">
-                            <span>العمليات المالية</span>
-                            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
-                        </h3>
-                        <div class="space-y-1">
+                    <div x-data="{ open: {{ request()->routeIs('collections.*', 'customer-accounts.*', 'cheques.*', 'banks.*', 'installments.*', 'reports.*') ? 'true' : 'false' }} }" class="space-y-2">
+    <button @click="open = !open" type="button" class="w-full px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center justify-between gap-2 sidebar-group-header hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+            <span>العمليات المالية</span>
+            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
+        </div>
+        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 opacity-50 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+    <div x-show="open" x-transition.opacity.duration.300ms class="space-y-1">
                             <a href="{{ route('collections.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('collections.*') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
                                 <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <span class="text-sm sidebar-text">سجل التحصيلات</span>
@@ -240,17 +265,20 @@
                              </a>
 
                         </div>
-                    </div>
+</div>
                     @endrole
 
                     <!-- Plans & Follow-up -->
                     @role('admin|supervisor|plan_supervisor')
-                    <div class="space-y-2">
-                        <h3 class="px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center gap-2 sidebar-group-header">
-                            <span>الخطط والمتابعة</span>
-                            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
-                        </h3>
-                        <div class="space-y-1">
+                    <div x-data="{ open: {{ request()->routeIs('collection-plans.*', 'visit-plans.*', 'visit-types.*', 'issues.*') ? 'true' : 'false' }} }" class="space-y-2">
+    <button @click="open = !open" type="button" class="w-full px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center justify-between gap-2 sidebar-group-header hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+            <span>الخطط والمتابعة</span>
+            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
+        </div>
+        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 opacity-50 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+    <div x-show="open" x-transition.opacity.duration.300ms class="space-y-1">
                             <a href="{{ route('collection-plans.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('collection-plans.*') ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
                                 <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                                 <span class="text-sm sidebar-text">خطط التحصيل المالي</span>
@@ -270,17 +298,20 @@
                                 <span class="text-sm sidebar-text">إدارة المشكلات والشكاوى</span>
                             </a>
                         </div>
-                    </div>
+</div>
                     @endrole
 
                     <!-- Core Data -->
                     @role('admin|supervisor|accountant')
-                    <div class="space-y-2">
-                        <h3 class="px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center gap-2 sidebar-group-header">
-                            <span>البيانات الأساسية</span>
-                            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
-                        </h3>
-                        <div class="space-y-1">
+                    <div x-data="{ open: {{ request()->routeIs('customers.*', 'collectors.*', 'areas.*') ? 'true' : 'false' }} }" class="space-y-2">
+    <button @click="open = !open" type="button" class="w-full px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center justify-between gap-2 sidebar-group-header hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+            <span>البيانات الأساسية</span>
+            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
+        </div>
+        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 opacity-50 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+    <div x-show="open" x-transition.opacity.duration.300ms class="space-y-1">
                             <a href="{{ route('customers.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('customers.*') ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
                                 <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20a9 9 0 0118 0"></path></svg>
                                 <span class="text-sm sidebar-text">العملاء</span>
@@ -298,16 +329,98 @@
                             </a>
                             @endhasrole
                         </div>
-                    </div>
+</div>
+                    @endrole
+
+                    <!-- Inventory Module -->
+                    @role('admin|supervisor')
+                    <div x-data="{ open: {{ request()->routeIs('products.*', 'product-categories.*', 'units.*', 'warehouses.*', 'stock.*') ? 'true' : 'false' }} }" class="space-y-2">
+    <button @click="open = !open" type="button" class="w-full px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center justify-between gap-2 sidebar-group-header hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+            <span>المخازن والمنتجات</span>
+            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
+        </div>
+        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 opacity-50 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+    <div x-show="open" x-transition.opacity.duration.300ms class="space-y-1">
+                            <a href="{{ route('products.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('products.*') ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                                <span class="text-sm sidebar-text">المنتجات</span>
+                            </a>
+                            <a href="{{ route('product-categories.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('product-categories.*') ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                <span class="text-sm sidebar-text">أقسام المنتجات</span>
+                            </a>
+                            <a href="{{ route('units.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('units.*') ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                                <span class="text-sm sidebar-text">وحدات القياس</span>
+                            </a>
+                            <a href="{{ route('warehouses.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('warehouses.*') ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+                                <span class="text-sm sidebar-text">المخازن</span>
+                            </a>
+                            <a href="{{ route('stock.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('stock.*') ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                <span class="text-sm sidebar-text">كشف المخزون</span>
+                            </a>
+                        </div>
+</div>
+                    @endrole
+
+                    <!-- Purchasing Module -->
+                    @role('admin|supervisor|accountant')
+                    <div x-data="{ open: {{ request()->routeIs('purchase-invoices.*', 'suppliers.*') ? 'true' : 'false' }} }" class="space-y-2">
+    <button @click="open = !open" type="button" class="w-full px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center justify-between gap-2 sidebar-group-header hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+            <span>المشتريات</span>
+            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
+        </div>
+        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 opacity-50 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+    <div x-show="open" x-transition.opacity.duration.300ms class="space-y-1">
+                            <a href="{{ route('purchase-invoices.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('purchase-invoices.*') ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+                                <span class="text-sm sidebar-text">فواتير الشراء</span>
+                            </a>
+                            @hasrole('admin|supervisor')
+                            <a href="{{ route('suppliers.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('suppliers.*') ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                <span class="text-sm sidebar-text">الموردون</span>
+                            </a>
+                            @endhasrole
+                        </div>
+</div>
+                    @endrole
+
+                    <!-- Sales Module -->
+                    @role('admin|supervisor|accountant')
+                    <div x-data="{ open: {{ request()->routeIs('sale-invoices.*') ? 'true' : 'false' }} }" class="space-y-2">
+    <button @click="open = !open" type="button" class="w-full px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center justify-between gap-2 sidebar-group-header hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+            <span>المبيعات</span>
+            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
+        </div>
+        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 opacity-50 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+    <div x-show="open" x-transition.opacity.duration.300ms class="space-y-1">
+                            <a href="{{ route('sale-invoices.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('sale-invoices.*') ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"/></svg>
+                                <span class="text-sm sidebar-text">فواتير البيع</span>
+                            </a>
+                        </div>
+</div>
                     @endrole
 
                     <!-- System Administration (Partitioned for Admin vs Accountant) -->
-                    <div class="space-y-2">
-                        <h3 class="px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center gap-2 sidebar-group-header">
-                            <span>إدارة النظام</span>
-                            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
-                        </h3>
-                        <div class="space-y-1">
+                    <div x-data="{ open: {{ request()->routeIs('users.*', 'admin.audit-logs.*', 'admin.backups.*', 'admin.settings.*') ? 'true' : 'false' }} }" class="space-y-2">
+    <button @click="open = !open" type="button" class="w-full px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[2px] mb-3 flex items-center justify-between gap-2 sidebar-group-header hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+            <span>إدارة النظام</span>
+            <div class="h-px bg-gray-100 dark:bg-dark-border flex-1"></div>
+        </div>
+        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 opacity-50 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    </button>
+    <div x-show="open" x-transition.opacity.duration.300ms class="space-y-1">
                             @hasrole('admin')
                             <a href="{{ route('users.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('users.*') ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 font-bold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg/30' }}">
                                 <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -336,7 +449,7 @@
                             </a>
                             @endhasrole
                         </div>
-                    </div>
+</div>
                 </nav>
 
                 <!-- Sidebar Footer -->

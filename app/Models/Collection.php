@@ -25,6 +25,12 @@ class Collection extends Model
         'reference_no',
         'is_approved',
         'print_count',
+        'is_adhoc',
+        'is_installment',
+        'status',
+        'reviewer_notes',
+        'reviewed_by_id',
+        'reviewed_at',
     ];
 
     protected $casts = [
@@ -108,6 +114,14 @@ class Collection extends Model
         }
 
         return "{$this->receipt_no}-{$this->print_count}";
+    }
+
+    /**
+     * Get the reviewer who approved/rejected this collection.
+     */
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by_id');
     }
 
     /**
