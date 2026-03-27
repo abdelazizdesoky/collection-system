@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>فاتورة بيع: {{ $saleInvoice->code }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Cairo', sans-serif; direction: rtl; padding: 20px; color: #1a1a1a; font-size: 13px; }

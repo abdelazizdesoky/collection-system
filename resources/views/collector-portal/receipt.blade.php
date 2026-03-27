@@ -101,9 +101,10 @@
             <div class="inline-block p-1 bg-white border-2 border-black">
                 @php
                     $qrPayload = "Receipt: #{$collection->receipt_no}\nCustomer: {$collection->customer->name}\nAmount: {$collection->amount} EGP\nDate: {$collection->collection_date->format('Y-m-d')}";
-                    $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . urlencode($qrPayload);
                 @endphp
-                <img src="{{ $qrUrl }}" alt="QR Code" class="w-32 h-32 mx-auto qr-img">
+                <div class="w-32 h-32 mx-auto qr-img flex items-center justify-center">
+                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(128)->generate($qrPayload) !!}
+                </div>
             </div>
             <p class="text-black mt-0 font-black footer-thanks">شكراً لتعاملكم معنا</p>
         </div>

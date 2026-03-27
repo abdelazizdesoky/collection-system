@@ -17,32 +17,7 @@
         }
     </script>
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        dark: {
-                            bg: '#334155',
-                            card: '#475569',
-                            border: '#64748b',
-                            tableheader: '#334155'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Cairo Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         body { font-family: 'Cairo', sans-serif !important; }
@@ -573,11 +548,6 @@
                 <footer class="mt-auto py-8 text-center text-gray-500 text-sm border-t border-gray-200">
                     <p>&copy; 2026 {{ get_setting('company_name', 'Alarabia Group') }} جميع الحقوق محفوظة.</p>
                 </footer>
-    <!-- Toggle Script -->
-    <!-- JQuery and Select2 JS -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script>
         $(document).ready(function() {
             function initSelect2() {

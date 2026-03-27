@@ -16,30 +16,8 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        dark: {
-                            bg: '#334155',
-                            card: '#475569',
-                            border: '#64748b',
-                            tableheader: '#334155'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body { font-family: 'Cairo', sans-serif; }
         @media print {
             .no-print { display: none !important; }

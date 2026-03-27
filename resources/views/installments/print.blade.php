@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>إيصالات الأقساط - {{ $plan->customer->name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: 'Cairo', sans-serif; }
         @media print {
